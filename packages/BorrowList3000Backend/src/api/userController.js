@@ -1,8 +1,8 @@
 import { UserRepository } from '../db/repositories'
 
-export async function register({ username, password, email }) {
+export async function register({ username, password }) {
     try {
-        const user = await UserRepository.createUser(username, password, email)
+        const user = await UserRepository.createUser(username, password)
         return {
             success: true,
             message: 'successfully created a new user account',

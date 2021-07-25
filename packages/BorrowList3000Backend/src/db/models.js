@@ -28,13 +28,6 @@ UserModel.init({
             this.setDataValue("password", hashSync(value, genSaltSync()))
         }
     },
-    email: {
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate: {
-            isEmail: true,
-        }
-    }
 }, {
     sequelize,
     tableName: 'Users'
@@ -108,7 +101,10 @@ BorrowedItemModel.init({
     },
     dateBorrowed: {
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            isDate: true
+        }
     }
 }, {
     sequelize,

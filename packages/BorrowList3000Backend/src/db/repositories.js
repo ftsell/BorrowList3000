@@ -10,8 +10,8 @@ export class UserRepository {
         })
     }
 
-    static async createUser(username, password, email) {
-        return await UserModel.create({username, password, email})
+    static async createUser(username, password) {
+        return await UserModel.create({username, password})
     }
 }
 
@@ -33,6 +33,6 @@ export class BorrowerRepository {
 
 export class BorrowedItemRepository {
     static async createBorrowedItem(specifier, description, dateBorrowed, borrower) {
-        return await BorrowedItemModel.create({specifier, description, dateBorrowed, borrower: borrower.id})
+        return await BorrowedItemModel.create({specifier, description, dateBorrowed, borrower: borrower})
     }
 }

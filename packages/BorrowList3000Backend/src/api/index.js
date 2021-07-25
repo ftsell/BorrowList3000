@@ -5,6 +5,7 @@ import session from 'express-session'
 import { sessionStore } from '../db/sessions'
 import { register, login, logout, getOwnUser } from './userController'
 import { createBorrower } from './borrowerController'
+import { createBorrowedItem } from "./borrowedItemController";
 
 const router = Router()
 export const nuxtMiddleware = router
@@ -32,10 +33,11 @@ const root = {
     login,
     logout,
     createBorrower,
+    createBorrowedItem,
 }
 
 router.use('/graphql', graphqlHTTP({
     schema: graphqlSchema,
     rootValue: root,
-    graphiql: true
+    graphiql: true,
 }))

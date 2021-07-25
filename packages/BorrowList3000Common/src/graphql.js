@@ -1,10 +1,10 @@
 import { buildSchema } from 'graphql'
 
 const types = `
+scalar Date
+
 type User {
     username: String!,
-    email: String,
-    emailVerified: Boolean,
     borrowers: [Borrower]!,
 }
 
@@ -16,7 +16,7 @@ type Borrower {
 type BorrowedItem {
     specifier: String!,
     description: String,
-    dateBorrowed: String!,
+    dateBorrowed: Date!,
 }
 `
 
@@ -86,13 +86,14 @@ type CreateBorrowedItemMutationResponse implements MutationResponse {
 
 type Mutation {
     # user management
-    register(username: String!, password: String!, email: String): RegisterMutationResponse
+    register(username: String!, password: String!): RegisterMutationResponse
     verifyEmail(username: String!, verificationCode: String!): VerifyEmailMutationResponse
     login(username: String!, password: String!): LoginMutationResponse
     logout: LogoutMutationResponse
 
     # standard object interactions
     createBorrower(name: String!): CreateBorrowerMutationResponse
+    createBorrowedItem(borrower: String!, specifier: String!, description: String, dateBorrowed: Date!): CreateBorrowedItemMutationResponse
 }
 `
 
