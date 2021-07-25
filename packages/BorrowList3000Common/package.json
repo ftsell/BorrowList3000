@@ -1,0 +1,15 @@
+{
+    "name": "borrowlist3000common",
+    "version": "1.0.0",
+    "description": "Common definitions for the BorrowList3000 project",
+    "repository": "https://github.com/ftsell/borrowList3000/",
+    "author": "Finn-Thorben Sell <dev@finn-thorben.me>",
+    "license": "MIT",
+    "private": true,
+    "main": "src/index.js",
+    "type": "module",
+    "types": "src/index.d.ts",
+    "dependencies": {
+        "graphql": "^15.5.1"
+    }
+}
