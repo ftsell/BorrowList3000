@@ -1,6 +1,6 @@
 import { nuxtMiddleware } from './src'
 import express from 'express'
-import { sequelize } from './src/db'
+import { sequelize } from './src/db/models'
 
 const app = express()
 app.use('/api', nuxtMiddleware)

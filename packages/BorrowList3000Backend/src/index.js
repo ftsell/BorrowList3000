@@ -1,2 +1,2 @@
-export { nuxtMiddleware } from './nuxtMiddleware'
+export { nuxtMiddleware } from './api'
 export { nuxtModule } from './nuxtModule'

@@ -1,5 +1,5 @@
-import { sequelize } from './db'
-import {nuxtMiddleware} from './nuxtMiddleware'
+import { sequelize } from './db/models'
+import {nuxtMiddleware} from './api'
 
 export function nuxtModule() {
     this.addMiddleware({path: "/api", handler: nuxtMiddleware})
