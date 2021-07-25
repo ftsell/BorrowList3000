@@ -1,16 +1,27 @@
 import sequelize_pkg from 'sequelize'
+import { compare, genSalt, hash } from "bcrypt"
 
 const { DataTypes, Sequelize, Model } = sequelize_pkg
 
 export const sequelize = new Sequelize('sqlite::memory:')
 
 export class UserModel extends Model {
+    async verifyPassword(password) {
+        return await compare(password, this.password)
+    }
 }
 
 UserModel.init({
     username: {
-        type: DataTypes.STRING,
+        type: DataTypes.CITEXT,
         primaryKey: true
+    },
+    password: {
+        type: DataTypes.STRING(60),
+        allowNull: false,
+        async set(value) {
+            this.setDataValue("password", await hash(value, await genSalt()))
+        }
     }
 }, {
     sequelize,
