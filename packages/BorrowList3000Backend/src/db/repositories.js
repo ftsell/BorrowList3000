@@ -1,13 +1,10 @@
 import { BorrowedItemModel, BorrowerModel, UserModel } from './models'
 
 export class UserRepository {
-    static async listUsers() {
-        return await UserModel.findAll({ include: { all: true, nested: true, required: true } })
-    }
-
     static async getUserByUsername(username) {
         return await UserModel.findOne({
-            include: { all: true, nested: true, required: true }, where: {
+            include: { all: true, nested: true },
+            where: {
                 username: username
             }
         })

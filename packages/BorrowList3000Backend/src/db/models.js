@@ -1,9 +1,11 @@
 import sequelize_pkg from 'sequelize'
-import { compare, genSalt, hash } from "bcrypt"
+import { compare, genSaltSync, hashSync } from "bcrypt"
 
 const { DataTypes, Sequelize, Model } = sequelize_pkg
 
-export const sequelize = new Sequelize('sqlite::memory:')
+export const sequelize = new Sequelize('sqlite::memory:', {
+    logging: false,
+})
 
 export class UserModel extends Model {
     async verifyPassword(password) {
@@ -18,8 +20,10 @@ UserModel.init({
     },
     password: {
         type: DataTypes.STRING(60),
-        async set(value) {
-            this.setDataValue("password", await hash(value, await genSalt()))
+        allowNull: false,
+        set(value) {
+            this.setDataValue("password", value)
+            this.setDataValue("password", hashSync(value, genSaltSync()))
         }
     },
     email: {

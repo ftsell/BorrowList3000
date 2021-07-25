@@ -1,28 +1,30 @@
 import { Router } from 'express'
 import { graphqlHTTP } from 'express-graphql'
 import { graphqlSchema } from 'borrowlist3000common'
-import { UserRepository } from './db/repositories'
 import session from 'express-session'
-import { sessionStore } from './db/sessions'
+import { sessionStore } from '../db/sessions'
+import { register, login, logout } from './userController'
 
 const router = Router()
 export const nuxtMiddleware = router
 
 router.use(session({
-    store: sessionStore
+    secret: 'foobar123',
+    store: sessionStore,
+    cookie: {
+        secure: "auto"
+    },
+    name: "session",
+    rolling: true,
+    saveUninitialized: false,
+    unset: "destroy"
 }))
 
 // the root provides a resolver function for each API endpoint
 const root = {
-    async register({ username, password, email }) {
-        const user = await UserRepository.createUser(username, password, email)
-        return {
-            success: true,
-            message: 'success',
-            code: 200,
-            user: user
-        }
-    }
+    register,
+    login,
+    logout,
 }
 
 router.use('/graphql', graphqlHTTP({
