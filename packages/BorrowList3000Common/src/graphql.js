@@ -3,6 +3,8 @@ import { buildSchema } from 'graphql'
 const types = `
 type User {
     username: String!,
+    email: String,
+    emailVerified: Boolean,
     borrowers: [Borrower]!,
 }
 
@@ -16,11 +18,47 @@ type BorrowedItem {
     description: String,
     dateBorrowed: String!,
 }
+
+interface MutationResponse {
+    success: Boolean!,
+    message: String!,
+    code: Int!,
+}
 `
 
 const query = `
-{
+type Query {
     me: User!,
+}
+`
+
+const mutations = `
+type RegisterMutationResponse implements MutationResponse {
+    success: Boolean!,
+    message: String!,
+    code: Int!,
+    user: User!,
+}
+
+type VerifyEmailMutationResponse implements MutationResponse {
+    success: Boolean!,
+    message: String!,
+    code: Int!,
+    user: User!,
+}
+
+type LoginMutationResponse implements MutationResponse {
+    success: Boolean!,
+    message: String!,
+    code: Int!,
+    user: User!,
+    sessionId: String!,
+}
+
+type Mutation {
+    register(username: String!, password: String!, email: String): RegisterMutationResponse
+    verifyEmail(username: String!, verificationCode: String!): VerifyEmailMutationResponse
+    login(username: String!, password: String!): LoginMutationResponse
 }
 `
 
@@ -31,5 +69,6 @@ const query = `
  */
 export const graphqlSchema = buildSchema(`
     ${types}
-    type Query ${query}
+    ${query}
+    ${mutations}
 `)

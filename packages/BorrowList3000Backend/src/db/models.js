@@ -18,10 +18,13 @@ UserModel.init({
     },
     password: {
         type: DataTypes.STRING(60),
-        allowNull: false,
         async set(value) {
             this.setDataValue("password", await hash(value, await genSalt()))
         }
+    },
+    email: {
+        type: DataTypes.STRING,
+        allowNull: true,
     }
 }, {
     sequelize,

@@ -5,12 +5,16 @@ export class UserRepository {
         return await UserModel.findAll({ include: { all: true, nested: true, required: true } })
     }
 
-    static async getUserById(id) {
-        return null
+    static async getUserByUsername(username) {
+        return await UserModel.findOne({
+            include: { all: true, nested: true, required: true }, where: {
+                username: username
+            }
+        })
     }
 
-    static async createUser(username) {
-        return await UserModel.create({ username })
+    static async createUser(username, password, email) {
+        return await UserModel.create({ username, password, email })
     }
 }
 
