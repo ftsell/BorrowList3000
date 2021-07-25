@@ -23,6 +23,7 @@ export async function login({ username, password }, { session }) {
     const user = await UserRepository.getUserByUsername(username)
     if (user != null && await user.verifyPassword((password))) {
         session.loggedIn = true
+        session.username = username
         return {
             success: true,
             message: `successfully logged in as ${username}`,
@@ -46,5 +47,16 @@ export async function logout({}, request) {
         success: true,
         message: `successfully logged out`,
         code: 'OK'
+    }
+}
+
+export async function getOwnUser({}, {session}) {
+    assertLoggedIn(session)
+    return await UserRepository.getUserByUsername(session.username)
+}
+
+export function assertLoggedIn(session) {
+    if (!session.loggedIn) {
+        throw "you need to be logged in to do this"
     }
 }

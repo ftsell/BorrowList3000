@@ -25,6 +25,8 @@ enum ResultCodes {
     OK
     ERR_USER_ALREADY_EXISTS
     ERR_LOGIN_FAILED
+    ERR_LOGIN_REQUIRED
+    ERR_BORROWER_DOES_NOT_EXIST
 }
 `
 
@@ -59,7 +61,7 @@ type LoginMutationResponse implements MutationResponse {
     success: Boolean!,
     message: String!,
     code: ResultCodes!,
-    user: User!,
+    user: User,
 }
 
 type LogoutMutationResponse implements MutationResponse {
@@ -68,11 +70,29 @@ type LogoutMutationResponse implements MutationResponse {
     code: ResultCodes!
 }
 
+type CreateBorrowerMutationResponse implements MutationResponse {
+    success: Boolean!,
+    message: String!,
+    code: ResultCodes!,
+    borrower: Borrower,
+}
+
+type CreateBorrowedItemMutationResponse implements MutationResponse {
+    success: Boolean!,
+    message: String!,
+    code: ResultCodes!,
+    borrowedItem: BorrowedItem
+}
+
 type Mutation {
+    # user management
     register(username: String!, password: String!, email: String): RegisterMutationResponse
     verifyEmail(username: String!, verificationCode: String!): VerifyEmailMutationResponse
     login(username: String!, password: String!): LoginMutationResponse
     logout: LogoutMutationResponse
+
+    # standard object interactions
+    createBorrower(name: String!): CreateBorrowerMutationResponse
 }
 `
 

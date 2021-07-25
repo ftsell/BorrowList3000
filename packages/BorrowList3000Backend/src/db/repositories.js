@@ -17,7 +17,7 @@ export class UserRepository {
 
 export class BorrowerRepository {
     static async createBorrower(name, lender) {
-        return await BorrowerModel.create({ name, lender: lender.username })
+        return await BorrowerModel.create({ name, lender: lender })
     }
 }
 

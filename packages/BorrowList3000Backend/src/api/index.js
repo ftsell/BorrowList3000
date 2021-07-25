@@ -3,7 +3,8 @@ import { graphqlHTTP } from 'express-graphql'
 import { graphqlSchema } from 'borrowlist3000common'
 import session from 'express-session'
 import { sessionStore } from '../db/sessions'
-import { register, login, logout } from './userController'
+import { register, login, logout, getOwnUser } from './userController'
+import { createBorrower } from './borrowerController'
 
 const router = Router()
 export const nuxtMiddleware = router
@@ -15,6 +16,7 @@ router.use(session({
         secure: "auto"
     },
     name: "session",
+    resave: false,
     rolling: true,
     saveUninitialized: false,
     unset: "destroy"
@@ -22,9 +24,14 @@ router.use(session({
 
 // the root provides a resolver function for each API endpoint
 const root = {
+    // queries
+    me: getOwnUser,
+
+    // mutations
     register,
     login,
     logout,
+    createBorrower,
 }
 
 router.use('/graphql', graphqlHTTP({
