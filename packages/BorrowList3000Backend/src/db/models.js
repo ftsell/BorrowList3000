@@ -31,6 +31,17 @@ UserModel.init({
     tableName: 'Users'
 })
 
+export class SessionModel extends Model {
+
+}
+
+SessionModel.init({
+
+}, {
+    sequelize,
+    tableName: "sessions"
+})
+
 export class BorrowerModel extends Model {
 }
 
