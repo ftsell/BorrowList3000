@@ -3,7 +3,9 @@ import { compare, genSaltSync, hashSync } from "bcrypt"
 
 const { DataTypes, Sequelize, Model } = sequelize_pkg
 
-export const sequelize = new Sequelize('sqlite::memory:', {
+const sqlitePath = ":memory:"
+//const sqlitePath = "/home/ftsell/Projects/BorrowList3000/db.sqlite"
+export const sequelize = new Sequelize(`sqlite:${sqlitePath}`, {
     logging: false,
 })
 
@@ -29,6 +31,9 @@ UserModel.init({
     email: {
         type: DataTypes.STRING,
         allowNull: true,
+        validate: {
+            isEmail: true,
+        }
     }
 }, {
     sequelize,
@@ -53,22 +58,25 @@ BorrowerModel.init({
     id: {
         type: DataTypes.UUID,
         defaultValue: Sequelize.UUIDV4,
-        primaryKey: true
+        primaryKey: true,
     },
     name: {
-        type: DataTypes.STRING,
-        allowNull: false
+        type: DataTypes.CITEXT,
+        allowNull: false,
     }
 }, {
     sequelize,
-    tableName: 'Borrowers'
+    tableName: 'Borrowers',
+    indexes: [
+        {unique: true, fields: ["name", "lender"]}
+    ]
 })
 UserModel.hasMany(BorrowerModel, {
     onUpdate: "CASCADE",
     onDelete: "CASCADE",
     foreignKey: {
         allowNull: false,
-        name: 'lender'
+        name: 'lender',
     },
     as: "borrowers"
 })
