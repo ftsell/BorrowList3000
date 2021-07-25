@@ -1,3 +1,5 @@
+import { GraphQLSchema } from 'graphql'
+
 interface User {
     username: string,
     borrowers: Borrower[],
@@ -13,3 +15,5 @@ interface BorrowedItem {
     description?: string,
     dateBorrowed: string,
 }
+
+export const graphqlSchema: GraphQLSchema
