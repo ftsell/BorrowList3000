@@ -1,19 +1,19 @@
-import colors from 'vuetify/es5/util/colors'
-import {nuxtModule as borrowlistBackend} from 'borrowlist3000backend'
+import colors from "vuetify/es5/util/colors";
+import { nuxtModule as borrowlistBackend } from "borrowlist3000backend";
 
 export default {
     // Global page headers: https://go.nuxtjs.dev/config-head
     head: {
-        titleTemplate: '%s - borrowlist3000frontend',
-        title: 'borrowlist3000frontend',
+        titleTemplate: "%s - borrowlist3000frontend",
+        title: "borrowlist3000frontend",
         meta: [
-            {charset: 'utf-8'},
-            {name: 'viewport', content: 'width=device-width, initial-scale=1'},
-            {hid: 'description', name: 'description', content: ''},
-            {name: 'format-detection', content: 'telephone=no'}
+            { charset: "utf-8" },
+            { name: "viewport", content: "width=device-width, initial-scale=1" },
+            { hid: "description", name: "description", content: "" },
+            { name: "format-detection", content: "telephone=no" }
         ],
         link: [
-            {rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'}
+            { rel: "icon", type: "image/x-icon", href: "/favicon.ico" }
         ]
     },
 
@@ -29,30 +29,30 @@ export default {
     // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
     buildModules: [
         // https://go.nuxtjs.dev/eslint
-        '@nuxtjs/eslint-module',
+        "@nuxtjs/eslint-module",
         // https://go.nuxtjs.dev/stylelint
-        '@nuxtjs/stylelint-module',
+        "@nuxtjs/stylelint-module",
         // https://go.nuxtjs.dev/vuetify
-        '@nuxtjs/vuetify'
+        "@nuxtjs/vuetify"
     ],
 
     // Modules: https://go.nuxtjs.dev/config-modules
     modules: [
         // https://go.nuxtjs.dev/pwa
-        '@nuxtjs/pwa',
-        borrowlistBackend,
+        "@nuxtjs/pwa",
+        borrowlistBackend
     ],
 
     // PWA module configuration: https://go.nuxtjs.dev/pwa
     pwa: {
         manifest: {
-            lang: 'en'
+            lang: "en"
         }
     },
 
     // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
     vuetify: {
-        customVariables: ['~/assets/variables.scss'],
+        customVariables: ["~/assets/variables.scss"],
         theme: {
             dark: false,
             themes: {
@@ -71,4 +71,4 @@ export default {
 
     // Build Configuration: https://go.nuxtjs.dev/config-build
     build: {}
-}
+};

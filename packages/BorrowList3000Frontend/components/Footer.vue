@@ -9,8 +9,8 @@
           v-for="item of items"
           :key="item.text"
         >
-          <a v-if="item.link" class="no-style" :href="item.link">
-            <v-btn text rounded>
+          <a v-if="item.link" :href="item.link" class="no-style">
+            <v-btn rounded text>
               <v-icon>{{ item.icon }}</v-icon>
               <span>{{ item.text }}</span>
             </v-btn>
@@ -23,24 +23,24 @@
 
 <script>
 export default {
-  name: 'Footer',
-  data () {
+  name: "Footer",
+  data() {
     return {
       items: [
         {
-          icon: 'mdi-copyright',
+          icon: "mdi-copyright",
           text: new Date().getFullYear(),
-          link: 'https://github.com/ftsell/BorrowList3000/blob/main/LICENSE'
+          link: "https://github.com/ftsell/BorrowList3000/blob/main/LICENSE"
         },
         {
-          icon: 'mdi-github',
-          text: 'GitHub',
-          link: 'https://github.com/ftsell/borrowList3000/'
+          icon: "mdi-github",
+          text: "GitHub",
+          link: "https://github.com/ftsell/borrowList3000/"
         }
       ]
-    }
+    };
   }
-}
+};
 </script>
 
 <style scoped>
