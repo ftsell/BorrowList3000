@@ -40,6 +40,7 @@ export default {
     modules: [
         // https://go.nuxtjs.dev/pwa
         "@nuxtjs/pwa",
+        "@nuxtjs/apollo",
         borrowlistBackend
     ],
 
@@ -65,6 +66,14 @@ export default {
                     error: colors.deepOrange.accent4,
                     success: colors.green.accent3
                 }
+            }
+        }
+    },
+
+    apollo: {
+        clientConfigs: {
+            default: {
+                httpEndpoint: '/api/graphql',
             }
         }
     },
