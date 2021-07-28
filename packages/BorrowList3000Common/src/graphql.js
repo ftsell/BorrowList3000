@@ -94,6 +94,9 @@ type Mutation {
     # standard object interactions
     createBorrower(name: String!): CreateBorrowerMutationResponse
     createBorrowedItem(borrower: String!, specifier: String!, description: String, dateBorrowed: Date!): CreateBorrowedItemMutationResponse
+
+    # dev only operations
+    resetDb: Boolean
 }
 `
 

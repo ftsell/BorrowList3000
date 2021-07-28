@@ -6,6 +6,7 @@ import { sessionStore } from '../db/sessions'
 import { register, login, logout, getOwnUser } from './userController'
 import { createBorrower } from './borrowerController'
 import { createBorrowedItem } from "./borrowedItemController";
+import { resetDb } from "./devController";
 
 const router = Router()
 export const nuxtMiddleware = router
@@ -34,6 +35,9 @@ const root = {
     logout,
     createBorrower,
     createBorrowedItem,
+
+    // dev onl operations
+    resetDb: resetDb,
 }
 
 router.use('/graphql', graphqlHTTP({

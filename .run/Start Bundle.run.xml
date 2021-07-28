@@ -11,6 +11,7 @@
       <env name="BL_DB_DATABASE" value=":memory:" />
       <env name="BL_DB_SYNC" value="true" />
       <env name="BL_DEBUG" value="true" />
+      <env name="BL_ALLOW_DB_RESET" value="true" />
     </envs>
     <method v="2" />
   </configuration>
