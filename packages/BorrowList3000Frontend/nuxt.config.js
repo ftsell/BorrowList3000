@@ -1,7 +1,14 @@
 import colors from "vuetify/es5/util/colors";
-import { nuxtModule as borrowlistBackend } from "borrowlist3000backend";
+import { nuxtModule as borrowlistBackend, getDbConfig } from "borrowlist3000backend";
 
 export default {
+    publicRuntimeConfig: {
+        debug: process.env.BL_DEBUG === "true" || false,
+    },
+    privateRuntimeConfig: {
+        db: getDbConfig()
+    },
+
     // Global page headers: https://go.nuxtjs.dev/config-head
     head: {
         titleTemplate: "%s - borrowlist3000frontend",

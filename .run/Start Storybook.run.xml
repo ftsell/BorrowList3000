@@ -6,7 +6,12 @@
       <script value="storybook" />
     </scripts>
     <node-interpreter value="project" />
-    <envs />
+    <envs>
+      <env name="BL_DB_DIALECT" value="sqlite" />
+      <env name="BL_DB_DATABASE" value=":memory:" />
+      <env name="BL_DB_SYNC" value="true" />
+      <env name="BL_DEBUG" value="true" />
+    </envs>
     <method v="2" />
   </configuration>
 </component>

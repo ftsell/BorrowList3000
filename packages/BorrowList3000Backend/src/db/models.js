@@ -3,11 +3,19 @@ import { compare, genSaltSync, hashSync } from "bcrypt"
 
 const { DataTypes, Sequelize, Model } = sequelize_pkg
 
-const sqlitePath = ":memory:"
-//const sqlitePath = "/home/ftsell/Projects/BorrowList3000/db.sqlite"
-export const sequelize = new Sequelize(`sqlite:${sqlitePath}`, {
-    logging: false,
-})
+export function getDbConfig() {
+    return {
+        host: process.env.BL_DB_HOST || null,
+        port: process.env.BL_DB_PORT || null,
+        username: process.env.BL_DB_USERNAME || null,
+        password: process.env.BL_DB_PASSWORD || null,
+        database: process.env.BL_DB_DATABASE || null,
+        dialect: process.env.BL_DB_DIALECT || null,
+        logging: process.env.BL_DEBUG === "true" ? console.log : false,
+    }
+}
+
+export const sequelize = new Sequelize(getDbConfig())
 
 export class UserModel extends Model {
     async verifyPassword(password) {

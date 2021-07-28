@@ -6,7 +6,11 @@ const app = express()
 app.use('/api', nuxtMiddleware)
 
 sequelize.authenticate()
-    .then(() => sequelize.sync())
+    .then(async () => {
+        if (process.env.BL_DB_SYNC === "true") {
+            await sequelize.sync()
+        }
+    })
     .then(() => {
         app.listen(8000, () => {
             console.log('API server listening on port http://localhost:8000')
