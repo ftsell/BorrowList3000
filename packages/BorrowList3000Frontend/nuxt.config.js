@@ -11,12 +11,12 @@ export default {
 
     // Global page headers: https://go.nuxtjs.dev/config-head
     head: {
-        titleTemplate: "%s - borrowlist3000frontend",
-        title: "borrowlist3000frontend",
+        titleTemplate: "%s - Borrowlist 3000",
+        title: "Borrowlist 3000",
         meta: [
             { charset: "utf-8" },
             { name: "viewport", content: "width=device-width, initial-scale=1" },
-            { hid: "description", name: "description", content: "" },
+            { hid: "description", name: "description", content: "Simple application to keep track of who borrowed what stuff" },
             { name: "format-detection", content: "telephone=no" }
         ],
         link: [
