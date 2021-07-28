@@ -93,7 +93,12 @@ export default {
     storybook: {
         decorators: [
             "<v-app><story/></v-app>"
-        ]
+        ],
+        parameters: {
+            actions: {
+                argTypesRegex: "^on.*",
+            }
+        }
     },
 
     // helmet options
