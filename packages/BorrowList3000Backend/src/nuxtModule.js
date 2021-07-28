@@ -1,8 +1,10 @@
 import {sequelize} from './db/models'
-import {nuxtMiddleware} from './api'
+import {apiMiddleware} from './api'
+import { sessionMiddleware } from "./session";
 
 export function nuxtModule() {
-    this.addServerMiddleware({path: "/api", handler: nuxtMiddleware})
+    this.addServerMiddleware(sessionMiddleware)
+    this.addServerMiddleware({path: "/api", handler: apiMiddleware})
 
     this.nuxt.hook("ready", async () => {
         await sequelize.authenticate()

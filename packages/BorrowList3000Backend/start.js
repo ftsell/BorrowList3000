@@ -1,9 +1,11 @@
-import { nuxtMiddleware } from './src'
+import { apiMiddleware } from './src/api/index'
 import express from 'express'
 import { sequelize } from './src/db/models'
+import { sessionMiddleware } from "./src/session";
 
 const app = express()
-app.use('/api', nuxtMiddleware)
+app.use(sessionMiddleware)
+app.use('/api', apiMiddleware)
 
 sequelize.authenticate()
     .then(async () => {
