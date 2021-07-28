@@ -14,11 +14,9 @@
         </v-col>
       </v-row>
 
-      <v-row>
-        <v-col cols="1" class="mr-4">
+      <v-row justify="start" class="d-flex">
+        <v-col>
           <v-btn @click="login" color="primary" outlined>Login</v-btn>
-        </v-col>
-        <v-col cols="1">
           <v-btn @click="register" color="secondary" outlined>Register</v-btn>
         </v-col>
       </v-row>
