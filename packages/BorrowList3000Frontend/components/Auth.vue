@@ -58,7 +58,8 @@ export default {
             password: this.formData.password
           }
         });
-        console.log(result);
+
+        this.$emit("onLoggedIn", result.data.login);
       }
     },
 
@@ -77,7 +78,11 @@ export default {
             password: this.formData.password
           }
         });
-        console.log(result);
+        this.$emit("onRegistered", result.data.register);
+
+        if (result.data.register.success) {
+          await this.login()
+        }
       }
     }
   }
