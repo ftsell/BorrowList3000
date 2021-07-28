@@ -1,4 +1,4 @@
-import Auth from "~/components/Auth";
+import Auth from "~/components/forms/AuthForm";
 
 export default {
     title: "Forms/Auth",
@@ -7,6 +7,7 @@ export default {
 
 const Template = (args, {argTypes}) => ({
     props: Object.keys(argTypes),
+    components: {Auth},
     template: "<Auth v-bind='$props' v-on='$props' />",
 })
 
