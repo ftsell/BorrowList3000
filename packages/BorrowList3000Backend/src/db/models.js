@@ -10,6 +10,7 @@ export function getDbConfig() {
         username: process.env.BL_DB_USERNAME || null,
         password: process.env.BL_DB_PASSWORD || null,
         database: process.env.BL_DB_DATABASE || null,
+        storage: process.env.BL_DB_DATABASE || null,
         dialect: process.env.BL_DB_DIALECT || null,
         logging: process.env.BL_DEBUG === "true" ? console.log : false,
     }

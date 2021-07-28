@@ -8,7 +8,7 @@
     <node-interpreter value="project" />
     <envs>
       <env name="BL_DB_DIALECT" value="sqlite" />
-      <env name="BL_DB_DATABASE" value=":memory:" />
+      <env name="BL_DB_DATABASE" value="$PROJECT_DIR$/db.sqlite" />
       <env name="BL_DB_SYNC" value="true" />
       <env name="BL_DEBUG" value="true" />
       <env name="BL_ALLOW_DB_RESET" value="true" />
