@@ -2,6 +2,8 @@ import {sequelize} from './db/models'
 import {apiMiddleware} from './api'
 import { sessionMiddleware } from "./session";
 
+module.exports.meta = require("../package.json")
+
 export function nuxtModule() {
     this.addServerMiddleware(sessionMiddleware)
     this.addServerMiddleware({path: "/api", handler: apiMiddleware})
