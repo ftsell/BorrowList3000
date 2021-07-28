@@ -3,7 +3,7 @@ import { graphqlHTTP } from 'express-graphql'
 import { graphqlSchema } from 'borrowlist3000common'
 import session from 'express-session'
 import { sessionStore } from '../db/sessions'
-import { register, login, logout, getOwnUser } from './userController'
+import { register, login, logout, getOwnUser, isRequesterLoggedIn } from "./userController";
 import { createBorrower } from './borrowerController'
 import { createBorrowedItem } from "./borrowedItemController";
 import { resetDb } from "./devController";
@@ -28,6 +28,7 @@ router.use(session({
 const root = {
     // queries
     me: getOwnUser,
+    loggedIn: isRequesterLoggedIn,
 
     // mutations
     register,

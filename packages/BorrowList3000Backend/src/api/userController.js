@@ -50,9 +50,13 @@ export async function logout({}, request) {
     }
 }
 
-export async function getOwnUser({}, {session}) {
+export async function getOwnUser(_, {session}) {
     assertLoggedIn(session)
     return await UserRepository.getUserByUsername(session.username)
+}
+
+export function isRequesterLoggedIn(_, {session}) {
+    return !!session.loggedIn
 }
 
 export function assertLoggedIn(session) {

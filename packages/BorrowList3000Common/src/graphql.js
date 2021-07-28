@@ -33,6 +33,7 @@ enum ResultCodes {
 const query = `
 type Query {
     me: User!,
+    loggedIn: Boolean!,
 }
 `
 
