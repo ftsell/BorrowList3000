@@ -78,6 +78,12 @@ export default {
         }
     },
 
+    storybook: {
+        decorators: [
+            "<v-app><story/></v-app>"
+        ]
+    },
+
     // Build Configuration: https://go.nuxtjs.dev/config-build
     build: {}
 };

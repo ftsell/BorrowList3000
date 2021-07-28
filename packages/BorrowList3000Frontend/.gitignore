@@ -74,6 +74,10 @@ dist
 # vuepress build output
 .vuepress/dist
 
+# nuxt-storybook cache
+.nuxt-storybook
+storybook-static
+
 # Serverless directories
 .serverless
 
