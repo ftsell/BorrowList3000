@@ -38,11 +38,16 @@ export default {
 
     // Modules: https://go.nuxtjs.dev/config-modules
     modules: [
+        "nuxt-helmet",
         // https://go.nuxtjs.dev/pwa
         "@nuxtjs/pwa",
         "@nuxtjs/apollo",
         borrowlistBackend
     ],
+
+    render: {
+        csp: true
+    },
 
     // PWA module configuration: https://go.nuxtjs.dev/pwa
     pwa: {
@@ -73,7 +78,7 @@ export default {
     apollo: {
         clientConfigs: {
             default: {
-                httpEndpoint: '/api/graphql',
+                httpEndpoint: "/api/graphql"
             }
         }
     },
@@ -82,6 +87,13 @@ export default {
         decorators: [
             "<v-app><story/></v-app>"
         ]
+    },
+
+    // helmet options
+    // @see https://helmetjs.github.io/docs/
+    helmet: {
+        // use nuxt builtin CSP handling
+        contentSecurityPolicy: false
     },
 
     // Build Configuration: https://go.nuxtjs.dev/config-build
