@@ -16,6 +16,6 @@ module.exports = {
     plugins: [],
     // add your custom rules here
     rules: {
-        "import/no-named-as-default": false
+        "import/no-named-as-default": "off",
     }
 };
