@@ -1,5 +1,6 @@
-import { db } from "borrowlist3000backend";
-
 export default ({app}, inject) => {
-    inject("db", db)
+    if (process.server) {
+        const { db } = require("borrowlist3000backend");
+        inject("db", db)
+    }
 }
