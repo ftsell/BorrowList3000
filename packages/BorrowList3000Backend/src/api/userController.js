@@ -52,7 +52,7 @@ export async function logout({}, request) {
 
 export async function getOwnUser(_, {session}) {
     assertLoggedIn(session)
-    return await UserRepository.getUserByUsername(session.username)
+    return await UserRepository.getUserByUsername(session.username, true)
 }
 
 export function isRequesterLoggedIn(_, {session}) {
