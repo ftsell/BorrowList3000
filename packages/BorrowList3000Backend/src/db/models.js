@@ -1,5 +1,6 @@
 import sequelize_pkg from "sequelize";
 import { compare, genSaltSync, hashSync } from "bcrypt";
+import consola from "consola";
 
 const { DataTypes, Sequelize, Model } = sequelize_pkg;
 
@@ -12,7 +13,7 @@ export function getDbConfig() {
         database: process.env.BL_DB_DATABASE || null,
         storage: process.env.BL_DB_DATABASE || null,
         dialect: process.env.BL_DB_DIALECT || null,
-        logging: process.env.BL_DEBUG === "true" ? console.log : false
+        logging: process.env.BL_DEBUG === "true" ? msg => consola.info(msg.toString()) : false,
     };
 }
 
@@ -20,8 +21,8 @@ export const sequelize = new Sequelize(getDbConfig());
 
 const commonScopes = {
     apiPublic: {
-        attributes: { exclude: ["createdAt", "updatedAt"] }
-    }
+        attributes: { exclude: ["createdAt", "updatedAt"] },
+    },
 };
 
 export class UserModel extends Model {
@@ -30,62 +31,68 @@ export class UserModel extends Model {
     }
 }
 
-UserModel.init({
-    username: {
-        type: DataTypes.CITEXT,
-        primaryKey: true
+UserModel.init(
+    {
+        username: {
+            type: DataTypes.CITEXT,
+            primaryKey: true,
+        },
+        password: {
+            type: DataTypes.STRING(60),
+            allowNull: false,
+            set(value) {
+                this.setDataValue("password", value);
+                this.setDataValue("password", hashSync(value, genSaltSync()));
+            },
+        },
     },
-    password: {
-        type: DataTypes.STRING(60),
-        allowNull: false,
-        set(value) {
-            this.setDataValue("password", value);
-            this.setDataValue("password", hashSync(value, genSaltSync()));
-        }
+    {
+        sequelize,
+        tableName: "Users",
+        scopes: {
+            ...commonScopes,
+            apiPublic: {
+                ...commonScopes.apiPublic,
+                attributes: {
+                    exclude: [
+                        ...commonScopes.apiPublic.attributes.exclude,
+                        "password",
+                    ],
+                },
+            },
+        },
     }
-}, {
-    sequelize,
-    tableName: "Users",
-    scopes: {
-        ...commonScopes,
-        apiPublic: {
-            ...commonScopes.apiPublic,
-            attributes: {
-                exclude: [...commonScopes.apiPublic.attributes.exclude, "password"]
-            }
-        }
-    }
-});
+);
 
-export class BorrowerModel extends Model {
-}
+export class BorrowerModel extends Model {}
 
-BorrowerModel.init({
-    id: {
-        type: DataTypes.UUID,
-        defaultValue: Sequelize.UUIDV4,
-        primaryKey: true
+BorrowerModel.init(
+    {
+        id: {
+            type: DataTypes.UUID,
+            defaultValue: Sequelize.UUIDV4,
+            primaryKey: true,
+        },
+        name: {
+            type: DataTypes.CITEXT,
+            allowNull: false,
+        },
     },
-    name: {
-        type: DataTypes.CITEXT,
-        allowNull: false
+    {
+        sequelize,
+        tableName: "Borrowers",
+        indexes: [{ unique: true, fields: ["name", "lender"] }],
+        scopes: {
+            ...commonScopes,
+        },
     }
-}, {
-    sequelize,
-    tableName: "Borrowers",
-    indexes: [
-        { unique: true, fields: ["name", "lender"] }
-    ],
-    scopes: {
-        ...commonScopes
-    }
-});
+);
 UserModel.hasMany(BorrowerModel, {
     onUpdate: "CASCADE",
     onDelete: "CASCADE",
     foreignKey: {
         allowNull: false,
-        name: "lender"
+        name: "lender",
     },
     as: "borrowers",
 });
@@ -94,55 +101,57 @@ BorrowerModel.belongsTo(UserModel, {
     onUpdate: "CASCADE",
     foreignKey: {
         allowNull: false,
-        name: "lender"
-    }
+        name: "lender",
+    },
 });
 
-export class BorrowedItemModel extends Model {
-}
+export class BorrowedItemModel extends Model {}
 
-BorrowedItemModel.init({
-    id: {
-        type: DataTypes.UUID,
-        defaultValue: Sequelize.UUIDV4,
-        primaryKey: true
+BorrowedItemModel.init(
+    {
+        id: {
+            type: DataTypes.UUID,
+            defaultValue: Sequelize.UUIDV4,
+            primaryKey: true,
+        },
+        specifier: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        description: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        dateBorrowed: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            validate: {
+                isDate: true,
+            },
+        },
     },
-    specifier: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    description: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    dateBorrowed: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        validate: {
-            isDate: true
-        }
+    {
+        sequelize,
+        tableName: "BorrowedItems",
+        scopes: {
+            ...commonScopes,
+        },
     }
-}, {
-    sequelize,
-    tableName: "BorrowedItems",
-    scopes: {
-        ...commonScopes,
-    }
-});
+);
 BorrowerModel.hasMany(BorrowedItemModel, {
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
     foreignKey: {
         allowNull: false,
-        name: "borrower"
+        name: "borrower",
     },
-    as: "borrowedItems"
+    as: "borrowedItems",
 });
 BorrowedItemModel.belongsTo(BorrowerModel, {
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
     foreignKey: {
         allowNull: false,
-        name: "borrower"
-    }
+        name: "borrower",
+    },
 });
