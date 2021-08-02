@@ -1,5 +1,5 @@
 <template>
-  <v-row align="center" class="mx-16">
+  <v-row align="center" class="mx-16" v-if="user != null">
     <v-col cols="4">
       <create-borrower-form @onBorrowerCreated="$fetch" />
     </v-col>
