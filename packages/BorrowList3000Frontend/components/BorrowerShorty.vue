@@ -17,7 +17,7 @@
 
     <v-card-actions>
       <v-spacer />
-      <nuxt-link :to="`/app/${borrower.name}`">
+      <nuxt-link :to="{query: {borrower: borrower.name}}">
         <v-btn icon>
           <v-icon>mdi-open-in-app</v-icon>
         </v-btn>
@@ -39,7 +39,7 @@ export default {
   methods: {
     onDelete() {
       // TODO Implement borrower deletion
-      throw new Error("not yet implemented")
+      throw new Error("not yet implemented");
     }
   }
 };
