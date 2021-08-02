@@ -17,9 +17,9 @@
       max-width="60vw"
     >
       <v-card v-if="showBorrower != null">
-        <v-card-title>{{ showBorrower.name }}</v-card-title>
+        <v-card-title class="text-h2 font-weight-light">{{ showBorrower.name }}</v-card-title>
         <v-card-text>
-          Test
+          <borrower-details :borrower="showBorrower" />
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -31,10 +31,11 @@ import { omit } from "lodash";
 import gql from "graphql-tag";
 import BorrowerShorty from "~/components/BorrowerShorty";
 import CreateBorrowerForm from "~/components/forms/CreateBorrowerForm";
+import BorrowerDetails from "~/components/BorrowerDetails";
 
 export default {
   name: "AppIndex",
-  components: { CreateBorrowerForm, BorrowerShorty },
+  components: { BorrowerDetails, CreateBorrowerForm, BorrowerShorty },
   middleware: ["loginRequired"],
   data: () => ({
     user: null
