@@ -35,7 +35,10 @@ import BorrowerProfilePicture from "~/components/BorrowerProfilePicture";
 export default {
   name: "BorrowerShorty",
   components: { BorrowerProfilePicture },
-  props: ["borrower"],
+  props: {
+    borrower: Object,
+    default: null
+  },
   methods: {
     onDelete() {
       // TODO Implement borrower deletion

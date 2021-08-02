@@ -17,6 +17,9 @@
 <script>
 export default {
   name: "BorrowedItemShorty",
-  props: ["item"]
+  props: {
+    item: Object,
+    default: null
+  }
 };
 </script>
