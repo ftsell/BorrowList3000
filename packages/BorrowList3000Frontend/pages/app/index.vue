@@ -1,11 +1,11 @@
 <template>
   <div v-if="user != null">
     <!-- Normal page content -->
-    <v-row align="center" class="mx-16">
-      <v-col cols="4">
+    <v-row class="mx-16">
+      <v-col cols="12">
         <create-borrower-form @onBorrowerCreated="$fetch" />
       </v-col>
-      <v-col v-for="borrower of user.borrowers" :key="borrower.name" cols="4">
+      <v-col v-for="borrower of user.borrowers" :key="borrower.name" cols="12">
         <borrower-shorty :borrower="borrower" />
       </v-col>
     </v-row>
