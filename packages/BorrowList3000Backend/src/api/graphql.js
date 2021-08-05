@@ -103,8 +103,6 @@ type Mutation {
 
 /**
  * Complete GraphQL schema definition
- *
- * @type {GraphQLSchema}
  */
 export const graphqlSchema = buildSchema(`
     ${types}

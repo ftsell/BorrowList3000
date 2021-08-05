@@ -1,1 +1,0 @@
-export { graphqlSchema } from "./graphql"
