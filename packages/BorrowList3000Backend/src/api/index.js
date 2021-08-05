@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { graphqlHTTP } from 'express-graphql'
-import { graphqlSchema } from 'borrowlist3000common'
+import { graphqlSchema } from './graphql'
 import { register, login, logout, getOwnUser, isRequesterLoggedIn } from "./userController";
 import { createBorrower } from './borrowerController'
 import { createBorrowedItem } from "./borrowedItemController";
