@@ -41,6 +41,9 @@ export default {
             createBorrower(name:$name) {
               success
               message
+              borrower {
+                name
+              }
             }
           }`,
           variables: {
@@ -52,6 +55,10 @@ export default {
           this.$refs.form.reset()
         }
 
+        this.$store.commit("addBorrower", {
+          ...result.data.createBorrower.borrower,
+          borrowedItems: []
+        })
         this.$emit("onBorrowerCreated", result.data.createBorrower)
       }
     }

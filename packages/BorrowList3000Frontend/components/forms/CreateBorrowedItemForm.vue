@@ -65,6 +65,11 @@ export default {
             createBorrowedItem(specifier:$specifier,borrower:$borrower,dateBorrowed:$dateBorrowed,description:$description) {
               success
               message
+              borrowedItem {
+                specifier
+                description
+                dateBorrowed
+              }
             }
           }`,
           variables: {
@@ -79,8 +84,11 @@ export default {
           this.$refs.form.reset();
         }
 
-        console.log(result.data.createBorrowedItem);
 
+        this.$store.commit("addBorrowedItem", {
+          borrowerName: this.borrowerName,
+          newItem: result.data.createBorrowedItem.borrowedItem
+        })
         this.$emit("onItemCreated", result.data.createBorrowedItem);
       }
     }

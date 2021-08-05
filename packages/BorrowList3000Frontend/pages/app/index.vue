@@ -1,25 +1,25 @@
 <template>
-  <div v-if="user != null">
+  <div v-if='user != null'>
     <!-- Normal page content -->
-    <v-row class="mx-16">
-      <v-col cols="12">
-        <create-borrower-form @onBorrowerCreated="$fetch" />
+    <v-row class='mx-16'>
+      <v-col cols='12'>
+        <create-borrower-form />
       </v-col>
-      <v-col v-for="borrower of user.borrowers" :key="borrower.name" cols="12">
-        <borrower-shorty :borrower="borrower" />
+      <v-col v-for='borrower of user.borrowers' :key='borrower.name' cols='12'>
+        <borrower-shorty :borrower='borrower' />
       </v-col>
     </v-row>
 
     <!-- Show Borrower dialog -->
     <v-dialog
-      :value="showBorrower != null"
-      @input="(value) => showBorrower = value"
-      max-width="60vw"
+      :value='showBorrower != null'
+      @input='(value) => showBorrower = value'
+      max-width='60vw'
     >
-      <v-card v-if="showBorrower != null">
-        <v-card-title class="text-h2 font-weight-light">{{ showBorrower.name }}</v-card-title>
+      <v-card v-if='showBorrower != null'>
+        <v-card-title class='text-h2 font-weight-light'>{{ showBorrower.name }}</v-card-title>
         <v-card-text>
-          <borrower-details :borrower="showBorrower" />
+          <borrower-details :borrower='showBorrower' />
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -27,40 +27,43 @@
 </template>
 
 <script>
-import { omit } from "lodash";
-import gql from "graphql-tag";
-import BorrowerShorty from "~/components/BorrowerShorty";
-import CreateBorrowerForm from "~/components/forms/CreateBorrowerForm";
-import BorrowerDetails from "~/components/BorrowerDetails";
+import { omit } from 'lodash'
+import gql from 'graphql-tag'
+import BorrowerShorty from '~/components/BorrowerShorty'
+import CreateBorrowerForm from '~/components/forms/CreateBorrowerForm'
+import BorrowerDetails from '~/components/BorrowerDetails'
 
 export default {
-  name: "AppIndex",
+  name: 'AppIndex',
   components: { BorrowerDetails, CreateBorrowerForm, BorrowerShorty },
-  middleware: ["loginRequired"],
-  data: () => ({
-    user: null
-  }),
+  middleware: ['loginRequired'],
   computed: {
+    user: {
+      get() {
+        return this.$store.state.user
+      },
+      set(user) {
+        this.$store.commit('updateUser', user)
+      }
+    },
     showBorrower: {
       get() {
         if (this.$route.query.borrower != null || this.user != null) {
-          return this.user.borrowers.find(b => b.name === this.$route.query.borrower);
+          return this.user.borrowers.find(b => b.name === this.$route.query.borrower)
         }
-        return null;
+        return null
       },
       set(value) {
         if (!value) {
           this.$router.push({
-            query: omit(this.$route.query, ["borrower"])
-          });
+            query: omit(this.$route.query, ['borrower'])
+          })
         }
       }
     }
   },
   async fetch() {
-    if (process.server) {
-      this.user = (await this.$nuxt.context.$db.users.getUserByUsername(this.$nuxt.context.req.session.username, true)).toJSON();
-    } else {
+    if (!process.server) {
       this.user = (await this.$apollo.query({
         query: gql`{
           me {
@@ -70,13 +73,14 @@ export default {
               borrowedItems {
                 specifier
                 description
+                dateBorrowed
               }
             }
           }
         }`,
-        fetchPolicy: "no-cache"
-      })).data.me;
+        fetchPolicy: 'no-cache'
+      })).data.me
     }
   }
-};
+}
 </script>
