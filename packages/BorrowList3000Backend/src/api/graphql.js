@@ -37,7 +37,7 @@ type Query {
 }
 `
 
-const mutations = `
+const mutation = `
 interface MutationResponse {
     success: Boolean!,
     message: String!,
@@ -108,5 +108,5 @@ export const graphqlSchema = buildSchema(`
     ${types}
     ${errors}
     ${query}
-    ${mutations}
+    ${mutation}
 `)

@@ -10,6 +10,7 @@ const router = Router()
 export const apiMiddleware = router
 
 // the root provides a resolver function for each API endpoint
+// noinspection JSUnusedGlobalSymbols
 const root = {
     // queries
     me: getOwnUser,
@@ -22,8 +23,8 @@ const root = {
     createBorrower,
     createBorrowedItem,
 
-    // dev onl operations
-    resetDb: resetDb,
+    // dev only operations
+    resetDb,
 }
 
 router.use('/graphql', graphqlHTTP({
