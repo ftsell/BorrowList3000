@@ -3,7 +3,7 @@
     <!-- Normal page content -->
     <v-row class='mx-16'>
       <v-col cols='12'>
-        <create-borrower-form />
+        <smart-form />
       </v-col>
       <v-col v-for='borrower of user.borrowers' :key='borrower.name' cols='12'>
         <borrower-shorty :borrower='borrower' />
@@ -30,12 +30,12 @@
 import { omit } from 'lodash'
 import gql from 'graphql-tag'
 import BorrowerShorty from '~/components/BorrowerShorty'
-import CreateBorrowerForm from '~/components/forms/CreateBorrowerForm'
 import BorrowerDetails from '~/components/BorrowerDetails'
+import SmartForm from '~/components/forms/SmartForm'
 
 export default {
   name: 'AppIndex',
-  components: { BorrowerDetails, CreateBorrowerForm, BorrowerShorty },
+  components: { SmartForm, BorrowerDetails, BorrowerShorty },
   middleware: ['loginRequired'],
   computed: {
     user: {

@@ -12,7 +12,7 @@ export const mutations = {
         assert(state.user != null);
         state.user.borrowers.push(newBorrower);
     },
-    addBorrowedItem(state, {borrowerName, newItem}) {
+    addBorrowedItem(state, { borrowerName, newItem }) {
         assert(state.user != null);
 
         const borrower = state.user.borrowers.find(
@@ -34,4 +34,13 @@ export const actions = {
             commit("updateUser", user.toJSON());
         }
     },
+};
+
+export const getters = {
+    getBorrower: (state) => (borrowerName) => {
+        if (state.user != null) {
+            return state.user.borrowers.find(b => b.name === borrowerName);
+        }
+        return null;
+    }
 };
