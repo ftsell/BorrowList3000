@@ -1,16 +1,14 @@
 <template>
   <v-row align="center" justify="center">
-    <v-col cols="12" md="6" sm="8">
-      <auth />
-    </v-col>
+    <p>You will be redirected…</p>
   </v-row>
 </template>
 
 <script>
-import Auth from "~/components/forms/AuthForm";
-
 export default {
   name: "Index",
-  components: {Auth}
+  mounted() {
+    this.$router.replace({path: "/app"})
+  }
 };
 </script>
