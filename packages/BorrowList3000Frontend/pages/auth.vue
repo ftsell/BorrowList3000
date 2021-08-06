@@ -1,6 +1,6 @@
 <template>
   <v-row align="center" justify="center">
-    <v-col cols="6" offset="2">
+    <v-col cols="12">
       <v-card>
         <auth-form @onLoggedIn="onLoggedIn" />
 
