@@ -6,7 +6,8 @@ export default {
         debug: process.env.BL_DEBUG === "true" || false,
     },
     privateRuntimeConfig: {
-        db: getDbConfig()
+        db: getDbConfig(),
+        sessionSecret: process.env.BL_SESSION_SECRET
     },
 
     // Global page headers: https://go.nuxtjs.dev/config-head
