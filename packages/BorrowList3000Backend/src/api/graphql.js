@@ -27,6 +27,7 @@ enum ResultCodes {
     ERR_LOGIN_FAILED
     ERR_LOGIN_REQUIRED
     ERR_BORROWER_ALREADY_EXISTS
+    ERR_BORROWER_DOES_NOT_EXIST
 }
 `
 
@@ -85,6 +86,12 @@ type CreateBorrowedItemMutationResponse implements MutationResponse {
     borrowedItem: BorrowedItem
 }
 
+type DeleteBorrowerMutationResponse implements MutationResponse {
+    success: Boolean!,
+    message: String!,
+    code: ResultCodes!
+}
+
 type Mutation {
     # user management
     register(username: String!, password: String!): RegisterMutationResponse
@@ -95,6 +102,7 @@ type Mutation {
     # standard object interactions
     createBorrower(name: String!): CreateBorrowerMutationResponse
     createBorrowedItem(borrower: String!, specifier: String!, description: String, dateBorrowed: Date!): CreateBorrowedItemMutationResponse
+    deleteBorrower(name: String!): DeleteBorrowerMutationResponse
 
     # dev only operations
     resetDb: Boolean
