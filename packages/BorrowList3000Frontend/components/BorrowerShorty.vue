@@ -10,9 +10,11 @@
 
         <div class='flex-grow-1'>
           <span v-if='borrower.borrowedItems.length === 0' class='font-italic'>Nothing borrowed</span>
-          <div v-else>
-            <borrowed-item-shorty v-for='item of borrower.borrowedItems' :key='item.id' :item='item' />
-          </div>
+          <v-row v-else>
+            <v-col v-for='item of borrower.borrowedItems' :key='item.id' cols='4'>
+              <borrowed-item-shorty :item='item' />
+            </v-col>
+          </v-row>
         </div>
 
         <v-btn icon>
