@@ -2,6 +2,8 @@
 
 <i>Simple application to keep track of who borrowed what stuff</i>
 
+![Screenshot](./.screenshot.png "Screenshot")
+
 ## Development Setup
 
 The main entry point of the project is the `BorrowList300Frontend` package found in the
