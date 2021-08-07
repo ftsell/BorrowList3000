@@ -2,7 +2,7 @@
   <v-form ref='form' lazy-validation @submit.prevent='onFormSubmit'>
     <v-container class='d-flex flex-row align-baseline'>
       <p>Lend</p>
-      <v-text-field v-model='formData.itemSpecifier' class='mx-4' label='item' :rules='formRules.itemSpecifier'
+      <v-text-field v-model='formData.item' class='mx-4' label='item' :rules='formRules.itemSpecifier'
                     outlined />
       <p>to</p>
       <v-autocomplete v-model='formData.borrowerName' class='mx-4' label='person' :rules='formRules.borrowerName'
@@ -15,10 +15,12 @@
 <script>
 import gql from 'graphql-tag'
 
+const ITEM_WITH_DESCRIPTION_REGEX = /^(.*)+?( \((.+)\))$/
+
 const GRAPHQL_QUERIES = {
   createBorrowedItem: gql`
-    mutation ($borrowerName:String!, $itemSpecifier:String!) {
-        createBorrowedItem(borrower: $borrowerName, specifier: $itemSpecifier, dateBorrowed: "2021/01/01") {
+    mutation ($borrowerName:String!, $itemSpecifier:String!, $itemDescription: String) {
+        createBorrowedItem(borrower: $borrowerName, specifier: $itemSpecifier, description: $itemDescription, dateBorrowed: "2021/01/01") {
             success
             message
             borrowedItem {
@@ -29,7 +31,7 @@ const GRAPHQL_QUERIES = {
         }
     }`,
   createBorrowerAndBorrowedItem: gql`
-    mutation ($borrowerName:String!, $itemSpecifier:String!) {
+    mutation ($borrowerName:String!, $itemSpecifier:String!, $itemDescription: String) {
         createBorrower(name: $borrowerName) {
             success
             message
@@ -37,7 +39,7 @@ const GRAPHQL_QUERIES = {
                 name
             }
         }
-        createBorrowedItem(borrower: $borrowerName, specifier: $itemSpecifier, dateBorrowed: "2021/01/01") {
+        createBorrowedItem(borrower: $borrowerName, specifier: $itemSpecifier, description: $itemDescription, dateBorrowed: "2021/01/01") {
             success
             message
             borrowedItem {
@@ -54,7 +56,7 @@ export default {
   data: () => ({
     formData: {
       borrowerName: '',
-      itemSpecifier: ''
+      item: ''
     },
     formRules: {},
     borrowerSearchInput: ''
@@ -65,6 +67,22 @@ export default {
         return [...this.$store.getters.borrowerNames, this.borrowerSearchInput]
       } else {
         return this.$store.getters.borrowerNames
+      }
+    },
+    itemSpecifier() {
+      const match = ITEM_WITH_DESCRIPTION_REGEX.exec(this.formData.item)
+      if (match) {
+        return match[1]
+      } else {
+        return this.formData.item
+      }
+    },
+    itemDescription() {
+      const match = ITEM_WITH_DESCRIPTION_REGEX.exec(this.formData.item)
+      if (match) {
+        return match[3]
+      } else {
+        return null
       }
     }
   },
@@ -96,7 +114,11 @@ export default {
       if (this.$store.getters.getBorrower(this.formData.borrowerName) == null) {
         result = await this.$apollo.mutate({
           mutation: GRAPHQL_QUERIES.createBorrowerAndBorrowedItem,
-          variables: this.formData
+          variables: {
+            borrowerName: this.formData.borrowerName,
+            itemSpecifier: this.itemSpecifier,
+            itemDescription: this.itemDescription
+          }
         })
 
         if (result.data.createBorrower.success === true) {
@@ -108,7 +130,11 @@ export default {
       } else {
         result = await this.$apollo.mutate({
           mutation: GRAPHQL_QUERIES.createBorrowedItem,
-          variables: this.formData
+          variables: {
+            borrowerName: this.formData.borrowerName,
+            itemSpecifier: this.itemSpecifier,
+            itemDescription: this.itemDescription
+          }
         })
       }
 
@@ -118,7 +144,7 @@ export default {
           newItem: result.data.createBorrowedItem.borrowedItem
         })
       }
-    }
+    },
   }
 }
 </script>
