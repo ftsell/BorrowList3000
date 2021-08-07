@@ -1,5 +1,5 @@
 <template>
-  <v-form ref='form' v-model='isValid' @submit='login'>
+  <v-form ref='form' v-model='isValid' @submit.prevent='login'>
     <v-container>
       <v-row>
         <v-col>
@@ -16,8 +16,8 @@
 
       <v-row justify='start' class='d-flex'>
         <v-col>
-          <v-btn @click='login' color='primary' outlined>Login</v-btn>
-          <v-btn @click='register' color='secondary' outlined>Register</v-btn>
+          <v-btn color='primary' outlined type='submit' @click='login' >Login</v-btn>
+          <v-btn color='secondary' outlined type='submit' @click='register'>Register</v-btn>
         </v-col>
       </v-row>
     </v-container>
