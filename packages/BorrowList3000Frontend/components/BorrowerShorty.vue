@@ -1,32 +1,32 @@
 <template>
   <v-card shaped outlined>
     <v-card-text>
-      <div class='d-flex align-center'>
+      <div class='d-flex align-start flex-row'>
         <borrower-profile-picture class='mr-4' />
 
-        <div class='mr-8'>
+        <div class='mr-8 mt-1'>
           <span class='text-capitalize text-h3 font-weight-light'>{{ borrower.name }}</span>
         </div>
 
-        <div>
-          <span v-if='borrower.borrowedItems.length > 0' class='font-italic'>{{ borrower.borrowedItems.length }} items borrowed</span>
-          <span v-else class='font-italic'>Nothing borrowed</span>
+        <div class='flex-grow-1'>
+          <span v-if='borrower.borrowedItems.length === 0' class='font-italic'>Nothing borrowed</span>
+          <div v-else>
+            <borrowed-item-shorty v-for='item of borrower.borrowedItems' :key='item.id' :item='item' />
+          </div>
         </div>
+
+        <v-btn icon>
+          <v-icon @click='onDelete'>mdi-delete</v-icon>
+        </v-btn>
       </div>
     </v-card-text>
-
-    <v-card-actions>
-      <v-spacer />
-      <v-btn icon>
-        <v-icon @click='onDelete'>mdi-delete</v-icon>
-      </v-btn>
-    </v-card-actions>
   </v-card>
 </template>
 
 <script>
 import gql from 'graphql-tag'
 import BorrowerProfilePicture from '~/components/BorrowerProfilePicture'
+import BorrowedItemShorty from '~/components/BorrowedItemShorty'
 
 const GRAPHQL_QUERIES = {
   deleteBorrower: gql`mutation($name: String!) {
@@ -39,7 +39,7 @@ const GRAPHQL_QUERIES = {
 
 export default {
   name: 'BorrowerShorty',
-  components: { BorrowerProfilePicture },
+  components: { BorrowedItemShorty, BorrowerProfilePicture },
   props: {
     borrower: {
       type: Object,
