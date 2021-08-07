@@ -2,6 +2,7 @@ import assert from "assert";
 
 export const state = () => ({
     user: null,
+    alerts: [],
 });
 
 function sortUsers(state) {
@@ -50,6 +51,12 @@ export const mutations = {
         }
         sortUsers(state);
     },
+    showAlert(state, alert) {
+        state.alerts.push(alert);
+    },
+    hideAlert(state, alert) {
+        state.alerts = state.alerts.filter((a) => a !== alert);
+    },
 };
 
 export const actions = {
@@ -62,6 +69,10 @@ export const actions = {
             commit("updateUser", user.toJSON());
         }
     },
+    showAlertWithTimeout({ commit }, {alert, timeout}) {
+        commit("showAlert", alert)
+        setTimeout(() => commit("hideAlert", alert), timeout)
+    }
 };
 
 export const getters = {
