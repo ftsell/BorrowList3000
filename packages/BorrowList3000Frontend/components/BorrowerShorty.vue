@@ -17,9 +17,14 @@
           </v-row>
         </div>
 
-        <v-btn icon>
-          <v-icon @click='onDelete'>mdi-delete</v-icon>
-        </v-btn>
+        <v-tooltip bottom>
+          <span>Delete</span>
+          <template #activator='{ on }'>
+            <v-btn icon>
+              <v-icon v-on='on' @click='onDelete'>mdi-delete</v-icon>
+            </v-btn>
+          </template>
+        </v-tooltip>
       </div>
     </v-card-text>
   </v-card>
