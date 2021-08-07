@@ -1,23 +1,23 @@
 <template>
-  <v-form ref="form" v-model="isValid" @submit="login">
+  <v-form ref='form' v-model='isValid' @submit='login'>
     <v-container>
       <v-row>
         <v-col>
-          <v-text-field v-model="formData.username" label="Username" required :rules="usernameRules" />
+          <v-text-field v-model='formData.username' label='Username' required :rules='usernameRules' />
         </v-col>
       </v-row>
 
       <v-row>
         <v-col>
-          <v-text-field v-model="formData.password" label="Password" type="password" required
-                        :rules="passwordRules" />
+          <v-text-field v-model='formData.password' label='Password' type='password' required
+                        :rules='passwordRules' />
         </v-col>
       </v-row>
 
-      <v-row justify="start" class="d-flex">
+      <v-row justify='start' class='d-flex'>
         <v-col>
-          <v-btn @click="login" color="primary" outlined>Login</v-btn>
-          <v-btn @click="register" color="secondary" outlined>Register</v-btn>
+          <v-btn @click='login' color='primary' outlined>Login</v-btn>
+          <v-btn @click='register' color='secondary' outlined>Register</v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -25,26 +25,26 @@
 </template>
 
 <script>
-import gql from "graphql-tag";
+import gql from 'graphql-tag'
 
 export default {
-  name: "AuthForm",
+  name: 'AuthForm',
   data: () => ({
     isValid: true,
     formData: {
-      username: "",
-      password: ""
+      username: '',
+      password: ''
     },
     usernameRules: [
-      v => !!v || "Username is required"
+      v => !!v || 'Username is required'
     ],
     passwordRules: [
-      v => !!v || "Password is required"
+      v => !!v || 'Password is required'
     ]
   }),
   methods: {
     async login() {
-      this.$refs.form.validate();
+      this.$refs.form.validate()
       if (this.isValid) {
         const result = await this.$apollo.mutate({
           mutation: gql`mutation ($username: String!, $password: String!) {
@@ -57,14 +57,22 @@ export default {
             username: this.formData.username,
             password: this.formData.password
           }
-        });
+        })
 
-        this.$emit("onLoggedIn", result.data.login);
+        if (result.data.login.success === false) {
+          this.$store.commit('showAlert', {
+            type: 'error',
+            message: result.data.login.message
+          })
+        } else {
+          this.$store.commit("clearUserSpecificData")
+          this.$emit('onLoggedIn', result.data.login)
+        }
       }
     },
 
     async register() {
-      this.$refs.form.validate();
+      this.$refs.form.validate()
       if (this.isValid) {
         const result = await this.$apollo.mutate({
           mutation: gql`mutation ($username: String!, $password: String!) {
@@ -77,14 +85,19 @@ export default {
             username: this.formData.username,
             password: this.formData.password
           }
-        });
-        this.$emit("onRegistered", result.data.register);
+        })
 
-        if (result.data.register.success) {
-          await this.login();
+        if (result.data.register.success === false) {
+          this.$store.commit('showAlert', {
+            type: 'error',
+            message: result.data.register.message
+          })
+        } else {
+          this.$emit('onRegistered', result.data.register)
+          await this.login()
         }
       }
     }
   }
-};
+}
 </script>

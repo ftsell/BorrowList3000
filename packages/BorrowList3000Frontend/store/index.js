@@ -12,6 +12,9 @@ function sortUsers(state) {
 }
 
 export const mutations = {
+    clearUserSpecificData(state) {
+      state.user = null
+    },
     updateUser(state, newUser) {
         state.user = newUser;
         sortUsers(state);
