@@ -15,7 +15,7 @@
 <script>
 import gql from 'graphql-tag'
 
-const ITEM_WITH_DESCRIPTION_REGEX = /^(.*)+?( \((.+)\))$/
+const DESCRIPTION_REGEX = /\((.+)\)$/
 
 const GRAPHQL_QUERIES = {
   createBorrowedItem: gql`
@@ -72,17 +72,17 @@ export default {
       }
     },
     itemSpecifier() {
-      const match = ITEM_WITH_DESCRIPTION_REGEX.exec(this.formData.item)
+      const match = DESCRIPTION_REGEX.exec(this.formData.item)
       if (match) {
-        return match[1]
+        return this.formData.item.replace(match[0], "").trim()
       } else {
-        return this.formData.item
+        return this.formData.item.trim()
       }
     },
     itemDescription() {
-      const match = ITEM_WITH_DESCRIPTION_REGEX.exec(this.formData.item)
+      const match = DESCRIPTION_REGEX.exec(this.formData.item)
       if (match) {
-        return match[3]
+        return match[1].trim()
       } else {
         return null
       }
