@@ -5,24 +5,34 @@ export const state = () => ({
     alerts: [],
 });
 
-function sortUsers(state) {
+function sortBorrowers(state) {
     state.user.borrowers = state.user.borrowers.sort(
         (a, b) => b.borrowedItems.length - a.borrowedItems.length
     );
 }
 
+function sortBorrowedItems(state) {
+    for (const borrower of state.user.borrowers) {
+        borrower.borrowedItems = borrower.borrowedItems.sort((a, b) =>
+            a.specifier.localeCompare(b.specifier)
+        );
+    }
+}
+
 export const mutations = {
     clearUserSpecificData(state) {
-      state.user = null
+        state.user = null;
     },
     updateUser(state, newUser) {
         state.user = newUser;
-        sortUsers(state);
+        sortBorrowers(state);
+        sortBorrowedItems(state);
     },
     addBorrower(state, newBorrower) {
         assert(state.user != null);
         state.user.borrowers.push(newBorrower);
-        sortUsers(state);
+        sortBorrowers(state);
+        sortBorrowedItems(state);
     },
     deleteBorrower(state, borrowerName) {
         assert(state.user != null);
@@ -43,7 +53,8 @@ export const mutations = {
         assert(borrower != null);
 
         borrower.borrowedItems.push(newItem);
-        sortUsers(state);
+        sortBorrowers(state);
+        sortBorrowedItems(state);
     },
     removeBorrowedItem(state, { id }) {
         assert(state.user != null);
@@ -52,7 +63,7 @@ export const mutations = {
                 (item) => item.id !== id
             );
         }
-        sortUsers(state);
+        sortBorrowers(state);
     },
     showAlert(state, alert) {
         state.alerts.push(alert);
@@ -72,10 +83,10 @@ export const actions = {
             commit("updateUser", user.toJSON());
         }
     },
-    showAlertWithTimeout({ commit }, {alert, timeout}) {
-        commit("showAlert", alert)
-        setTimeout(() => commit("hideAlert", alert), timeout)
-    }
+    showAlertWithTimeout({ commit }, { alert, timeout }) {
+        commit("showAlert", alert);
+        setTimeout(() => commit("hideAlert", alert), timeout);
+    },
 };
 
 export const getters = {
