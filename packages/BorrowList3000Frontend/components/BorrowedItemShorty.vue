@@ -2,9 +2,14 @@
   <div class='d-flex flex-row'>
     <!-- Actions -->
     <div class='d-flex flex-column align-start mr-2'>
-      <v-btn @click='onReturnClicked' icon>
-        <v-icon>mdi-keyboard-return</v-icon>
-      </v-btn>
+      <v-tooltip bottom>
+        <span>Mark as returned</span>
+        <template #activator='{ on }'>
+          <v-btn icon v-on='on' @click='onReturnClicked'>
+            <v-icon>mdi-keyboard-return</v-icon>
+          </v-btn>
+        </template>
+      </v-tooltip>
     </div>
 
     <!-- Data display -->
