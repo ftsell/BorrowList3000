@@ -8,21 +8,32 @@
     </div>
 
     <!-- Data display -->
-    <div class="d-flex flex-column align-start">
+    <div class='d-flex flex-column align-start'>
       <div>
-        <span class="text-h5 font-weight-light">{{ item.specifier }}</span>
+        <span class='text-h5 font-weight-light'>{{ item.specifier }}</span>
       </div>
 
-      <div v-if="item.description != null">
-        <span class="font-italic">{{ item.description }}</span>
+      <div v-if='item.description != null'>
+        <span class='font-italic'>{{ item.description }}</span>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import gql from 'graphql-tag'
+
+const GRAPHQL_QUERIES = {
+  returnItem: gql`mutation ($itemId: String!) {
+        returnBorrowedItem(id: $itemId) {
+            message
+            success
+        }
+    }`
+}
+
 export default {
-  name: "BorrowedItemShorty",
+  name: 'BorrowedItemShorty',
   props: {
     item: {
       type: Object,
@@ -30,9 +41,18 @@ export default {
     }
   },
   methods: {
-    onReturnClicked() {
-      throw new Error("not yet implemented")
+    async onReturnClicked() {
+      const result = await this.$apollo.mutate({
+        mutation: GRAPHQL_QUERIES.returnItem,
+        variables: {
+          itemId: this.item.id
+        }
+      })
+
+      if (result.data.returnBorrowedItem.success === true) {
+        this.$store.commit('removeBorrowedItem', {id: this.item.id})
+      }
     }
   }
-};
+}
 </script>

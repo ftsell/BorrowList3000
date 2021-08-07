@@ -40,6 +40,7 @@ export default {
             borrowers {
               name
               borrowedItems {
+                id
                 specifier
                 description
                 dateBorrowed

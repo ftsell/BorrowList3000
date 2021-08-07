@@ -24,6 +24,7 @@ const GRAPHQL_QUERIES = {
             success
             message
             borrowedItem {
+                id
                 specifier
                 description
                 dateBorrowed
@@ -43,6 +44,7 @@ const GRAPHQL_QUERIES = {
             success
             message
             borrowedItem {
+                id
                 specifier
                 description
                 dateBorrowed
