@@ -2,11 +2,11 @@
   <v-form ref='form' lazy-validation @submit.prevent='onFormSubmit'>
     <v-container class='d-flex flex-row align-baseline'>
       <p>Lend</p>
-      <v-text-field class='mx-4' v-model='formData.itemSpecifier' label='item' :rules='formRules.itemSpecifier'
+      <v-text-field v-model='formData.itemSpecifier' class='mx-4' label='item' :rules='formRules.itemSpecifier'
                     outlined />
       <p>to</p>
-      <v-text-field class='mx-4' v-model='formData.borrowerName' label='person' :rules='formRules.borrowerName'
-                    outlined />
+      <v-autocomplete v-model='formData.borrowerName' class='mx-4' label='person' :rules='formRules.borrowerName'
+                      :items='autocompleteItems' :search-input.sync='borrowerSearchInput' outlined hide-no-data />
       <v-btn outlined type='submit'>Submit</v-btn>
     </v-container>
   </v-form>
@@ -56,8 +56,18 @@ export default {
       borrowerName: '',
       itemSpecifier: ''
     },
-    formRules: {}
+    formRules: {},
+    borrowerSearchInput: ''
   }),
+  computed: {
+    autocompleteItems() {
+      if (this.borrowerSearchInput) {
+        return [...this.$store.getters.borrowerNames, this.borrowerSearchInput]
+      } else {
+        return this.$store.getters.borrowerNames
+      }
+    }
+  },
   methods: {
     onFormSubmit() {
       this.formRules = {
@@ -90,7 +100,7 @@ export default {
         })
 
         if (result.data.createBorrower.success === true) {
-          this.$store.commit("addBorrower", {
+          this.$store.commit('addBorrower', {
             ...result.data.createBorrower.borrower,
             borrowedItems: []
           })
@@ -103,7 +113,7 @@ export default {
       }
 
       if (result.data.createBorrowedItem.success === true) {
-        this.$store.commit("addBorrowedItem", {
+        this.$store.commit('addBorrowedItem', {
           borrowerName: this.formData.borrowerName,
           newItem: result.data.createBorrowedItem.borrowedItem
         })

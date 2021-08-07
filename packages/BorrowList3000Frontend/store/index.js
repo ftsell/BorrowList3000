@@ -5,18 +5,20 @@ export const state = () => ({
 });
 
 function sortUsers(state) {
-    state.user.borrowers = state.user.borrowers.sort((a, b) => b.borrowedItems.length - a.borrowedItems.length)
+    state.user.borrowers = state.user.borrowers.sort(
+        (a, b) => b.borrowedItems.length - a.borrowedItems.length
+    );
 }
 
 export const mutations = {
     updateUser(state, newUser) {
         state.user = newUser;
-        sortUsers(state)
+        sortUsers(state);
     },
     addBorrower(state, newBorrower) {
         assert(state.user != null);
         state.user.borrowers.push(newBorrower);
-        sortUsers(state)
+        sortUsers(state);
     },
     addBorrowedItem(state, { borrowerName, newItem }) {
         assert(state.user != null);
@@ -27,7 +29,7 @@ export const mutations = {
         assert(borrower != null);
 
         borrower.borrowedItems.push(newItem);
-        sortUsers(state)
+        sortUsers(state);
     },
 };
 
@@ -46,8 +48,14 @@ export const actions = {
 export const getters = {
     getBorrower: (state) => (borrowerName) => {
         if (state.user != null) {
-            return state.user.borrowers.find(b => b.name === borrowerName);
+            return state.user.borrowers.find((b) => b.name === borrowerName);
         }
         return null;
-    }
+    },
+    borrowerNames(state) {
+        if (state.user != null) {
+            return state.user.borrowers.map((b) => b.name);
+        }
+        return [];
+    },
 };
