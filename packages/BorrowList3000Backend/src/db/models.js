@@ -13,7 +13,10 @@ export function getDbConfig() {
         database: process.env.BL_DB_DATABASE || null,
         storage: process.env.BL_DB_DATABASE || null,
         dialect: process.env.BL_DB_DIALECT || null,
-        logging: process.env.BL_DEBUG === "true" ? msg => consola.info(msg.toString()) : false,
+        logging:
+            process.env.BL_DEBUG === "true"
+                ? (msg) => consola.info(msg.toString())
+                : false,
     };
 }
 
@@ -81,7 +84,13 @@ BorrowerModel.init(
     {
         sequelize,
         tableName: "Borrowers",
-        indexes: [{ unique: true, fields: ["name", "lender"] }],
+        indexes: [
+            {
+                unique: true,
+                fields: ["name", "lenderUsername"],
+                name: "unique_lenderName_per_user",
+            },
+        ],
         scopes: {
             ...commonScopes,
         },
@@ -92,7 +101,7 @@ UserModel.hasMany(BorrowerModel, {
     onDelete: "CASCADE",
     foreignKey: {
         allowNull: false,
-        name: "lender",
+        name: "lenderUsername",
     },
     as: "borrowers",
 });
@@ -101,8 +110,9 @@ BorrowerModel.belongsTo(UserModel, {
     onUpdate: "CASCADE",
     foreignKey: {
         allowNull: false,
-        name: "lender",
+        name: "lenderUsername",
     },
+    as: "lender",
 });
 
 export class BorrowedItemModel extends Model {}
@@ -143,7 +153,7 @@ BorrowerModel.hasMany(BorrowedItemModel, {
     onUpdate: "CASCADE",
     foreignKey: {
         allowNull: false,
-        name: "borrower",
+        name: "borrowerId",
     },
     as: "borrowedItems",
 });
@@ -152,6 +162,7 @@ BorrowedItemModel.belongsTo(BorrowerModel, {
     onUpdate: "CASCADE",
     foreignKey: {
         allowNull: false,
-        name: "borrower",
+        name: "borrowerId",
     },
+    as: "borrower",
 });

@@ -32,23 +32,23 @@ export class UserRepository {
 }
 
 export class BorrowerRepository {
-    static async createBorrower(name, lender) {
-        return await BorrowerModel.create({ name, lender: lender });
+    static async createBorrower(name, lenderUsername) {
+        return await BorrowerModel.create({ name, lenderUsername });
     }
 
-    static async getBorrower(name, lender, loadEager = false) {
+    static async getBorrower(name, lenderUsername, loadEager = false) {
         return await BorrowerModel.findOne({
             include: loadEager ? { all: true, nested: true } : null,
             where: {
                 name,
-                lender
+                lenderUsername
             }
         });
     }
 }
 
 export class BorrowedItemRepository {
-    static async createBorrowedItem(specifier, description, dateBorrowed, borrower) {
-        return await BorrowedItemModel.create({ specifier, description, dateBorrowed, borrower: borrower });
+    static async createBorrowedItem(specifier, description, dateBorrowed, borrowerId) {
+        return await BorrowedItemModel.create({ specifier, description, dateBorrowed, borrowerId });
     }
 }
