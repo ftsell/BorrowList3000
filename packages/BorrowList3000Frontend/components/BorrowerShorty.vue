@@ -17,11 +17,6 @@
 
     <v-card-actions>
       <v-spacer />
-      <nuxt-link :to="{query: {borrower: borrower.name}}">
-        <v-btn icon>
-          <v-icon>mdi-open-in-app</v-icon>
-        </v-btn>
-      </nuxt-link>
       <v-btn icon>
         <v-icon @click="onDelete">mdi-delete</v-icon>
       </v-btn>

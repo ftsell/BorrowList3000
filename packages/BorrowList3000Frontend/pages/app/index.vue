@@ -9,33 +9,17 @@
         <borrower-shorty :borrower='borrower' />
       </v-col>
     </v-row>
-
-    <!-- Show Borrower dialog -->
-    <v-dialog
-      :value='showBorrower != null'
-      @input='(value) => showBorrower = value'
-      max-width='60vw'
-    >
-      <v-card v-if='showBorrower != null'>
-        <v-card-title class='text-h2 font-weight-light'>{{ showBorrower.name }}</v-card-title>
-        <v-card-text>
-          <borrower-details :borrower='showBorrower' />
-        </v-card-text>
-      </v-card>
-    </v-dialog>
   </div>
 </template>
 
 <script>
-import { omit } from 'lodash'
 import gql from 'graphql-tag'
 import BorrowerShorty from '~/components/BorrowerShorty'
-import BorrowerDetails from '~/components/BorrowerDetails'
 import SmartForm from '~/components/forms/SmartForm'
 
 export default {
   name: 'AppIndex',
-  components: { SmartForm, BorrowerDetails, BorrowerShorty },
+  components: { SmartForm, BorrowerShorty },
   middleware: ['loginRequired'],
   computed: {
     user: {
@@ -46,21 +30,6 @@ export default {
         this.$store.commit('updateUser', user)
       }
     },
-    showBorrower: {
-      get() {
-        if (this.$route.query.borrower != null || this.user != null) {
-          return this.user.borrowers.find(b => b.name === this.$route.query.borrower)
-        }
-        return null
-      },
-      set(value) {
-        if (!value) {
-          this.$router.push({
-            query: omit(this.$route.query, ['borrower'])
-          })
-        }
-      }
-    }
   },
   async fetch() {
     if (!process.server) {
