@@ -14,6 +14,7 @@ type Borrower {
 }
 
 type BorrowedItem {
+    id: String!,
     specifier: String!,
     description: String,
     dateBorrowed: Date!,
@@ -92,6 +93,12 @@ type DeleteBorrowerMutationResponse implements MutationResponse {
     code: ResultCodes!
 }
 
+type ReturnBorrowedItemMutationResponse implements MutationResponse {
+    success: Boolean!,
+    message: String!,
+    code: ResultCodes!
+}
+
 type Mutation {
     # user management
     register(username: String!, password: String!): RegisterMutationResponse
@@ -103,6 +110,7 @@ type Mutation {
     createBorrower(name: String!): CreateBorrowerMutationResponse
     createBorrowedItem(borrower: String!, specifier: String!, description: String, dateBorrowed: Date!): CreateBorrowedItemMutationResponse
     deleteBorrower(name: String!): DeleteBorrowerMutationResponse
+    returnBorrowedItem(id: String!): ReturnBorrowedItemMutationResponse
 
     # dev only operations
     resetDb: Boolean

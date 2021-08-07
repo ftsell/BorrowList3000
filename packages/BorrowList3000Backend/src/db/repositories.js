@@ -51,4 +51,11 @@ export class BorrowedItemRepository {
     static async createBorrowedItem(specifier, description, dateBorrowed, borrowerId) {
         return await BorrowedItemModel.create({ specifier, description, dateBorrowed, borrowerId });
     }
+
+    static async getItemById(id, loadEager = false) {
+        return await BorrowedItemModel.findOne({
+            where: {id},
+            include: loadEager ? { all: true, nested: true }: null,
+        })
+    }
 }

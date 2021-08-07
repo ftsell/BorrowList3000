@@ -3,7 +3,7 @@ import { graphqlHTTP } from 'express-graphql'
 import { graphqlSchema } from './graphql'
 import { register, login, logout, getOwnUser, isRequesterLoggedIn } from "./userController";
 import { createBorrower, deleteBorrower } from './borrowerController'
-import { createBorrowedItem } from "./borrowedItemController";
+import { createBorrowedItem, returnBorrowedItem } from "./borrowedItemController";
 import { resetDb } from "./devController";
 
 const router = Router()
@@ -23,6 +23,7 @@ const root = {
     createBorrower,
     createBorrowedItem,
     deleteBorrower,
+    returnBorrowedItem,
 
     // dev only operations
     resetDb,
