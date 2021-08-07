@@ -3,7 +3,7 @@
     <v-container class='d-flex flex-row align-baseline'>
       <p>Lend</p>
       <v-text-field v-model='formData.item' class='mx-4' label='item' :rules='formRules.itemSpecifier'
-                    outlined />
+                    outlined hint='Book (my favourite one)' />
       <p>to</p>
       <v-autocomplete v-model='formData.borrowerName' class='mx-4' label='person' :rules='formRules.borrowerName'
                       :items='autocompleteItems' :search-input.sync='borrowerSearchInput' outlined hide-no-data />
