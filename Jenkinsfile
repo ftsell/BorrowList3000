@@ -85,6 +85,17 @@ spec:
                             sh "podman push registry.finn-thorben.me/borrowlist3000"
                         }
 
+                        // always upload to github with tag :dev-latest
+                        withCredentials([usernamePassword(
+                            credentialsId: 'github-access',
+                            passwordVariable: 'registry_password',
+                            usernameVariable: 'registry_username'
+                        )]) {
+                            sh "podman login ghcr.io -u $registry_username -p $registry_password"
+                            sh "podman tag borrowlist3000 ghcr.io/ftsell/borrowlist3000:dev-latest"
+                            sh "podman push ghcr.io/ftsell/borrowlist3000:dev-latest"
+                        }
+
                         // upload to github registry only when the commit is tagged
                         script {
                             if (env.TAG_NAME != null) {
@@ -96,6 +107,9 @@ spec:
                                     sh "podman login ghcr.io -u $registry_username -p $registry_password"
                                     sh "podman tag borrowlist3000 ghcr.io/ftsell/borrowlist3000:${env.TAG_NAME}"
                                     sh "podman push ghcr.io/ftsell/borrowlist3000:${env.TAG_NAME}"
+
+                                    sh "podman tag borrowlist3000 ghcr.io/ftsell/borrowlist3000:latest"
+                                    sh "podman push ghcr.io/ftsell/borrowlist3000:latest"
                                 }
                             }
                         }
