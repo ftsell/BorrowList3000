@@ -9,7 +9,7 @@
     <envs>
       <env name="BL_DB_DIALECT" value="sqlite" />
       <env name="BL_DB_DATABASE" value="$PROJECT_DIR$/db.sqlite" />
-      <env name="BL_DB_SYNC" value="true" />
+      <env name="BL_DB_MIGRATE" value="true" />
       <env name="BL_DEBUG" value="true" />
       <env name="BL_ALLOW_DB_RESET" value="true" />
       <env name="BL_SESSION_SECRET" value="DEVELOPMENT_IS_AWESOME" />

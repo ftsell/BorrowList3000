@@ -1,6 +1,6 @@
 import { apiMiddleware } from './src/api/index'
 import express from 'express'
-import { sequelize } from './src/db'
+import { sequelize, umzug } from './src/db'
 import { sessionMiddleware } from "./src/session";
 
 const app = express()
@@ -9,8 +9,8 @@ app.use('/api', apiMiddleware)
 
 sequelize.authenticate()
     .then(async () => {
-        if (process.env.BL_DB_SYNC === "true") {
-            await sequelize.sync()
+        if (process.env.BL_DB_MIGRATE === "true") {
+            await umzug.up()
         }
     })
     .then(() => {

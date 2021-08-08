@@ -1,5 +1,7 @@
-import consola from 'consola'
-import { Sequelize } from 'sequelize'
+import consola from "consola";
+import { Sequelize } from "sequelize";
+import Umzug from "umzug";
+import migrations from "./migrations";
 
 export function getDbConfig() {
     return {
@@ -18,3 +20,15 @@ export function getDbConfig() {
 }
 
 export const sequelize = new Sequelize(getDbConfig());
+
+export const umzug = new Umzug({
+    storage: "sequelize",
+    storageOptions: {
+        sequelize: sequelize,
+        tableName: "Migrations",
+    },
+    migrations: Umzug.migrationsList(migrations, [
+        sequelize.getQueryInterface(),
+    ]),
+    logging: consola.info
+});

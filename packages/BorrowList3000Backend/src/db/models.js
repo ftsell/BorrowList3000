@@ -1,7 +1,6 @@
 import { compare, genSaltSync, hashSync } from "bcrypt";
-import { sequelize } from "./index"
-import { Model, DataTypes, Sequelize } from 'sequelize'
-
+import { sequelize } from "./index";
+import { Model, DataTypes, Sequelize } from "sequelize";
 
 const commonScopes = {
     apiPublic: {
