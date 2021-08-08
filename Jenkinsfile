@@ -57,7 +57,11 @@ spec:
                         successDescription: "Container image was successfully built",
                         gitHubContext: "build-container-image"
                     ) {
-                        sh "podman build -t borrowlist3000 ."
+                        // sometimes node-gyp tries to locate python which is not present in the build container
+                        // i don't know why but that's why we retry the build up to 3 times
+                        retry(3) {
+                            sh "podman build -t borrowlist3000 ."
+                        }
                     }
                 }
             }
