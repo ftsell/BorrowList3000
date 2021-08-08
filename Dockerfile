@@ -19,6 +19,7 @@ RUN yarn --cwd ./packages/BorrowList3000Frontend run build
 ENV BL_DB_DIALECT=""
 
 # configure runtime information
+ENV BL_DB_MIGRATE=true
 ENTRYPOINT ["/sbin/tini", "--"]
 CMD ["yarn", "--cwd", "./packages/BorrowList3000Frontend", "run", "start", "-H", "0.0.0.0", "-p", "8000"]
 EXPOSE 8000
