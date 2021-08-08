@@ -1,6 +1,6 @@
 import { apiMiddleware } from './src/api/index'
 import express from 'express'
-import { sequelize } from './src/db/models'
+import { sequelize } from './src/db'
 import { sessionMiddleware } from "./src/session";
 
 const app = express()

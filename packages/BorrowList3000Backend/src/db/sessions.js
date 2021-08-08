@@ -1,6 +1,6 @@
 import connectSessionSequelize from "connect-session-sequelize";
 import session from "express-session";
-import { sequelize } from "./models";
+import { sequelize } from "./index";
 import { Model } from "sequelize";
 
 export class SessionModel extends Model {

@@ -1,4 +1,4 @@
-import { sequelize } from "../db/models";
+import { sequelize } from "../db";
 import consola from "consola";
 
 export async function resetDb() {

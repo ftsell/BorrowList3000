@@ -5,7 +5,7 @@ import {
 } from "./db/repositories";
 
 export { nuxtModule } from "./nuxtModule";
-export { getDbConfig } from "./db/models";
+export { getDbConfig } from "./db";
 export { getProxyTrust } from "./api/index";
 
 export const db = {
