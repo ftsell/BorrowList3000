@@ -56,7 +56,7 @@ The application is configured at runtime via the following environment variables
 | BL_DB_PORT | *required except for sqlite* | The database port |
 | BL_DB_USERNAME | *required except for sqlite* | The username used to authenticate at the database host |
 | BL_DB_PASSWORD | *required except for sqlite* | The password used to authenticate at the database host |
-| BL_DATABASE | *required* | Database to use on the database host or path when using *sqlite* |
+| BL_DB_DATABASE | *required* | Database to use on the database host or path when using *sqlite* |
 | BL_DB_MIGRATE | *not required* | Automatically apply database migrations on system startup. Must be equal to "true" to take effect. |
 
 The following additional configuration options can be used but are only really useful for development purposes:
