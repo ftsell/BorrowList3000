@@ -84,7 +84,7 @@ spec:
                                 passwordVariable: 'registry_password',
                                 usernameVariable: 'registry_username'
                             )]) {
-                                if (env.TAG_NAME == null) {
+                                if (env.TAG_NAME == null && env.BRANCH_IS_PRIMARY == "true") {
                                     // commit events get pushed as :dev-latest
                                     sh "podman login ghcr.io -u $registry_username -p $registry_password"
                                     sh "podman tag borrowlist3000 ghcr.io/ftsell/borrowlist3000:dev-latest"
