@@ -4,6 +4,8 @@
 
 ![Screenshot](./.screenshot.png "Screenshot")
 
+A **public instance** is available at [borrowlist.dreitausend.eu](https://borrowlist.dreitausend.eu/)
+
 ## Deployment
 
 This application can be deployed using three different methods which are described in the following sections.
