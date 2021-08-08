@@ -17,4 +17,3 @@ export const sessionStore = new SequelizeStore({
     db: sequelize,
     tableName: "Sessions"
 });
-sessionStore.sync();

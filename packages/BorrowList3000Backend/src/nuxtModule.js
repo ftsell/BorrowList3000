@@ -3,6 +3,7 @@ import { apiMiddleware } from "./api";
 import { sessionMiddleware } from "./session";
 import path from "path";
 import consola from "consola";
+import { sessionStore } from './db/sessions'
 
 export function nuxtModule() {
     this.addServerMiddleware(sessionMiddleware);
@@ -19,6 +20,7 @@ export function nuxtModule() {
 
         if (process.env.BL_DB_MIGRATE === "true") {
             consola.info("Performing database migration");
+            await sessionStore.sync();
             await umzug.up()
         }
     });
