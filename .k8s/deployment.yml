@@ -24,6 +24,9 @@ spec:
                     envFrom:
                         -   configMapRef:
                                 name: borrowlist3000
+                        -   secretRef:
+                                name: borrowlist3000
+                                optional: true
                     volumeMounts:
                         -   name: storage
                             mountPath: /app/storage
