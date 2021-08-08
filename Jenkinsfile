@@ -78,17 +78,6 @@ spec:
                     ) {
                         milestone(ordinal: 100)
 
-                        // always upload to my own private registry
-                        withCredentials([usernamePassword(
-                            credentialsId: 'registry-credentials',
-                            passwordVariable: 'registry_password',
-                            usernameVariable: 'registry_username'
-                        )]) {
-                            sh "podman login registry.finn-thorben.me -u $registry_username -p $registry_password"
-                            sh "podman tag borrowlist3000 registry.finn-thorben.me/borrowlist3000"
-                            sh "podman push registry.finn-thorben.me/borrowlist3000"
-                        }
-
                         script {
                             withCredentials([usernamePassword(
                                 credentialsId: 'github-access',
