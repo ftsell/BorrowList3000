@@ -14,12 +14,19 @@ spec:
                 app.kubernetes.io/component: web
                 app.kubernetes.io/name: borrowlist3000_server
         spec:
+            volumes:
+                -   name: storage
+                    persistentVolumeClaim:
+                        claimName: borrowlist3000-storage
             containers:
                 -   name: server
                     image: ghcr.io/ftsell/borrowlist3000
                     envFrom:
                         -   configMapRef:
                                 name: borrowlist3000
+                    volumeMounts:
+                        -   name: storage
+                            mountPath: /app/storage
                     ports:
                         -   name: http
                             containerPort: 8000
@@ -29,4 +36,18 @@ spec:
                     livenessProbe:
                         httpGet:
                             port: http
+
+
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: borrowlist3000-storage
+spec:
+    accessModes:
+        - ReadWriteOnce
+    resources:
+        requests:
+            storage: 1G
 
