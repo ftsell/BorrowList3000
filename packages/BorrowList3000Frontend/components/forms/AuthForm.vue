@@ -65,6 +65,13 @@ export default {
             message: result.data.login.message
           })
         } else {
+          // perform cache-busting so that loginRequired middleware does not use the old cached value
+          await this.$apollo.query({
+            query: gql`{ loggedIn }`,
+            fetchPolicy: 'network-only'
+          })
+
+          // finalize
           this.$store.commit("clearUserSpecificData")
           this.$emit('onLoggedIn', result.data.login)
         }
