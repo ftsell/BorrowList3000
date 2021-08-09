@@ -15,5 +15,6 @@ const SequelizeStore = connectSessionSequelize(session.Store);
 
 export const sessionStore = new SequelizeStore({
     db: sequelize,
-    tableName: "Sessions"
+    tableName: "Sessions",
+    expiration: process.env.BL_SESSION_MAX_AGE || 30 * 24 * 60 * 60,
 });

@@ -8,6 +8,7 @@ export const sessionMiddleware = session({
         secure: "auto",
         httpOnly: true,
         sameSite: "Lax",
+        maxAge: process.env.BL_SESSION_MAX_AGE || 30 * 24 * 60 * 60,
     },
     name: "session",
     resave: false,
