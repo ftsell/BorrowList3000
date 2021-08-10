@@ -16,7 +16,7 @@
 
       <v-row justify='start' class='d-flex'>
         <v-col>
-          <v-btn color='primary' outlined type='submit' @click='login' >Login</v-btn>
+          <v-btn color='primary' outlined type='submit'>Login</v-btn>
           <v-btn color='secondary' outlined @click='register'>Register</v-btn>
         </v-col>
       </v-row>
