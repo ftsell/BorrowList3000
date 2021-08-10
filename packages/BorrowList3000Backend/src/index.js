@@ -4,9 +4,8 @@ import {
     UserRepository,
 } from "./db/repositories";
 
-export { nuxtModule } from "./nuxtModule";
+export { nuxtModule, getProxyTrust } from "./nuxtModule";
 export { getDbConfig } from "./db";
-export { getProxyTrust } from "./api/index";
 
 export const db = {
     users: UserRepository,
