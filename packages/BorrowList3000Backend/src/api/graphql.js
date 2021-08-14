@@ -1,128 +1,124 @@
-import { buildSchema } from 'graphql'
-
-const types = `
-scalar Date
-
-type User {
-    username: String!,
-    borrowers: [Borrower]!,
-}
-
-type Borrower {
-    name: String!,
-    borrowedItems: [BorrowedItem]!,
-}
-
-type BorrowedItem {
-    id: String!,
-    specifier: String!,
-    description: String,
-    dateBorrowed: Date!,
-}
-`
-
-const errors = `
-enum ResultCodes {
-    OK
-    ERR_USER_ALREADY_EXISTS
-    ERR_LOGIN_FAILED
-    ERR_LOGIN_REQUIRED
-    ERR_BORROWER_ALREADY_EXISTS
-    ERR_BORROWER_DOES_NOT_EXIST
-}
-`
-
-const query = `
-type Query {
-    me: User!,
-    loggedIn: Boolean!,
-}
-`
-
-const mutation = `
-interface MutationResponse {
-    success: Boolean!,
-    message: String!,
-    code: ResultCodes!,
-}
-
-type RegisterMutationResponse implements MutationResponse {
-    success: Boolean!,
-    message: String!,
-    code: ResultCodes!,
-    user: User,
-}
-
-type VerifyEmailMutationResponse implements MutationResponse {
-    success: Boolean!,
-    message: String!,
-    code: ResultCodes!,
-    user: User!,
-}
-
-type LoginMutationResponse implements MutationResponse {
-    success: Boolean!,
-    message: String!,
-    code: ResultCodes!,
-    user: User,
-}
-
-type LogoutMutationResponse implements MutationResponse {
-    success: Boolean!,
-    message: String!,
-    code: ResultCodes!
-}
-
-type CreateBorrowerMutationResponse implements MutationResponse {
-    success: Boolean!,
-    message: String!,
-    code: ResultCodes!,
-    borrower: Borrower,
-}
-
-type CreateBorrowedItemMutationResponse implements MutationResponse {
-    success: Boolean!,
-    message: String!,
-    code: ResultCodes!,
-    borrowedItem: BorrowedItem
-}
-
-type DeleteBorrowerMutationResponse implements MutationResponse {
-    success: Boolean!,
-    message: String!,
-    code: ResultCodes!
-}
-
-type ReturnBorrowedItemMutationResponse implements MutationResponse {
-    success: Boolean!,
-    message: String!,
-    code: ResultCodes!
-}
-
-type Mutation {
-    # user management
-    register(username: String!, password: String!): RegisterMutationResponse
-    verifyEmail(username: String!, verificationCode: String!): VerifyEmailMutationResponse
-    login(username: String!, password: String!): LoginMutationResponse
-    logout: LogoutMutationResponse
-
-    # standard object interactions
-    createBorrower(name: String!): CreateBorrowerMutationResponse
-    createBorrowedItem(borrower: String!, specifier: String!, description: String, dateBorrowed: Date!): CreateBorrowedItemMutationResponse
-    deleteBorrower(name: String!): DeleteBorrowerMutationResponse
-    returnBorrowedItem(id: String!): ReturnBorrowedItemMutationResponse
-
-    # dev only operations
-    resetDb: Boolean
-}
-`
+import gql from "graphql-tag";
+import { buildSchema } from "graphql";
 
 /**
  * Complete GraphQL schema definition
  */
-export const graphqlSchema = buildSchema(`
-    ${types}
-    ${errors}
-    ${query}
-    ${mutation}
-`)
+export const graphqlSchema = buildSchema(gql`
+    scalar Date
+
+    type User {
+        username: String!
+        borrowers: [Borrower]!
+    }
+
+    type Borrower {
+        name: String!
+        borrowedItems: [BorrowedItem]!
+    }
+
+    type BorrowedItem {
+        id: String!
+        specifier: String!
+        description: String
+        dateBorrowed: Date!
+    }
+
+    enum ResultCodes {
+        OK
+        ERR_USER_ALREADY_EXISTS
+        ERR_LOGIN_FAILED
+        ERR_LOGIN_REQUIRED
+        ERR_BORROWER_ALREADY_EXISTS
+        ERR_BORROWER_DOES_NOT_EXIST
+    }
+
+    type Query {
+        me: User!
+        loggedIn: Boolean!
+    }
+
+    interface MutationResponse {
+        success: Boolean!
+        message: String!
+        code: ResultCodes!
+    }
+
+    type RegisterMutationResponse implements MutationResponse {
+        success: Boolean!
+        message: String!
+        code: ResultCodes!
+        user: User
+    }
+
+    type VerifyEmailMutationResponse implements MutationResponse {
+        success: Boolean!
+        message: String!
+        code: ResultCodes!
+        user: User!
+    }
+
+    type LoginMutationResponse implements MutationResponse {
+        success: Boolean!
+        message: String!
+        code: ResultCodes!
+        user: User
+    }
+
+    type LogoutMutationResponse implements MutationResponse {
+        success: Boolean!
+        message: String!
+        code: ResultCodes!
+    }
+
+    type CreateBorrowerMutationResponse implements MutationResponse {
+        success: Boolean!
+        message: String!
+        code: ResultCodes!
+        borrower: Borrower
+    }
+
+    type CreateBorrowedItemMutationResponse implements MutationResponse {
+        success: Boolean!
+        message: String!
+        code: ResultCodes!
+        borrowedItem: BorrowedItem
+    }
+
+    type DeleteBorrowerMutationResponse implements MutationResponse {
+        success: Boolean!
+        message: String!
+        code: ResultCodes!
+    }
+
+    type ReturnBorrowedItemMutationResponse implements MutationResponse {
+        success: Boolean!
+        message: String!
+        code: ResultCodes!
+    }
+
+    type Mutation {
+        # user management
+        register(username: String!, password: String!): RegisterMutationResponse
+        verifyEmail(
+            username: String!
+            verificationCode: String!
+        ): VerifyEmailMutationResponse
+        login(username: String!, password: String!): LoginMutationResponse
+        logout: LogoutMutationResponse
+
+        # standard object interactions
+        createBorrower(name: String!): CreateBorrowerMutationResponse
+        createBorrowedItem(
+            borrower: String!
+            specifier: String!
+            description: String
+            dateBorrowed: Date!
+        ): CreateBorrowedItemMutationResponse
+        deleteBorrower(name: String!): DeleteBorrowerMutationResponse
+        returnBorrowedItem(id: String!): ReturnBorrowedItemMutationResponse
+
+        # dev only operations
+        resetDb: Boolean
+    }
+`);
