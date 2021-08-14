@@ -1,7 +1,7 @@
 import { assertLoggedIn } from "./userController";
 import { BorrowerRepository } from "../db/repositories";
 
-export async function createBorrower({ name }, { session }) {
+export async function createBorrower(parent, { name }, { req: { session } }) {
     assertLoggedIn(session);
 
     if (
@@ -26,7 +26,7 @@ export async function createBorrower({ name }, { session }) {
     };
 }
 
-export async function deleteBorrower({ name }, { session }) {
+export async function deleteBorrower(parent, { name }, { req: { session } }) {
     assertLoggedIn(session);
 
     const borrower = await BorrowerRepository.getBorrower(
@@ -46,5 +46,5 @@ export async function deleteBorrower({ name }, { session }) {
         code: "OK",
         message: `successfully deleted borrower ${name}`,
         success: true,
-    }
+    };
 }

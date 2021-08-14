@@ -2,15 +2,16 @@ import { BorrowedItemRepository, BorrowerRepository } from "../db/repositories";
 import { assertLoggedIn } from "./userController";
 
 async function assertItemIsLentByCurrentUser(item, session) {
-    const lender = await (await item.getBorrower()).getLender()
+    const lender = await (await item.getBorrower()).getLender();
     if (lender.username !== session.username) {
         throw new Error(`Item (${item.id}) is not lent by current user`);
     }
 }
 
 export async function createBorrowedItem(
+    parent,
     { borrower, specifier, dateBorrowed, description },
-    { session }
+    { req: { session } }
 ) {
     assertLoggedIn(session);
 
@@ -36,7 +37,7 @@ export async function createBorrowedItem(
     };
 }
 
-export async function returnBorrowedItem({ id }, { session }) {
+export async function returnBorrowedItem(parent, { id }, { req: { session } }) {
     assertLoggedIn(session);
 
     const item = await BorrowedItemRepository.getItemById(id);

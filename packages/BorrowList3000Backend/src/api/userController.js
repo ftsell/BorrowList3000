@@ -1,6 +1,6 @@
 import { UserRepository } from '../db/repositories'
 
-export async function register({ username, password }) {
+export async function register(parent, { username, password }) {
     try {
         const user = await UserRepository.createUser(username, password)
         return {
@@ -19,7 +19,7 @@ export async function register({ username, password }) {
     }
 }
 
-export async function login({ username, password }, { session }) {
+export async function login(parent, { username, password }, { req: {session} }) {
     const user = await UserRepository.getUserByUsername(username)
     if (user != null && await user.verifyPassword((password))) {
         session.loggedIn = true
@@ -40,8 +40,8 @@ export async function login({ username, password }, { session }) {
     }
 }
 
-export async function logout({}, request) {
-    request.session = null
+export async function logout(parent, args, {req}) {
+    req.session = null
 
     return {
         success: true,
@@ -50,12 +50,12 @@ export async function logout({}, request) {
     }
 }
 
-export async function getOwnUser(_, {session}) {
+export async function getOwnUser(parent, args, {req: {session}}) {
     assertLoggedIn(session)
     return await UserRepository.getUserByUsername(session.username, true)
 }
 
-export function isRequesterLoggedIn(_, {session}) {
+export function isRequesterLoggedIn(parent, args, {req: {session}}) {
     return !!session.loggedIn
 }
 

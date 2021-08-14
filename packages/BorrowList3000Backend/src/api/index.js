@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { graphqlHTTP } from "express-graphql";
+import { ApolloServer } from "apollo-server-express";
+import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
 import { graphqlSchema } from "./graphql";
 import {
     register,
@@ -20,29 +21,35 @@ export const apiMiddleware = router;
 
 // the root provides a resolver function for each API endpoint
 // noinspection JSUnusedGlobalSymbols
-const root = {
-    // queries
-    me: getOwnUser,
-    loggedIn: isRequesterLoggedIn,
+const resolvers = {
+    Query: {
+        me: getOwnUser,
+        loggedIn: isRequesterLoggedIn,
+    },
+    Mutation: {
+        register,
+        login,
+        logout,
+        createBorrower,
+        createBorrowedItem,
+        deleteBorrower,
+        returnBorrowedItem,
 
-    // mutations
-    register,
-    login,
-    logout,
-    createBorrower,
-    createBorrowedItem,
-    deleteBorrower,
-    returnBorrowedItem,
-
-    // dev only operations
-    resetDb,
+        // dev only operations
+        resetDb,
+    },
 };
 
-router.use(
-    "/graphql",
-    graphqlHTTP({
-        schema: graphqlSchema,
-        rootValue: root,
-        gaphiql: true,
-    })
-);
+const server = new ApolloServer({
+    typeDefs: graphqlSchema,
+    resolvers,
+    context({ req }) {
+        return { req };
+    },
+    plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
+});
+server.start().then(() => {
+    server.applyMiddleware({
+        app: router,
+    });
+});
