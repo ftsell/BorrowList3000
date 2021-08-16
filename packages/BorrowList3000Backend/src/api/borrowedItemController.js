@@ -1,5 +1,5 @@
 import { BorrowedItemRepository, BorrowerRepository } from "../db/repositories";
-import { assertLoggedIn } from "./userController";
+import { assertLoggedIn } from "./utils";
 
 async function assertItemIsLentByCurrentUser(item, session) {
     const lender = await (await item.getBorrower()).getLender();

@@ -1,4 +1,4 @@
-import { assertLoggedIn } from "./userController";
+import { assertLoggedIn } from "./utils";
 import { BorrowerRepository } from "../db/repositories";
 
 export async function createBorrower(parent, { name }, { req: { session } }) {
