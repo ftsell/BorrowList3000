@@ -19,6 +19,7 @@ import SmartForm from '~/components/forms/SmartForm'
 
 export default {
   name: 'AppIndex',
+  layout: "app",
   components: { SmartForm, BorrowerShorty },
   middleware: ['loginRequired'],
   computed: {
