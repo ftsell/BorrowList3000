@@ -2,7 +2,7 @@ import session from "express-session";
 import { sessionStore } from "./db/sessions";
 
 export const sessionMiddleware = session({
-    secret: process.env.BL_SESSION_SECRET,
+    secret: process.env.BL_SECRET,
     store: sessionStore,
     cookie: {
         secure: "auto",

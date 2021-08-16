@@ -10,7 +10,7 @@ export default {
     },
     privateRuntimeConfig: {
         db: getDbConfig(),
-        sessionSecret: process.env.BL_SESSION_SECRET,
+        sessionSecret: process.env.BL_SECRET,
         trust_proxy: getProxyTrust()
     },
 
