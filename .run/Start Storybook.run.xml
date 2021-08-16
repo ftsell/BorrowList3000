@@ -13,6 +13,7 @@
       <env name="BL_DEBUG" value="true" />
       <env name="BL_ALLOW_DB_RESET" value="true" />
       <env name="BL_SESSION_SECRET" value="DEVELOPMENT_IS_AWESOME" />
+      <env name="BL_BASE_URL" value="http://localhost:3000" />
     </envs>
     <method v="2" />
   </configuration>

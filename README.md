@@ -51,10 +51,10 @@ The application is configured at runtime via the following environment variables
 
 | Name | Is Required? | Description |
 |------|---------|-------------|
+| BL_BASE_URL | *required* | Base URL at which this application is served. |
 | BL_SESSION_SECRET | *required* | A secret key that is used to authenticate session cookies. |
 | BL_SESSION_MAX_AGE | *defaults to 30 days* | How long sessions are valid (in milliseconds). |
-| BL_TRUST_PROXY | *not
-required* | If true, configuresthe server to trust `X-Forwarded-` headers it receives. The value can either be "true" to trust all proxies or any other string which is directly passed to express. See [express reference](https://expressjs.com/en/guide/behind-proxies.html) for that case.
+| BL_TRUST_PROXY | *not required* | If true, configures the server to trust `X-Forwarded-` headers it receives. The value can either be "true" to trust all proxies or any other string which is directly passed to express. See [express reference](https://expressjs.com/en/guide/behind-proxies.html) for that case.
 | BL_DB_DIALECT | *required* | The database dialect that should be used. Can be one of *mysql*, *postgres*, *sqlite* or *mssql*. |
 | BL_DB_HOST | *required except for sqlite* | The database host |
 | BL_DB_PORT | *required except for sqlite* | The database port |
