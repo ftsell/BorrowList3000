@@ -6,6 +6,7 @@ import {
 
 export { nuxtModule, getProxyTrust } from "./nuxtModule";
 export { getDbConfig } from "./db";
+export { mailConfig } from "./email"
 
 export const db = {
     users: UserRepository,

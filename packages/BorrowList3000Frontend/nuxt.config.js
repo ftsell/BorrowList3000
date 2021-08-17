@@ -1,5 +1,5 @@
 import colors from "vuetify/es5/util/colors";
-import { nuxtModule as borrowlistBackend, getDbConfig, getProxyTrust } from "borrowlist3000backend";
+import { nuxtModule as borrowlistBackend, getDbConfig, getProxyTrust, mailConfig } from "borrowlist3000backend";
 
 const baseUrl = process.env.BL_BASE_URL
 
@@ -11,7 +11,8 @@ export default {
     privateRuntimeConfig: {
         db: getDbConfig(),
         sessionSecret: process.env.BL_SECRET,
-        trust_proxy: getProxyTrust()
+        trust_proxy: getProxyTrust(),
+        mail: mailConfig,
     },
 
     // Global page headers: https://go.nuxtjs.dev/config-head
