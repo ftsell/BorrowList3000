@@ -28,6 +28,13 @@ UserModel.init(
                 this.setDataValue("password", hashSync(value, genSaltSync()));
             },
         },
+        email: {
+            type: DataTypes.STRING,
+            allowNull: true,
+            validate: {
+                isEmail: true,
+            },
+        },
     },
     {
         sequelize,

@@ -14,6 +14,7 @@ export const graphqlSchema = gql`
     """
     type User {
         username: String!
+        email: String!
         borrowers: [Borrower]!
     }
 
@@ -62,11 +63,17 @@ export const graphqlSchema = gql`
         user: User
     }
 
-    type VerifyEmailMutationResponse implements MutationResponse {
+    type SetEmailMutationResponse implements MutationResponse {
         success: Boolean!
         message: String!
         code: ResultCodes!
         user: User!
+    }
+
+    type UndoSetEmailMutationResponse implements MutationResponse {
+        success: Boolean!
+        message: String!
+        code: ResultCodes!
     }
 
     type LoginMutationResponse implements MutationResponse {
@@ -115,15 +122,17 @@ export const graphqlSchema = gql`
         register(username: String!, password: String!): RegisterMutationResponse
 
         """
-        Start or complete the email verification process depending on whether 'verificationCode' is given or not.
-
-        If it is not given, an email will be sent to the current user to start the verification process.
-        This email will include a link (but also the verification code directly) whic is needed to complete the process.
-
-        If it is given and the code is correct, complete the verification process and mark the users email address as
-        verified.
+        Set the email address of the currently logged in user.
+        A notification is sent to the old address as well as the new one.
+        The notification to the old address includes a link to undo the change.
+        The link effectively ends up calling the 'undoSetEmail' mutation.
         """
-        verifyEmail(verificationCode: String): VerifyEmailMutationResponse
+        setEmail(emailAddress: String!): SetEmailMutationResponse
+
+        """
+        Undo a previous email update by providing an authCode.
+        """
+        undoSetEmail(authCode: String!): UndoSetEmailMutationResponse
 
         """
         Login as the specified user using the given password
