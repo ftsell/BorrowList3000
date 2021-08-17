@@ -12,7 +12,7 @@
       <env name="BL_DB_MIGRATE" value="true" />
       <env name="BL_DEBUG" value="true" />
       <env name="BL_ALLOW_DB_RESET" value="true" />
-      <env name="BL_SECRET" value="DEVELOPMENT_IS_AWESOME" />
+      <env name="BL_SECRET" value="afb018b7aadd84f9676f7b71841aa6007315065b48b2547539b0916e554597b1" />
       <env name="BL_BASE_URL" value="http://localhost:3000" />
     </envs>
     <method v="2" />
