@@ -2,9 +2,9 @@ import { sequelize, umzug } from "./db";
 import { apiMiddleware } from "./api";
 import { sessionMiddleware } from "./session";
 import path from "path";
-import consola from "consola";
 import { sessionStore } from "./db/sessions";
 import express from "express";
+import {logger} from "./logger";
 
 export function getProxyTrust() {
     if (process.env.BL_TRUST_PROXY === "true") {
@@ -33,11 +33,11 @@ export function nuxtModule() {
     });
 
     this.nuxt.hook("ready", async () => {
-        consola.info("Connecting to database");
+        logger.withTag("db").info("Connecting to database");
         await sequelize.authenticate();
 
         if (process.env.BL_DB_MIGRATE === "true") {
-            consola.info("Performing database migration");
+            logger.withTag("db").info("Performing database migration");
             await sessionStore.sync();
             await umzug.up();
         }

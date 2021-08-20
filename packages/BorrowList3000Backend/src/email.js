@@ -1,6 +1,6 @@
 import Nodemailer from "nodemailer";
 import { createEmailUndoToken } from "./tokens";
-import consola from "consola";
+import logger from "./logger"
 
 function getMailConfig() {
     let config = {
@@ -36,7 +36,7 @@ export async function sendEmailUpdatedNotification(
 ) {
     if (oldAddress != null) {
         const token = await createEmailUndoToken(user, oldAddress);
-        consola.info(
+        logger.withTag("email").debug(
             `Sending verification mail with link ${process.env.BL_BASE_URL}/app/undoSetEmail?code=${token}`
         );
     }

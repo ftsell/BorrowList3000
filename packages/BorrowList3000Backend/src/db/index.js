@@ -1,7 +1,7 @@
-import consola from "consola";
 import { Sequelize } from "sequelize";
 import Umzug from "umzug";
 import migrations from "./migrations";
+import {logger} from "../logger";
 
 export function getDbConfig() {
     return {
@@ -12,10 +12,7 @@ export function getDbConfig() {
         database: process.env.BL_DB_DATABASE || null,
         storage: process.env.BL_DB_DATABASE || null,
         dialect: process.env.BL_DB_DIALECT || null,
-        logging:
-            process.env.BL_DEBUG === "true"
-                ? (msg) => consola.info(msg.toString())
-                : false,
+        logging: (msg) => logger.withTag("db").debug(msg.toString())
     };
 }
 
@@ -30,5 +27,5 @@ export const umzug = new Umzug({
     migrations: Umzug.migrationsList(migrations, [
         sequelize.getQueryInterface(),
     ]),
-    logging: consola.info
+    logging: logger.withTag("db").info
 });
