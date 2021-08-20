@@ -55,6 +55,7 @@ The application is configured at runtime via the following environment variables
 | BL_SECRET | *required* | A secret key that is used to authenticate session cookies. It must be 32 or 64 bit and hex encoded. |
 | BL_SESSION_MAX_AGE | *defaults to 30 days* | How long sessions are valid (in milliseconds). |
 | BL_TRUST_PROXY | *not required* | If true, configures the server to trust `X-Forwarded-` headers it receives. The value can either be "true" to trust all proxies or any other string which is directly passed to express. See [express reference](https://expressjs.com/en/guide/behind-proxies.html) for that case.
+||
 | BL_DB_DIALECT | *required* | The database dialect that should be used. Can be one of *mysql*, *postgres*, *sqlite* or *mssql*. |
 | BL_DB_HOST | *required except for sqlite* | The database host |
 | BL_DB_PORT | *required except for sqlite* | The database port |
@@ -62,6 +63,15 @@ The application is configured at runtime via the following environment variables
 | BL_DB_PASSWORD | *required except for sqlite* | The password used to authenticate at the database host |
 | BL_DB_DATABASE | *required* | Database to use on the database host or path when using *sqlite* |
 | BL_DB_MIGRATE | *not required* | Automatically apply database migrations on system startup. Must be equal to "true" to take effect. |
+||
+| BL_MAIL_HOST | *not required* | Hostname of the SMTP server used to send emails. |
+| BL_MAIL_PORT | *defaults to 25* | Port number on the SMTP server. |
+| BL_MAIL_SECURE | *not required* | Whether to enable TLS on the SMTP connection. Must be equal to "true" to take effect. *Note:* Even if disabled, STARTTLS will still automatically be used if the server offers it. |
+| BL_MAIL_USER | *not required* | Username that is used to authenticate on the SMTP server. |
+| BL_MAIL_PASSWORD | *not required* | Password that is used to authenticate on the SMTP server. |
+| BL_MAIL_FROM | *not required* | Email address that is used as the sender when sending emails. In principal this is independent of *BL_MAIL_USER* but your SMTP server might impose restrictions. |
+
+*Note*: If none of the `BL_MAIL_*` configuration is defined, all email related features are completely disabled.
 
 The following additional configuration options can be used but are only really useful for development purposes:
 
