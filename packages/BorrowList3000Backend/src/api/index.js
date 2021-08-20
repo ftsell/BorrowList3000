@@ -8,8 +8,8 @@ import {
     logout,
     getOwnUser,
     isRequesterLoggedIn,
-    setEmail,
-    undoSetEmail,
+    alterUser,
+    undoChangeEmail,
 } from "./userController";
 import { createBorrower, deleteBorrower } from "./borrowerController";
 import {
@@ -32,8 +32,8 @@ const resolvers = {
         register,
         login,
         logout,
-        setEmail,
-        undoSetEmail,
+        alterUser,
+        undoChangeEmail,
         createBorrower,
         createBorrowedItem,
         deleteBorrower,

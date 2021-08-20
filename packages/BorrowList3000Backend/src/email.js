@@ -89,8 +89,24 @@ export async function sendEmailResetNotification(user) {
 <body>
     <h1>Your Email address has been reset to ${user.email}</h1>
 </body>
-</html>
-            `
-        })
+</html>`,
+        });
+    }
+}
+
+export async function sendPasswordUpdatedNotification(user) {
+    if (mailConfig.enabled && user.email != null) {
+        mailTransporter.sendMail({
+            from: process.env.BL_MAIL_FORM,
+            to: user.email,
+            subject: "Your password has been changed",
+            html: `
+<html lang="en">
+<body>
+    <h1>Your password has been changed</h1>
+    <p>All active sessions have been logged out.</p>
+</body>
+</html>`,
+        });
     }
 }

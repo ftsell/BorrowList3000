@@ -2,7 +2,7 @@ import { UserRepository } from "../db/repositories";
 import { assertLoggedIn } from "./utils";
 import {
     sendEmailResetNotification,
-    sendEmailUpdatedNotification,
+    sendEmailUpdatedNotification, sendPasswordUpdatedNotification,
 } from "../email";
 import { verifyEmailUndoToken } from "../tokens";
 
@@ -69,25 +69,30 @@ export async function getOwnUser(parent, args, { req: { session } }) {
     return await UserRepository.getUserByUsername(session.username, true);
 }
 
-export async function setEmail(parent, args, { req: { session } }) {
+export async function alterUser(parent, args, { req: { session } }) {
     assertLoggedIn(session);
 
     const user = await UserRepository.getUserByUsername(session.username);
-    if (args.emailAddress !== user.email) {
-        await sendEmailUpdatedNotification(user, args.emailAddress, user.email);
-    }
-    user.email = args.emailAddress;
-    await user.save();
 
-    return {
-        success: true,
-        code: "OK",
-        message: `Updated email address to ${args.emailAddress}`,
-        user: user,
-    };
+    // handle email change
+    if (args.user.email != null) {
+        if (args.user.email !== user.email) {
+            await sendEmailUpdatedNotification(user, args.user.email, user.email);
+        }
+        user.email = args.user.email;
+    }
+
+    // handle password change
+    if (args.user.password != null && !await user.verifyPassword(args.user.password)) {
+        user.password = args.user.password
+        await sendPasswordUpdatedNotification(user)
+    }
+
+    await user.save();
+    return user;
 }
 
-export async function undoSetEmail(parent, args) {
+export async function undoChangeEmail(parent, args) {
     const token = await verifyEmailUndoToken(args.authCode);
 
     if (token.validUntil < new Date().getTime()) {

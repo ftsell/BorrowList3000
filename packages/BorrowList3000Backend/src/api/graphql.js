@@ -14,7 +14,7 @@ export const graphqlSchema = gql`
     """
     type User {
         username: String!
-        email: String!
+        email: String
         borrowers: [Borrower]!
     }
 
@@ -48,6 +48,11 @@ export const graphqlSchema = gql`
     type Query {
         me: User!
         loggedIn: Boolean!
+    }
+
+    input UserInput {
+        email: String
+        password: String
     }
 
     interface MutationResponse {
@@ -132,7 +137,16 @@ export const graphqlSchema = gql`
         """
         Undo a previous email update by providing an authCode.
         """
-        undoSetEmail(authCode: String!): UndoSetEmailMutationResponse
+        undoChangeEmail(authCode: String!): UndoSetEmailMutationResponse
+
+        """
+        Alter the currently logged in user.
+
+        If "password" is changed, the user is notified of the change if they have an email address set.
+
+        If "email" is changed, the previsouly defined email address is notified and provided a way to undo the change.
+        """
+        alterUser(user: UserInput!): User
 
         """
         Login as the specified user using the given password
