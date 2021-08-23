@@ -4,6 +4,7 @@ import { nuxtModule as borrowlistBackend, getDbConfig, getProxyTrust, mailConfig
 export default {
     publicRuntimeConfig: {
         debug: process.env.BL_DEBUG === "true" || false,
+        emailEnabled: mailConfig.enabled,
         baseUrl: process.env.BL_BASE_URL,
     },
     privateRuntimeConfig: {

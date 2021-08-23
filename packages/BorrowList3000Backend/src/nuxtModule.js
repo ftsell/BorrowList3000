@@ -32,6 +32,10 @@ export function nuxtModule() {
         mode: "server",
     });
 
+    this.nuxt.hook("ready", () => {
+        logger.withTag("config").info(`Feature email is ${this.options.publicRuntimeConfig.emailEnabled ? "enabled" : "disabled"}`)
+    })
+
     this.nuxt.hook("ready", async () => {
         logger.withTag("db").info("Connecting to database");
         await sequelize.authenticate();
@@ -40,6 +44,7 @@ export function nuxtModule() {
             logger.withTag("db").info("Performing database migration");
             await sessionStore.sync();
             await umzug.up();
+            logger.withTag("db").success("Successfully migrated database")
         }
     });
 }
