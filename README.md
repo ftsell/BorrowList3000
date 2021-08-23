@@ -91,7 +91,7 @@ It is in itself a rather simple application that uses [sequelize](https://sequel
 serves a GraphQL API to interact with that database.
 Additionally, it enforces validation and access-control rules.
 
-It can be started either directly via `yarn run start` or included in a [NuxtJS](https://nuxtjs.org/) application
+It can not be started  directly but instead is included in a [NuxtJS](https://nuxtjs.org/) application
 as a [module](https://nuxtjs.org/docs/2.x/configuration-glossary/configuration-modules).
 
 
