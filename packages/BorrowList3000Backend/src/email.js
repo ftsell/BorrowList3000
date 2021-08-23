@@ -1,6 +1,6 @@
 import Nodemailer from "nodemailer";
 import { createEmailUndoToken } from "./tokens";
-import logger from "./logger"
+import { logger } from "./logger"
 
 function getMailConfig() {
     let config = {
