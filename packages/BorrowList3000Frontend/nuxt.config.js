@@ -1,12 +1,10 @@
 import colors from "vuetify/es5/util/colors";
 import { nuxtModule as borrowlistBackend, getDbConfig, getProxyTrust, mailConfig } from "borrowlist3000backend";
 
-const baseUrl = process.env.BL_BASE_URL
-
 export default {
     publicRuntimeConfig: {
         debug: process.env.BL_DEBUG === "true" || false,
-        baseUrl,
+        baseUrl: process.env.BL_BASE_URL,
     },
     privateRuntimeConfig: {
         db: getDbConfig(),
@@ -91,7 +89,7 @@ export default {
     apollo: {
         clientConfigs: {
             default: {
-                httpEndpoint: `${baseUrl}/api/graphql`
+                httpEndpoint: `${process.env.BL_BASE_URL}/api/graphql`
             }
         }
     },
