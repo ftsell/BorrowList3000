@@ -13,7 +13,7 @@
             type="password"
           />
         </v-row>
-        <v-row>
+        <v-row v-if="isEmailEnabled">
           <v-text-field v-model="user.email" label="EMail address" />
         </v-row>
 
@@ -43,6 +43,11 @@ export default {
     user: null,
     editable: false,
   }),
+  computed: {
+    isEmailEnabled() {
+      return this.$config.emailEnabled
+    }
+  },
   apollo: {
     user: gql`
       query {
