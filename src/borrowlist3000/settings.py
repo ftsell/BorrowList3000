@@ -32,7 +32,9 @@ class Base(Configuration):
         'django.contrib.sessions',
         'django.contrib.messages',
         'django.contrib.staticfiles',
+        'graphene_django',
         'borrowlist3000_db',
+        'borrowlist3000_api',
     ]
 
     MIDDLEWARE = [
@@ -108,6 +110,10 @@ class Base(Configuration):
     DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
     AUTH_USER_MODEL = 'borrowlist3000_db.UserModel'
+
+    GRAPHENE = {
+        'SCHEMA': 'borrowlist3000_api.schema.schema'
+    }
 
     ###
     # Computed settings
