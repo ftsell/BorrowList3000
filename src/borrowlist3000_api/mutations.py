@@ -1,7 +1,10 @@
 from typing import *
 import graphene
+from django.contrib.auth import authenticate, login, logout
+from graphql import ResolveInfo
 
 from borrowlist3000_api import types
+from borrowlist3000_db import models
 
 
 class RegisterMutation(graphene.Mutation):
@@ -11,33 +14,46 @@ class RegisterMutation(graphene.Mutation):
     It is possible to specify no email address in which case password reset features are disabled for the account
     until and email address is added.
     """
+
     class Arguments:
         username = graphene.Argument(graphene.String, required=True)
         password = graphene.Argument(graphene.String, required=True)
         email = graphene.Argument(graphene.String)
 
-    user = graphene.Field(types.UserType, required=True)
+    user = graphene.Field(types.UserType)
+    success = graphene.Field(graphene.Boolean, required=True)
+    message = graphene.Field(graphene.String, required=True)
 
     @classmethod
-    def mutate(cls, root, info, username: str, password: str, email: Optional[str]):
-        # TODO Implement
-        pass
+    def mutate(cls, root, info, username: str, password: str, email: Optional[str] = None) -> 'RegisterMutation':
+        if models.UserModel.objects.get_queryset().filter(username__iexact=username).exists():
+            return RegisterMutation(success=False, message=f"User named {username} already exists")
+
+        user = models.UserModel.objects.create_user(username=username, email=email, password=password)
+        return RegisterMutation(user=user, success=True, message=f"Successfully created user {username}")
 
 
 class LoginMutation(graphene.Mutation):
     """
     Login as the specified user using the given password
     """
+
     class Arguments:
         username = graphene.Argument(graphene.String, required=True)
         password = graphene.Argument(graphene.String, required=True)
 
-    user = graphene.Field(types.UserType, required=True)
+    user = graphene.Field(types.UserType)
+    success = graphene.Field(graphene.Boolean, required=True)
+    message = graphene.Field(graphene.String, required=True)
 
     @classmethod
-    def mutate(cls, root, info):
-        # TODO Implement
-        pass
+    def mutate(cls, root, info: ResolveInfo, username: str, password: str) -> 'LoginMutation':
+        user = authenticate(info.context, username=username, password=password)
+        if user is not None:
+            login(info.context, user)
+            return LoginMutation(user=user, success=True, message=f"Successfully authenticated as {username}")
+
+        return LoginMutation(success=False, message="Invalid credentials")
 
 
 class LogoutMutation(graphene.Mutation):
@@ -45,12 +61,13 @@ class LogoutMutation(graphene.Mutation):
     Logout the currently logged in user
     """
 
-    changed = graphene.Field(graphene.Boolean, required=True)
+    success = graphene.Field(graphene.Boolean, required=True)
+    message = graphene.Field(graphene.String, required=True)
 
     @classmethod
-    def mutate(cls, root, info):
-        # TODO Implement
-        pass
+    def mutate(cls, root, info: ResolveInfo) -> 'LogoutMutation':
+        logout(info.context)
+        return LogoutMutation(success=True, message="Successfully logged out")
 
 
 class SetEmailMutation(graphene.Mutation):
@@ -60,6 +77,7 @@ class SetEmailMutation(graphene.Mutation):
     The notification to the old address includes a link to undo the change.
     The link effectively ends up calling the 'undoSetEmail' mutation.
     """
+
     class Arguments:
         email_address = graphene.Argument(graphene.String, required=True)
 
@@ -75,6 +93,7 @@ class UndoChangeEmailMutation(graphene.Mutation):
     """
     Undo a previous email update by providing an authCode.
     """
+
     class Arguments:
         auth_code = graphene.Argument(graphene.String, required=True)
 
@@ -94,6 +113,7 @@ class AlterUser(graphene.Mutation):
 
     If "email" is changed, the previously defined email address is notified and provided a way to undo the change.
     """
+
     class Arguments:
         user = graphene.Argument(types.UserInput)
 
@@ -109,6 +129,7 @@ class CreateBorrower(graphene.Mutation):
     """
     Create a new borrower with the given name
     """
+
     class Arguments:
         name = graphene.Argument(graphene.String, required=True)
 
@@ -124,6 +145,7 @@ class CreateBorrowedItem(graphene.Mutation):
     """
     Create a new borrowed item with the given data
     """
+
     class Arguments:
         borrower = graphene.Argument(graphene.UUID, required=True)
         specifier = graphene.Argument(graphene.String, required=True)
@@ -142,6 +164,7 @@ class DeleteBorrower(graphene.Mutation):
     """
     Delete the borrower with the given name and all their borrowed items
     """
+
     class Arguments:
         name = graphene.Argument(graphene.String, required=True)
 
@@ -159,6 +182,7 @@ class ReturnBorrowedItem(graphene.Mutation):
 
     Currently this simply deletes the borrowed item from the database but that behaviour might change later.
     """
+
     class Arguments:
         id = graphene.Argument(graphene.UUID, required=True)
 

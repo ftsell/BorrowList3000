@@ -1,11 +1,26 @@
 import uuid
 
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
 
 
 def uuid_default() -> uuid.UUID:
     return uuid.uuid4()
+
+
+class UserManager(BaseUserManager):
+    def create_user(self, username: str, password: str, email: str = None) -> 'UserModel':
+        username = UserModel.normalize_username(username)
+        email = self.normalize_email(email)
+        password = make_password(password)
+
+        user = UserModel(username=username, password=password, email=email)
+        user.save(using=self.db)
+        return user
+
+    def create_superuser(self, username: str, password: str, email: str = None) -> 'UserModel':
+        return self.create_user(username, password, email)
 
 
 class UserModel(AbstractBaseUser):
@@ -15,6 +30,8 @@ class UserModel(AbstractBaseUser):
 
     USERNAME_FIELD = "username"
     EMAIL_FIELD = "email"
+
+    objects = UserManager()
 
 
 class BorrowerModel(models.Model):
