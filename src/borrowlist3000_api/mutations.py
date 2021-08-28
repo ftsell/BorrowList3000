@@ -4,7 +4,9 @@ from django.contrib.auth import authenticate, login, logout
 from graphql import ResolveInfo
 
 from borrowlist3000_api import types
+from borrowlist3000_bll.mails import send_email_changed_notifications
 from borrowlist3000_db import models
+from borrowlist3000_db.models import UserModel
 
 
 class RegisterMutation(graphene.Mutation):
@@ -73,20 +75,34 @@ class LogoutMutation(graphene.Mutation):
 class SetEmailMutation(graphene.Mutation):
     """
     Set the email address of the currently logged in user.
+
     A notification is sent to the old address as well as the new one.
     The notification to the old address includes a link to undo the change.
-    The link effectively ends up calling the 'undoSetEmail' mutation.
+    The link effectively ends up calling the 'undoChangeEmail' mutation.
     """
 
     class Arguments:
         email_address = graphene.Argument(graphene.String, required=True)
 
-    user = graphene.Field(types.UserType, required=True)
+    user = graphene.Field(types.UserType)
+    message = graphene.Field(graphene.String, required=True)
+    success = graphene.Field(graphene.Boolean, required=True)
 
     @classmethod
     def mutate(cls, root, info, email_address):
-        # TODO Implement
-        pass
+        user = info.context.user    # type: UserModel
+        email_address = UserModel.objects.normalize_email(email_address)
+
+        if not user.is_authenticated:
+            return SetEmailMutation(success=False, message="You need to be authenticated to do this")
+
+        if email_address != user.email:
+            # only actually change the address if the are not equal
+            send_email_changed_notifications(info.context, user, email_address, user.email)
+            user.email = email_address
+            user.save()
+
+        return SetEmailMutation(success=True, message=f"Successfully changed email address to {email_address}", user=user)
 
 
 class UndoChangeEmailMutation(graphene.Mutation):

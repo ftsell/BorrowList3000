@@ -12,7 +12,7 @@ class Mutation(graphene.ObjectType):
     register = mutations.RegisterMutation.Field()
     login = mutations.LoginMutation.Field()
     logout = mutations.LogoutMutation.Field()
-    set_email = mutations.SetEmailMutation.Field()
+    set_email = mutations.SetEmailMutation.Field(deprecation_reason="superseded by 'undo_change_email'")
     undo_change_email = mutations.UndoChangeEmailMutation.Field()
     alter_user = mutations.AlterUser.Field()
     create_borrower = mutations.CreateBorrower.Field()
