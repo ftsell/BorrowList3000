@@ -15,13 +15,11 @@ from configurations import Configuration, values
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 class Base(Configuration):
-    # SECURITY WARNING: don't run with debug turned on in production!
-    DEBUG = True
-
     ALLOWED_HOSTS = []
 
     # Application definition
@@ -136,6 +134,7 @@ class Base(Configuration):
 
 class Dev(Base):
     SECRET_KEY = 'django-insecure-w=wf5uo!qsp=--f18j_wq_uc48813i(7f=ik913*j0j+t-0m5c'
+    DEBUG = True
 
     @classmethod
     def pre_setup(cls):
@@ -144,3 +143,4 @@ class Dev(Base):
 
 class Prod(Base):
     SECRET_KEY = values.SecretValue(environ_prefix="BL")
+    DEBUG = False
