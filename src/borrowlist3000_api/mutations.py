@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from graphql import ResolveInfo
 
 from borrowlist3000_api import types
-from borrowlist3000_bll.mails import send_email_changed_notifications, send_email_restored_notification
+from borrowlist3000_bll.mails import send_email_changed_notifications, send_email_restored_notification, send_password_changed_notification
 from borrowlist3000_bll.tokens import verify_email_restore_token
 from borrowlist3000_db import models
 from borrowlist3000_db.models import UserModel
@@ -143,14 +143,32 @@ class AlterUser(graphene.Mutation):
     """
 
     class Arguments:
-        user = graphene.Argument(types.UserInput)
+        user_input = graphene.Argument(types.UserInput, name="user")
 
-    user = graphene.Field(types.UserType, required=True)
+    user = graphene.Field(types.UserType)
+    message = graphene.Field(graphene.String, required=True)
+    success = graphene.Field(graphene.Boolean, required=True)
+
 
     @classmethod
-    def mutate(cls, root, info, user):
-        # TODO Implement
-        pass
+    def mutate(cls, root, info, user_input: types.UserInput):
+        user = info.context.user    # type: UserModel
+        if not user.is_authenticated:
+            return AlterUser(success=False, message="Authentication required")
+
+        if user.email != user_input.email:
+            new_address = UserModel.objects.normalize_email(user_input.email)
+            send_email_changed_notifications(info.context, user, new_address, user.email)
+            user.email = new_address
+            user.save()
+
+        if user_input.password is not None and not user.check_password(user_input.password):
+            user.set_password(user_input.password)
+            user.save()
+            send_password_changed_notification(info.context, user)
+
+        return AlterUser(success=True, message="Successfully altered user account", user=user)
+
 
 
 class CreateBorrower(graphene.Mutation):

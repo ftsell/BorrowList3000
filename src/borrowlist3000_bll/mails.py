@@ -56,3 +56,17 @@ def send_email_restored_notification(request: HttpRequest, user: UserModel):
         recipient_list=[user.email],
         html_message=mail_content
     )
+
+
+def send_password_changed_notification(request: HttpRequest, user: UserModel):
+    """
+    Send a notification the the users email address that their password has been changed.
+    """
+    mail_content = render_to_string("password_changed_notification.html.j2", {}, request)
+    send_mail(
+        subject="Your password has been changed",
+        message=None,
+        from_email=None,
+        recipient_list=[user.email],
+        html_message=mail_content,
+    )
