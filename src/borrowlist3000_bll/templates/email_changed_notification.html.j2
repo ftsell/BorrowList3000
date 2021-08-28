@@ -1,16 +1,15 @@
+{% extends "base_email.html.j2" %}
 {% load url_utils %}
 
-<html lang="en">
-<body>
-    <h1>Your email address has been changed to {{ new_email_address }}</h1>
+{% block content-header %}Your email address has been changed to {{ new_email_address }}{% endblock %}
 
+{% block content-body %}
     {% if restore_token %}
-        <p>
-            <a href="{% absolute_uri "/app/undoSetEmail?token="|add:restore_token %}">
-                <button>Click Here to undo the change</button>
-            </a>
-        </p>
-        <p>Alternatively you can navigate to <a href="{% absolute_uri "/app/undoSetEmail" %}">{% absolute_uri "/app/undoSetEmail" %}</a> and enter the token <i>{{ restore_token }}</i></p>
+        <a href="{% absolute_uri "/app/undoSetEmail?token="|add:restore_token %}">
+            <button>Click Here to undo the change</button>
+        </a>
+        <p>Alternatively you can navigate to
+            <a href="{% absolute_uri "/app/undoSetEmail" %}">{% absolute_uri "/app/undoSetEmail" %}</a>
+            and enter the token <i>{{ restore_token }}</i></p>
     {% endif %}
-</body>
-</html>
+{% endblock %}
