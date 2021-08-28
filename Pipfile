@@ -7,6 +7,8 @@ name = "pypi"
 django = "~=3.2"
 django-configurations = "~=2.2"
 graphene-django = "~=2.15"
+python-paseto = "~=0.5"
+cbor2 = "~=5.4"
 
 [dev-packages]
 

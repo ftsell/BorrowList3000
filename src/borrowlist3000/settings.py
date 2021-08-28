@@ -32,6 +32,7 @@ class Base(Configuration):
         'django.contrib.staticfiles',
         'graphene_django',
         'borrowlist3000_db',
+        'borrowlist3000_bll',
         'borrowlist3000_api',
     ]
 
@@ -160,7 +161,10 @@ class Dev(Base):
 
     @classmethod
     def pre_setup(cls):
+        from borrowlist3000_bll.tokens import generate_token_secret
+
         os.environ.setdefault("BL_DB_PATH", str(BASE_DIR.absolute().parent / "db.sqlite"))
+        os.environ.setdefault("BL_TOKEN_SECRET", generate_token_secret())
 
 
 class Prod(Base):
