@@ -125,10 +125,33 @@ class Base(Configuration):
             }
         }
 
+    @property
+    def EMAIL_BACKEND(self):
+        if self.EMAIL_HOST and self.EMAIL_FROM:
+            return "django.core.mail.backends.console.EmailBackend"
+        elif self.DEBUG:
+            return "django.core.mail.backends.console.EmailBackend"
+        else:
+            return "django.core.mail.backends.dummy.EmailBackend"
+
+    @property
+    def DEFAULT_FROM_MAIL(self):
+        return self.EMAIL_FROM
+
     ###
     # Runtime customizable settings
     ###
     DB_PATH = values.Value(environ_prefix="BL", environ_required=True)
+    TOKEN_SECRET = values.SecretValue(environ_prefix="BL")
+
+    EMAIL_FROM = values.Value(environ_prefix="BL")
+    EMAIL_HOST = values.Value(environ_prefix="BL")
+    EMAIL_PORT = values.IntegerValue(environ_prefix="BL", default=25)
+    EMAIL_HOST_USER = values.Value(environ_prefix="BL")
+    EMAIL_HOST_PASSWORD = values.Value(environ_prefix="BL")
+    EMAIL_USE_TLS = values.BooleanValue(environ_prefix="BL", default=False)
+    EMAIL_USE_SSL = values.BooleanValue(environ_prefix="BL", default=False)
+    EMAIL_TIMEOUT = values.IntegerValue(environ_prefix="BL")
 
 
 class Dev(Base):
