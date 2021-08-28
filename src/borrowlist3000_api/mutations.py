@@ -4,7 +4,8 @@ from django.contrib.auth import authenticate, login, logout
 from graphql import ResolveInfo
 
 from borrowlist3000_api import types
-from borrowlist3000_bll.mails import send_email_changed_notifications
+from borrowlist3000_bll.mails import send_email_changed_notifications, send_email_restored_notification
+from borrowlist3000_bll.tokens import verify_email_restore_token
 from borrowlist3000_db import models
 from borrowlist3000_db.models import UserModel
 
@@ -113,12 +114,23 @@ class UndoChangeEmailMutation(graphene.Mutation):
     class Arguments:
         auth_code = graphene.Argument(graphene.String, required=True)
 
-    user = graphene.Field(types.UserType, required=True)
+    message = graphene.Field(graphene.String, required=True)
+    success = graphene.Field(graphene.Boolean, required=True)
 
     @classmethod
-    def mutate(cls, root, info, auth_code):
-        # TODO Implement
-        pass
+    def mutate(cls, root, info, auth_code: str):
+        validated_data = verify_email_restore_token(auth_code)
+        if validated_data is None:
+            return UndoChangeEmailMutation(success=False, message="Invalid auth code")
+
+        user = UserModel.objects.get(id__exact=validated_data[0])
+        restore_address = UserModel.objects.normalize_email(validated_data[1])
+        if user.email != restore_address or True:
+            user.email = restore_address
+            user.save()
+            send_email_restored_notification(info.context, user)
+
+        return UndoChangeEmailMutation(success=True, message=f"Successfully restored email address to {validated_data[1]}")
 
 
 class AlterUser(graphene.Mutation):

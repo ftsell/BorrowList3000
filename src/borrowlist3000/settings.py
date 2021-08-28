@@ -164,7 +164,7 @@ class Dev(Base):
         from borrowlist3000_bll.tokens import generate_token_secret
 
         os.environ.setdefault("BL_DB_PATH", str(BASE_DIR.absolute().parent / "db.sqlite"))
-        os.environ.setdefault("BL_TOKEN_SECRET", generate_token_secret())
+        os.environ.setdefault("BL_TOKEN_SECRET", "k4.local.yJkP2aV2MFSLWHz1Qz6NncgWzXYLzkJUCRhWOputTGY=")
 
 
 class Prod(Base):

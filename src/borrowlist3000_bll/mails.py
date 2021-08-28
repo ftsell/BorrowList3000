@@ -37,3 +37,22 @@ def send_email_changed_notifications(request: HttpRequest, user: UserModel, new_
         recipient_list=[new_email_address],
         html_message=mail_content,
     )
+
+
+def send_email_restored_notification(request: HttpRequest, user: UserModel):
+    """
+    Send a notification to the users current email address that it has been reverted via a restore token.
+
+    For this to make sense it is expected that the user has its address already restored so that that is the *current*
+    one.
+    """
+    mail_content = render_to_string("email_restored_notification.html.j2", {
+        "user": user
+    }, request)
+    send_mail(
+        subject="Your email address has been restored",
+        message=None,
+        from_email=None,
+        recipient_list=[user.email],
+        html_message=mail_content
+    )
