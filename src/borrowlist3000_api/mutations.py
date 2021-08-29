@@ -7,7 +7,8 @@ from django.contrib.auth import authenticate, login, logout
 from graphql import ResolveInfo
 
 from borrowlist3000_api import types
-from borrowlist3000_bll.mails import send_email_changed_notifications, send_email_restored_notification, send_password_changed_notification
+from borrowlist3000_bll.mails import send_email_changed_notifications, send_email_restored_notification, \
+    send_password_changed_notification
 from borrowlist3000_bll.tokens import verify_email_restore_token
 from borrowlist3000_db import models
 from borrowlist3000_db.models import UserModel, BorrowerModel, BorrowedItemModel
@@ -94,7 +95,7 @@ class SetEmailMutation(graphene.Mutation):
 
     @classmethod
     def mutate(cls, root, info, email_address):
-        user = info.context.user    # type: UserModel
+        user = info.context.user  # type: UserModel
         email_address = UserModel.objects.normalize_email(email_address)
 
         if not user.is_authenticated:
@@ -106,7 +107,8 @@ class SetEmailMutation(graphene.Mutation):
             user.email = email_address
             user.save()
 
-        return SetEmailMutation(success=True, message=f"Successfully changed email address to {email_address}", user=user)
+        return SetEmailMutation(success=True, message=f"Successfully changed email address to {email_address}",
+                                user=user)
 
 
 class UndoChangeEmailMutation(graphene.Mutation):
@@ -133,7 +135,8 @@ class UndoChangeEmailMutation(graphene.Mutation):
             user.save()
             send_email_restored_notification(info.context, user)
 
-        return UndoChangeEmailMutation(success=True, message=f"Successfully restored email address to {validated_data[1]}")
+        return UndoChangeEmailMutation(success=True,
+                                       message=f"Successfully restored email address to {validated_data[1]}")
 
 
 class AlterUser(graphene.Mutation):
@@ -154,7 +157,7 @@ class AlterUser(graphene.Mutation):
 
     @classmethod
     def mutate(cls, root, info, user_input: types.UserInput):
-        user = info.context.user    # type: UserModel
+        user = info.context.user  # type: UserModel
         if not user.is_authenticated:
             return AlterUser(success=False, message="Authentication required")
 
@@ -189,7 +192,7 @@ class CreateBorrower(graphene.Mutation):
 
     @classmethod
     def mutate(cls, root, info: ResolveInfo, name: str):
-        user = info.context.user    # type: UserModel
+        user = info.context.user  # type: UserModel
         if not user.is_authenticated:
             return CreateBorrower(success=False, message="Authentication required")
 
@@ -213,15 +216,17 @@ class CreateBorrowedItem(graphene.Mutation):
     success = graphene.Field(graphene.Boolean, required=True)
 
     @classmethod
-    def mutate(cls, root, info: ResolveInfo, borrower_id: UUID, specifier: str, description: str = "", date_borrowed: datetime.date = None):
-        user = info.context.user    # type: UserModel
+    def mutate(cls, root, info: ResolveInfo, borrower_id: UUID, specifier: str, description: str = "",
+               date_borrowed: datetime.date = None):
+        user = info.context.user  # type: UserModel
         if not user.is_authenticated:
             return CreateBorrowedItem(success=False, message="Authentication required")
 
         borrower = BorrowerModel.objects.get(id=borrower_id)
         borrowed_item = BorrowedItemModel.objects.create(specifier=specifier, description=description,
-                                                                    date_borrowed=date_borrowed, borrower=borrower)
-        return CreateBorrowedItem(success=True, message=f"Successfully borrowed {specifier} to {borrower.name}", borrowed_item=borrowed_item)
+                                                         date_borrowed=date_borrowed, borrower=borrower)
+        return CreateBorrowedItem(success=True, message=f"Successfully borrowed {specifier} to {borrower.name}",
+                                  borrowed_item=borrowed_item)
 
 
 class DeleteBorrower(graphene.Mutation):
@@ -232,12 +237,12 @@ class DeleteBorrower(graphene.Mutation):
     class Arguments:
         id = graphene.Argument(graphene.UUID, required=True)
 
-    success = graphene.Field(graphene.Boolean, required=True)
     message = graphene.Field(graphene.String, required=True)
+    success = graphene.Field(graphene.Boolean, required=True)
 
     @classmethod
     def mutate(cls, root, info: ResolveInfo, id: UUID):
-        user = info.context.user    # type: UserModel
+        user = info.context.user  # type: UserModel
         if not user.is_authenticated:
             return DeleteBorrower(success=False, message="Authentication required")
 
@@ -255,9 +260,14 @@ class ReturnBorrowedItem(graphene.Mutation):
     class Arguments:
         id = graphene.Argument(graphene.UUID, required=True)
 
+    message = graphene.Field(graphene.String, required=True)
     success = graphene.Field(graphene.Boolean, required=True)
 
     @classmethod
-    def mutate(cls, root, info, id):
-        # TODO Implement
-        pass
+    def mutate(cls, root, info: ResolveInfo, id: UUID):
+        user = info.context.user  # type: UserModel
+        if not user.is_authenticated:
+            return DeleteBorrower(success=False, message="Authentication required")
+
+        BorrowedItemModel.objects.get(id=id).delete()
+        return ReturnBorrowedItem(success=True, message="Successfully deleted borrowed item")
