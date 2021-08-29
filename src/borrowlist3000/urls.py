@@ -14,7 +14,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path, include
+from django.views import defaults
 
 urlpatterns = [
-    path("api/", include("borrowlist3000_api.urls"))
+    path("api/", include("borrowlist3000_api.urls")),
+    # app/… urls are actually served via a special middleware.
+    # This route serves as an indication that something went wrong with that middleware
+    path("app/", lambda request: defaults.server_error(request)),
 ]

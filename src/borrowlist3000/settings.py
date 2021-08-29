@@ -20,8 +20,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 class Base(Configuration):
-    ALLOWED_HOSTS = []
-
     # Application definition
 
     INSTALLED_APPS = [
@@ -34,10 +32,12 @@ class Base(Configuration):
         'borrowlist3000_db',
         'borrowlist3000_bll',
         'borrowlist3000_api',
+        'borrowlist3000_frontend',
     ]
 
     MIDDLEWARE = [
         'django.middleware.security.SecurityMiddleware',
+        'borrowlist3000_frontend.middleware.BorrowlistFrontendMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
         'django.middleware.common.CommonMiddleware',
         'django.contrib.auth.middleware.AuthenticationMiddleware',
