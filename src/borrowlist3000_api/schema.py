@@ -6,6 +6,7 @@ from . import types
 
 class Query(graphene.ObjectType):
     me = graphene.Field(types.UserType, resolver=resolvers.resolve_me)
+    logged_in = graphene.Field(graphene.Boolean, resolver=resolvers.resolve_logged_in, required=True)
 
 
 class Mutation(graphene.ObjectType):
