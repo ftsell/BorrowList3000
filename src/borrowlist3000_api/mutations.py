@@ -1,4 +1,7 @@
+import datetime
 from typing import *
+from uuid import UUID
+
 import graphene
 from django.contrib.auth import authenticate, login, logout
 from graphql import ResolveInfo
@@ -7,7 +10,7 @@ from borrowlist3000_api import types
 from borrowlist3000_bll.mails import send_email_changed_notifications, send_email_restored_notification, send_password_changed_notification
 from borrowlist3000_bll.tokens import verify_email_restore_token
 from borrowlist3000_db import models
-from borrowlist3000_db.models import UserModel, BorrowerModel
+from borrowlist3000_db.models import UserModel, BorrowerModel, BorrowedItemModel
 
 
 class RegisterMutation(graphene.Mutation):
@@ -196,21 +199,29 @@ class CreateBorrower(graphene.Mutation):
 
 class CreateBorrowedItem(graphene.Mutation):
     """
-    Create a new borrowed item with the given data
+    Create a new borrowed item with the given data.
     """
 
     class Arguments:
-        borrower = graphene.Argument(graphene.UUID, required=True)
+        borrower_id = graphene.Argument(graphene.UUID, required=True, name="borrower")
         specifier = graphene.Argument(graphene.String, required=True)
         description = graphene.Argument(graphene.String)
         date_borrowed = graphene.Argument(graphene.Date)
 
-    borrowed_item = graphene.Field(types.BorrowedItemType, required=True)
+    borrowed_item = graphene.Field(types.BorrowedItemType)
+    message = graphene.Field(graphene.String, required=True)
+    success = graphene.Field(graphene.Boolean, required=True)
 
     @classmethod
-    def mutate(cls, root, info, borrower, specifier, description, date_borrowed):
-        # TODO Implement
-        pass
+    def mutate(cls, root, info: ResolveInfo, borrower_id: UUID, specifier: str, description: str = "", date_borrowed: datetime.date = None):
+        user = info.context.user    # type: UserModel
+        if not user.is_authenticated:
+            return CreateBorrowedItem(success=False, message="Authentication required")
+
+        borrower = BorrowerModel.objects.get(id=borrower_id)
+        borrowed_item = BorrowedItemModel.objects.create(specifier=specifier, description=description,
+                                                                    date_borrowed=date_borrowed, borrower=borrower)
+        return CreateBorrowedItem(success=True, message=f"Successfully borrowed {specifier} to {borrower.name}", borrowed_item=borrowed_item)
 
 
 class DeleteBorrower(graphene.Mutation):
