@@ -226,18 +226,23 @@ class CreateBorrowedItem(graphene.Mutation):
 
 class DeleteBorrower(graphene.Mutation):
     """
-    Delete the borrower with the given name and all their borrowed items
+    Delete the borrower with the given name and all their borrowed items.
     """
 
     class Arguments:
-        name = graphene.Argument(graphene.String, required=True)
+        id = graphene.Argument(graphene.UUID, required=True)
 
     success = graphene.Field(graphene.Boolean, required=True)
+    message = graphene.Field(graphene.String, required=True)
 
     @classmethod
-    def mutate(cls, root, info, name):
-        # TODO Implement
-        pass
+    def mutate(cls, root, info: ResolveInfo, id: UUID):
+        user = info.context.user    # type: UserModel
+        if not user.is_authenticated:
+            return DeleteBorrower(success=False, message="Authentication required")
+
+        BorrowerModel.objects.get(id=id).delete()
+        return DeleteBorrower(success=True, message="Successfully deleted borrower")
 
 
 class ReturnBorrowedItem(graphene.Mutation):
