@@ -49,7 +49,7 @@ class BorrowerModel(models.Model):
 class BorrowedItemModel(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid_default)
     specifier = models.CharField(max_length=120)
-    description = models.CharField(max_length=240, blank=True),
+    description = models.CharField(max_length=240, blank=True)
     date_borrowed = models.DateField(auto_now_add=True)
     borrower = models.ForeignKey(BorrowerModel, on_delete=models.CASCADE, related_name="borrowed_items",
                                  related_query_name="borrowed_item")
