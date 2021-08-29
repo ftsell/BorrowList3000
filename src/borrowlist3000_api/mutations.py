@@ -7,7 +7,7 @@ from borrowlist3000_api import types
 from borrowlist3000_bll.mails import send_email_changed_notifications, send_email_restored_notification, send_password_changed_notification
 from borrowlist3000_bll.tokens import verify_email_restore_token
 from borrowlist3000_db import models
-from borrowlist3000_db.models import UserModel
+from borrowlist3000_db.models import UserModel, BorrowerModel
 
 
 class RegisterMutation(graphene.Mutation):
@@ -149,7 +149,6 @@ class AlterUser(graphene.Mutation):
     message = graphene.Field(graphene.String, required=True)
     success = graphene.Field(graphene.Boolean, required=True)
 
-
     @classmethod
     def mutate(cls, root, info, user_input: types.UserInput):
         user = info.context.user    # type: UserModel
@@ -170,21 +169,29 @@ class AlterUser(graphene.Mutation):
         return AlterUser(success=True, message="Successfully altered user account", user=user)
 
 
-
 class CreateBorrower(graphene.Mutation):
     """
-    Create a new borrower with the given name
+    Create a new borrower with the given name.
+
+    If a borrower with that name already exists, the failure is hidden and this mutation returns as if the existing
+    borrower is the new one.
     """
 
     class Arguments:
         name = graphene.Argument(graphene.String, required=True)
 
-    borrower = graphene.Field(types.BorrowerType, required=True)
+    borrower = graphene.Field(types.BorrowerType)
+    message = graphene.Field(graphene.String, required=True)
+    success = graphene.Field(graphene.Boolean, required=True)
 
     @classmethod
-    def mutate(cls, root, info, name):
-        # TODO Implement
-        pass
+    def mutate(cls, root, info: ResolveInfo, name: str):
+        user = info.context.user    # type: UserModel
+        if not user.is_authenticated:
+            return CreateBorrower(success=False, message="Authentication required")
+
+        (borrower, created) = BorrowerModel.objects.get_or_create(name=name, lender=user)
+        return CreateBorrower(success=True, message=f"Successfully created borrower {name}", borrower=borrower)
 
 
 class CreateBorrowedItem(graphene.Mutation):
