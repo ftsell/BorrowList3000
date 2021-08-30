@@ -18,6 +18,14 @@ const routes: Array<RouteConfig> = [
         component: Auth,
     },
     {
+        path: "/settings",
+        name: "Settings",
+        component: () =>
+            import(
+                /* webpackChunkName: "chunk-index" */ "@/views/Settings.vue"
+            ),
+    },
+    {
         path: "*",
         component: NotFound,
     },
