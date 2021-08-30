@@ -36,7 +36,8 @@
 
 <script lang="ts">
 import gql from "graphql-tag";
-import { Component, Vue } from "vue-property-decorator";
+import { Component, InjectReactive, Vue } from "vue-property-decorator";
+import { Alert } from "@/utils";
 
 @Component
 export default class AuthForm extends Vue {
@@ -47,6 +48,8 @@ export default class AuthForm extends Vue {
   };
   usernameRules = [(v: string) => !!v || "Username is required"];
   passwordRules = [(v: string) => !!v || "Password is required"];
+
+  @InjectReactive() alerts!: Alert[];
 
   get formElement(): any {
     return this.$refs.form as Element;
@@ -71,7 +74,10 @@ export default class AuthForm extends Vue {
       });
 
       if (result.data.login.success === false) {
-        alert(result.data.login.message);
+        this.alerts.push({
+          message: result.data.login.message,
+          type: "error",
+        });
       } else {
         // perform cache-busting
         await this.$apollo.getClient().resetStore();

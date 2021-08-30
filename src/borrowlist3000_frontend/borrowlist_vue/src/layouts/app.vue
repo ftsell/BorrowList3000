@@ -34,17 +34,18 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, ProvideReactive } from "vue-property-decorator";
 import Footer from "@/components/Footer.vue";
+import { Alert } from "@/utils";
 
 @Component({
   components: { Footer },
+  provide: {
+    alerts: [],
+  },
 })
 export default class AppLayout extends Vue {
-  get alerts(): [] {
-    // TODO Implement alerts again
-    return [];
-  }
+  @ProvideReactive() alerts: Alert[] = [];
 
   get settingsButtonData() {
     const isSettings = this.$route.name === "Settings";
@@ -60,7 +61,7 @@ export default class AppLayout extends Vue {
 }
 </script>
 
-<style>
+<style scoped>
 #settings-link {
   position: fixed;
   top: 16px;
