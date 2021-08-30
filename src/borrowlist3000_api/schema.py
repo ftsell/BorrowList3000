@@ -5,8 +5,9 @@ from . import types
 
 
 class Query(graphene.ObjectType):
-    me = graphene.Field(types.UserType, resolver=resolvers.resolve_me)
     logged_in = graphene.Field(graphene.Boolean, resolver=resolvers.resolve_logged_in, required=True)
+    me = graphene.Field(types.UserType, resolver=resolvers.resolve_me)
+    borrower = graphene.Field(types.BorrowerType, resolver=resolvers.resolve_borrower, description=resolvers.resolve_borrower.__doc__, name=graphene.String(), id=graphene.UUID())
 
 
 class Mutation(graphene.ObjectType):
