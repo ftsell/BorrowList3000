@@ -1,6 +1,6 @@
 <template>
   <v-form ref="form" lazy-validation @submit.prevent="onFormSubmit">
-    <v-container class="d-flex flex-row align-baseline">
+    <v-container class="d-flex flex-row align-center">
       <p>Lend</p>
       <v-text-field
         v-model="formData.item"
