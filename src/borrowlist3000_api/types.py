@@ -2,6 +2,12 @@ import graphene
 from graphene_django import DjangoObjectType
 
 from borrowlist3000_db import models
+from . import resolvers
+
+
+class BorrowerType(DjangoObjectType):
+    class Meta:
+        model = models.BorrowerModel
 
 
 class UserType(DjangoObjectType):
@@ -9,10 +15,8 @@ class UserType(DjangoObjectType):
         model = models.UserModel
         fields = ("id", "username", "email", "borrowers")
 
-
-class BorrowerType(DjangoObjectType):
-    class Meta:
-        model = models.BorrowerModel
+    borrower = graphene.Field(BorrowerType, resolver=resolvers.resolve_borrower, description=resolvers.resolve_borrower.__doc__, name=graphene.String(), id=graphene.UUID())
+    borrowers = graphene.Field(graphene.List(BorrowerType), resolver=resolvers.resolve_borrowers, description=resolvers.resolve_borrowers.__doc__, name_contains=graphene.String())
 
 
 class BorrowedItemType(DjangoObjectType):
