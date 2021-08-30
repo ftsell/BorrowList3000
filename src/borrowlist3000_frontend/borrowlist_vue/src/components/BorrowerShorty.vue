@@ -20,7 +20,7 @@
               :key="item.id"
               cols="4"
             >
-              <borrowed-item-shorty :item="item" />
+              <borrowed-item-shorty :item="item" v-on="$listeners" />
             </v-col>
           </v-row>
         </div>
@@ -63,6 +63,8 @@ export default class BorrowerShorty extends Vue {
         id: this.borrower.id,
       },
     });
+
+    this.$emit("borrowerDeleted");
   }
 }
 </script>

@@ -46,6 +46,8 @@ export default class BorrowedItemShorty extends Vue {
         itemId: this.item.id,
       },
     });
+
+    this.$emit("itemReturned");
   }
 }
 </script>

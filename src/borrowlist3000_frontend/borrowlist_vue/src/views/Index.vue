@@ -1,17 +1,66 @@
 <template>
-  <default-layout>
-    <v-row align="center" justify="center">
-      <p>You will be redirected…</p>
-    </v-row>
-  </default-layout>
+  <app-layout>
+    <div v-if="user != null">
+      <!-- Normal page content -->
+      <v-row class="mx-16">
+        <v-col cols="12">
+          <smart-form
+            @borrowerAdded="refreshData"
+            @borrowedItemAdded="refreshData"
+          />
+        </v-col>
+        <v-col
+          v-for="borrower of user.borrowers"
+          :key="borrower.name"
+          cols="12"
+        >
+          <borrower-shorty
+            :borrower="borrower"
+            @borrowerDeleted="refreshData"
+            @itemReturned="refreshData"
+          />
+        </v-col>
+      </v-row>
+    </div>
+  </app-layout>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import DefaultLayout from "@/layouts/default.vue";
+import gql from "graphql-tag";
+import AppLayout from "@/layouts/app.vue";
+import BorrowerShorty from "@/components/BorrowerShorty.vue";
+import SmartForm from "@/components/forms/SmartForm.vue";
 
 @Component({
-  components: { DefaultLayout },
+  components: { AppLayout, SmartForm, BorrowerShorty },
+  apollo: {
+    user: gql`
+      query {
+        user: me {
+          email
+          username
+          id
+          borrowers {
+            id
+            name
+            borrowedItems {
+              id
+              specifier
+              description
+              dateBorrowed
+            }
+          }
+        }
+      }
+    `,
+  },
 })
-export default class Index extends Vue {}
+export default class Index extends Vue {
+  user: any;
+
+  async refreshData(): Promise<void> {
+    await this.$apollo.queries.user.refetch();
+  }
+}
 </script>

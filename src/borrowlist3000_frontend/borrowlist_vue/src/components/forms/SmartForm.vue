@@ -217,6 +217,7 @@ export default class SmartForm extends Vue {
         },
       });
       borrowerId = result.data.createBorrower.borrower.id;
+      this.$emit("borrowerAdded");
     } else {
       borrowerId = this.allBorrowers.find(
         (b) => b.name === this.formData.borrowerName
@@ -231,6 +232,7 @@ export default class SmartForm extends Vue {
         itemDescription: this.itemDescription,
       },
     });
+    this.$emit("borrowedItemAdded");
   }
 }
 </script>
