@@ -9,7 +9,7 @@ from django.conf import settings
 from borrowlist3000_db.models import UserModel, BorrowerModel
 
 
-@functools.cache
+@functools.lru_cache()
 def resolve_app_config(root, info: ResolveInfo) -> 'AppConfigType':
     from borrowlist3000_api.types import AppConfigType
     return AppConfigType(email_enabled=settings.EMAIL_ENABLED)
