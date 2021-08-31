@@ -1,26 +1,27 @@
-FROM docker.io/node:16-alpine
+FROM docker.io/node:16-alpine as node-build
+WORKDIR /app
+COPY src/borrowlist3000_frontend/borrowlist_vue/ /app/
+RUN yarn install --pure-lockfile
+RUN yarn run build
+
+FROM docker.io/tiangolo/uvicorn-gunicorn:python3.8-slim
 
 # add system dependencies
-RUN apk add --no-cache tini python3 make g++
+#RUN apk add --no-cache libsodium libsodium-dev libsodium-static
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends python3-pysodium
+RUN pip3 install pipenv
+WORKDIR /app
 
-# add sources
-WORKDIR /app/src
-COPY package.json yarn.lock LICENSE ./
-COPY packages ./packages
-RUN find \( -name .idea -o -name .nuxt -o -name node_modules \) -exec rm -rf {} +
+# install dependencies
+COPY Pipfile Pipfile.lock /app/
+RUN pipenv install --system --ignore-pipfile
 
-# build complete project
-RUN yarn install &&\
-    yarn cache clean --all
-
-RUN apk del python3 make g++
-
-# configure runtime information
-ENV NUXT_TELEMETRY_DISABLED=1
-ENV BL_DB_MIGRATE=true
-ENTRYPOINT ["/sbin/tini", "--"]
-CMD ["yarn", "--cwd", "./packages/BorrowList3000Frontend", "run", "dev", "-H", "0.0.0.0", "-p", "8000"]
-EXPOSE 8000
+# add remaining sources
+COPY src /app/
+COPY .docker/prestart.sh /app/
+RUN ln -sf /app/borrowlist3000/asgi.py /app/main.py
+COPY --from=node-build /app/dist /app/borrowlist3000_frontend/borrowlist_vue/dist/
 
 # add additional metadata
 LABEL org.opencontainers.image.title="BorrowList3000" \
