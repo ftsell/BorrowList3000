@@ -5,6 +5,7 @@ from . import types
 
 
 class Query(graphene.ObjectType):
+    app_config = graphene.Field(types.AppConfigType, resolver=resolvers.resolve_app_config, required=True)
     logged_in = graphene.Field(graphene.Boolean, resolver=resolvers.resolve_logged_in, required=True)
     me = graphene.Field(types.UserType, resolver=resolvers.resolve_me)
 

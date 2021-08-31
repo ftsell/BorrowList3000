@@ -201,6 +201,7 @@ class Base(Configuration):
 class Dev(Base):
     SECRET_KEY = 'django-insecure-w=wf5uo!qsp=--f18j_wq_uc48813i(7f=ik913*j0j+t-0m5c'
     DEBUG = True
+    EMAIL_ENABLED = True
 
     @classmethod
     def pre_setup(cls):
@@ -214,3 +215,8 @@ class Prod(Base):
     DEBUG = False
     SECRET_KEY = values.SecretValue(environ_prefix="BL")
     ALLOWED_HOSTS = values.ListValue(environ_prefix="BL", environ_required=True)
+
+    @property
+    def EMAIL_ENABLED(self):
+        return self.EMAIL_HOST and self.EMAIL_FROM
+

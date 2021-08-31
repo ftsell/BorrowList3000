@@ -5,6 +5,10 @@ from borrowlist3000_db import models
 from . import resolvers
 
 
+class AppConfigType(graphene.ObjectType):
+    email_enabled = graphene.Field(graphene.Boolean, description="Whether email related features are enabled")
+
+
 class BorrowerType(DjangoObjectType):
     class Meta:
         model = models.BorrowerModel

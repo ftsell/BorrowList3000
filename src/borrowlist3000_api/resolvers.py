@@ -1,9 +1,18 @@
+import functools
 from typing import *
 from uuid import UUID
 
 from graphql import ResolveInfo
 
+from django.conf import settings
+
 from borrowlist3000_db.models import UserModel, BorrowerModel
+
+
+@functools.cache
+def resolve_app_config(root, info: ResolveInfo) -> 'AppConfigType':
+    from borrowlist3000_api.types import AppConfigType
+    return AppConfigType(email_enabled=settings.EMAIL_ENABLED)
 
 
 def resolve_me(root, info: ResolveInfo):
