@@ -30,9 +30,17 @@ function routes(apolloProvider: VueApollo): RouteConfig[] {
             name: "Settings",
             component: () =>
                 import(
-                    /* webpackChunkName: "chunk-index" */ "@/views/Settings.vue"
+                    /* webpackChunkName: "chunk-settings" */ "@/views/Settings.vue"
                 ),
             beforeEnter: loginRequiredInst,
+        },
+        {
+            path: "/undoSetEmail",
+            name: "UndoSetEmail",
+            component: () =>
+                import(
+                    /* webpackChunkName: "chunk-undoSetEmail" */ "@/views/UndoSetEmail.vue"
+                ),
         },
         {
             path: "*",
