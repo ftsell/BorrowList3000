@@ -4,6 +4,26 @@
   </div>
 </template>
 
+<script lang="ts">
+import { Component, Vue, ProvideReactive } from "vue-property-decorator";
+import gql from "graphql-tag";
+
+@Component({
+  apollo: {
+    appConfig: gql`
+      query {
+        appConfig {
+          emailEnabled
+        }
+      }
+    `,
+  },
+})
+export default class App extends Vue {
+  @ProvideReactive() appConfig: any;
+}
+</script>
+
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

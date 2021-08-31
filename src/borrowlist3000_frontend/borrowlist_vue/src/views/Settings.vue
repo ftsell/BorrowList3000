@@ -14,7 +14,7 @@
               type="password"
             />
           </v-row>
-          <v-row v-if="isEmailEnabled">
+          <v-row v-if="appConfig.emailEnabled">
             <v-text-field v-model="user.email" label="EMail address" />
           </v-row>
 
@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, InjectReactive } from "vue-property-decorator";
 import gql from "graphql-tag";
 import AppLayout from "@/layouts/app.vue";
 
@@ -54,12 +54,9 @@ import AppLayout from "@/layouts/app.vue";
   },
 })
 export default class Settings extends Vue {
+  @InjectReactive() appConfig!: any;
   user: any | null = null;
   editable = false;
-
-  get isEmailEnabled() {
-    return true;
-  }
 
   get formElement(): any {
     return this.$refs.form;
