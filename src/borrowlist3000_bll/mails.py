@@ -1,6 +1,7 @@
 from django.http import HttpRequest
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
+from django.conf import settings
 
 from borrowlist3000_db.models import UserModel
 from . import tokens
@@ -21,7 +22,7 @@ def send_email_changed_notifications(request: HttpRequest, user: UserModel, new_
         send_mail(
             subject="Your email address has been changed",
             message=None,
-            from_email=None,
+            from_email=settings.EMAIL_FROM,
             recipient_list=[old_email_address],
             html_message=mail_content,
         )
@@ -33,7 +34,7 @@ def send_email_changed_notifications(request: HttpRequest, user: UserModel, new_
     send_mail(
         subject="Your email address has been changed",
         message=None,
-        from_email=None,
+        from_email=settings.EMAIL_FROM,
         recipient_list=[new_email_address],
         html_message=mail_content,
     )

@@ -138,7 +138,7 @@ class Base(Configuration):
 
     @property
     def EMAIL_BACKEND(self):
-        if self.EMAIL_ENABLED:
+        if self.EMAIL_ENABLED and not self.DEBUG:
                 return "django.core.mail.backends.smtp.EmailBackend"
         elif self.DEBUG:
             return "django.core.mail.backends.console.EmailBackend"
@@ -209,6 +209,7 @@ class Dev(Base):
 
         os.environ.setdefault("BL_DB_PATH", str(BASE_DIR.absolute().parent / "db.sqlite"))
         os.environ.setdefault("BL_TOKEN_SECRET", "k4.local.yJkP2aV2MFSLWHz1Qz6NncgWzXYLzkJUCRhWOputTGY=")
+        os.environ.setdefault("BL_EMAIL_FROM", "no-reply@borrowlist.dreitausend.eu")
 
 
 class Prod(Base):
