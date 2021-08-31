@@ -37,12 +37,12 @@ class Base(Configuration):
 
     MIDDLEWARE = [
         'django.middleware.security.SecurityMiddleware',
-        'borrowlist3000_frontend.middleware.BorrowlistFrontendMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
         'django.middleware.common.CommonMiddleware',
         'django.contrib.auth.middleware.AuthenticationMiddleware',
         'django.contrib.messages.middleware.MessageMiddleware',
         'django.middleware.clickjacking.XFrameOptionsMiddleware',
+        'borrowlist3000_frontend.middleware.BorrowlistFrontendMiddleware',
     ]
 
     ROOT_URLCONF = 'borrowlist3000.urls'
@@ -168,5 +168,6 @@ class Dev(Base):
 
 
 class Prod(Base):
-    SECRET_KEY = values.SecretValue(environ_prefix="BL")
     DEBUG = False
+    SECRET_KEY = values.SecretValue(environ_prefix="BL")
+    ALLOWED_HOSTS = values.ListValue(environ_prefix="BL", environ_required=True)
