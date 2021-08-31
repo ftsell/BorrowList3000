@@ -139,7 +139,7 @@ class Base(Configuration):
     @property
     def EMAIL_BACKEND(self):
         if self.EMAIL_HOST and self.EMAIL_FROM:
-            return "django.core.mail.backends.console.EmailBackend"
+                return "django.core.mail.backends.smtp.EmailBackend"
         elif self.DEBUG:
             return "django.core.mail.backends.console.EmailBackend"
         else:
