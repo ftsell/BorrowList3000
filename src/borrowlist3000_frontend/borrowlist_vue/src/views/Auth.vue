@@ -21,7 +21,11 @@ import AuthForm from "@/components/forms/AuthForm.vue";
 export default class Auth extends Vue {
   onLoggedIn(result: any): void {
     if (result.success === true) {
-      this.$router.push({ name: "Index" });
+      if (this.$route.query.next) {
+        this.$router.push({ path: this.$route.query.next as string });
+      } else {
+        this.$router.push({ name: "Index" });
+      }
     }
   }
 }

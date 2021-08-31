@@ -2,39 +2,49 @@ import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import Auth from "@/views/Auth.vue";
 import NotFound from "@/views/404.vue";
+import { loginRequired } from "@/route-guards";
+import VueApollo from "vue-apollo";
 
 Vue.use(VueRouter);
 
-const routes: Array<RouteConfig> = [
-    {
-        path: "/",
-        name: "Index",
-        component: () =>
-            import(/* webpackChunkName: "chunk-index" */ "@/views/Index.vue"),
-    },
-    {
-        path: "/auth",
-        name: "Auth",
-        component: Auth,
-    },
-    {
-        path: "/settings",
-        name: "Settings",
-        component: () =>
-            import(
-                /* webpackChunkName: "chunk-index" */ "@/views/Settings.vue"
-            ),
-    },
-    {
-        path: "*",
-        component: NotFound,
-    },
-];
+function routes(apolloProvider: VueApollo): RouteConfig[] {
+    const loginRequiredInst = loginRequired(apolloProvider);
 
-const router = new VueRouter({
-    mode: "history",
-    base: process.env.BASE_URL,
-    routes,
-});
+    return [
+        {
+            path: "/",
+            name: "Index",
+            component: () =>
+                import(
+                    /* webpackChunkName: "chunk-index" */ "@/views/Index.vue"
+                ),
+            beforeEnter: loginRequiredInst,
+        },
+        {
+            path: "/auth",
+            name: "Auth",
+            component: Auth,
+        },
+        {
+            path: "/settings",
+            name: "Settings",
+            component: () =>
+                import(
+                    /* webpackChunkName: "chunk-index" */ "@/views/Settings.vue"
+                ),
+            beforeEnter: loginRequiredInst,
+        },
+        {
+            path: "*",
+            component: NotFound,
+        },
+    ];
+}
 
-export default router;
+export default function (apolloProvider: VueApollo): VueRouter {
+    return new VueRouter({
+        mode: "history",
+        base: process.env.BASE_URL,
+        routes: routes(apolloProvider),
+    });
+}
