@@ -195,7 +195,6 @@ class Base(Configuration):
     EMAIL_HOST_PASSWORD = values.Value(environ_prefix="BL")
     EMAIL_USE_TLS = values.BooleanValue(environ_prefix="BL", default=False)
     EMAIL_USE_SSL = values.BooleanValue(environ_prefix="BL", default=False)
-    EMAIL_TIMEOUT = values.IntegerValue(environ_prefix="BL")
 
 
 class Dev(Base):
