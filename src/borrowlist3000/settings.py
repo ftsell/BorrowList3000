@@ -96,6 +96,11 @@ class Base(Configuration):
 
     USE_TZ = True
 
+    SILENCED_SYSTEM_CHECKS = [
+        # disable warnings about missing CSRF middleware because the API is supposed to be publicly accessible
+        "security.W003",
+    ]
+
     # Static files (CSS, JavaScript, Images)
     # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
@@ -111,6 +116,11 @@ class Base(Configuration):
     GRAPHENE = {
         'SCHEMA': 'borrowlist3000_api.schema.schema'
     }
+
+    # Security relevant settings
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+    SECURE_HSTS_PRELOAD = True
 
     ###
     # Computed settings
@@ -139,11 +149,44 @@ class Base(Configuration):
     def DEFAULT_FROM_MAIL(self):
         return self.EMAIL_FROM
 
+    @property
+    def SESSION_COOKIE_SECURE(self):
+        return self.SERVED_OVER_HTTPS
+
+    @property
+    def SECURE_SSL_REDIRECT(self):
+        return self.SERVED_OVER_HTTPS
+
+    @property
+    def SECURE_HSTS_SECONDS(self):
+        if self.SERVED_OVER_HTTPS:
+            return self.HSTS_SECONDS
+        return 0
+
+    @property
+    def SECURE_PROXY_SSL_HEADER(self):
+        return ("HTTP_X_FORWARDED_PROTO", "https") if self.TRUST_REVERSE_PROXY else None
+
+    @property
+    def USE_X_FORWARDED_HOST(self):
+        return self.TRUST_REVERSE_PROXY
+
+    @property
+    def USE_X_FORWARDED_PORT(self):
+        return self.TRUST_REVERSE_PROXY
+
+    @property
+    def SESSION_COOKIE_SECURE(self):
+        return self.SERVED_OVER_HTTPS
+
     ###
     # Runtime customizable settings
     ###
     DB_PATH = values.Value(environ_prefix="BL", environ_required=True)
     TOKEN_SECRET = values.SecretValue(environ_prefix="BL")
+    SERVED_OVER_HTTPS = values.BooleanValue(environ_prefix="BL", default=False)
+    HSTS_SECONDS = values.IntegerValue(environ_prefix="BL", default=63072000)
+    TRUST_REVERSE_PROXY = values.BooleanValue(environ_prefix="BL", default=False)
 
     EMAIL_FROM = values.Value(environ_prefix="BL")
     EMAIL_HOST = values.Value(environ_prefix="BL")
