@@ -138,7 +138,7 @@ class Base(Configuration):
 
     @property
     def EMAIL_BACKEND(self):
-        if self.EMAIL_HOST and self.EMAIL_FROM:
+        if self.EMAIL_ENABLED:
                 return "django.core.mail.backends.smtp.EmailBackend"
         elif self.DEBUG:
             return "django.core.mail.backends.console.EmailBackend"
@@ -218,5 +218,5 @@ class Prod(Base):
 
     @property
     def EMAIL_ENABLED(self):
-        return self.EMAIL_HOST and self.EMAIL_FROM
+        return self.EMAIL_HOST is not None and self.EMAIL_FROM is not None
 
