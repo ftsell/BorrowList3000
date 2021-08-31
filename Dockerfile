@@ -23,7 +23,13 @@ COPY .docker/prestart.sh /app/
 RUN ln -sf /app/borrowlist3000/asgi.py /app/main.py
 COPY --from=node-build /app/dist /app/borrowlist3000_frontend/borrowlist_vue/dist/
 
+# setup recommended container config
+RUN mkdir /app/data
+ENV DJANGO_CONFIGURATION=Prod
+ENV BL_DB_PATH=/app/data/db.sqlite
+
 # add additional metadata
+VOLUME /app/data
 LABEL org.opencontainers.image.title="BorrowList3000" \
     org.opencontainers.image.description="Simple application to keep track of who borrowed what stuff" \
     org.opencontainers.image.authors="ftsell <dev@finn-thorben.me>" \

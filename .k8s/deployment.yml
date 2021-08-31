@@ -30,7 +30,7 @@ spec:
                                 optional: true
                     volumeMounts:
                         -   name: storage
-                            mountPath: /app/storage
+                            mountPath: /app/data
                     ports:
                         -   name: http
                             containerPort: 8000
