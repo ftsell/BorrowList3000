@@ -9,4 +9,5 @@ class Command(BaseCommand):
         token = generate_token_secret()
         self.stdout.write("The secret is " + self.style.SUCCESS(token))
         self.stdout.write()
-        self.stdout.write("Apply it by setting the environment variable " + self.style.SQL_KEYWORD("BL_TOKEN_SECRET") + " to " + self.style.SQL_KEYWORD(token))
+        self.stdout.write(
+            "Apply it by setting the environment variable " + self.style.SQL_KEYWORD(f"BL_TOKEN_SECRET={token}"))
