@@ -33,12 +33,12 @@ spec:
                             mountPath: /app/data
                     ports:
                         -   name: http
-                            containerPort: 8000
+                            containerPort: 80
                     readinessProbe:
-                        httpGet:
+                        tcpSocket:
                             port: http
                     livenessProbe:
-                        httpGet:
+                        tcpSocket:
                             port: http
 
 
