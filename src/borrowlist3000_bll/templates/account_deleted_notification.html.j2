@@ -1,0 +1,10 @@
+{% extends "base_email.html.j2" %}
+
+{% block content-header %}Your account has been deleted{% endblock %}
+
+{% block content-body %}
+    <p>
+        Your account named {{ user.username }} has been completely and irreversibly deleted.
+        All data has been removed from the system.
+    </p>
+{% endblock %}

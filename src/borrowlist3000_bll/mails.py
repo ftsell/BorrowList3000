@@ -42,7 +42,7 @@ def send_email_changed_notifications(request: HttpRequest, user: UserModel, new_
 
 def send_email_restored_notification(request: HttpRequest, user: UserModel):
     """
-    Send a notification to the users current email address that it has been reverted via a restore token.
+    Send a notification to the user's current email address that it has been reverted via a restore token.
 
     For this to make sense it is expected that the user has its address already restored so that that is the *current*
     one.
@@ -53,7 +53,7 @@ def send_email_restored_notification(request: HttpRequest, user: UserModel):
     send_mail(
         subject="Your email address has been restored",
         message=None,
-        from_email=None,
+        from_email=settings.EMAIL_FROM,
         recipient_list=[user.email],
         html_message=mail_content
     )
@@ -61,13 +61,29 @@ def send_email_restored_notification(request: HttpRequest, user: UserModel):
 
 def send_password_changed_notification(request: HttpRequest, user: UserModel):
     """
-    Send a notification the the users email address that their password has been changed.
+    Send a notification to the user's email address that their password has been changed.
     """
     mail_content = render_to_string("password_changed_notification.html.j2", {}, request)
     send_mail(
         subject="Your password has been changed",
         message=None,
-        from_email=None,
+        from_email=settings.EMAIL_FROM,
         recipient_list=[user.email],
         html_message=mail_content,
+    )
+
+
+def send_account_deleted_notification(request: HttpRequest, user: UserModel):
+    """
+    Send a notification to the user's email address that their account has been deleted.
+    """
+    mail_content = render_to_string("account_deleted_notification.html.j2", {
+        "user": user
+    }, request)
+    send_mail(
+        subject="Your account has been deleted",
+        message=None,
+        from_email=settings.EMAIL_FROM,
+        recipient_list=[user.email],
+        html_message=mail_content
     )

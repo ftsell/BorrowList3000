@@ -8,7 +8,7 @@ from graphql import ResolveInfo
 
 from borrowlist3000_api import types
 from borrowlist3000_bll.mails import send_email_changed_notifications, send_email_restored_notification, \
-    send_password_changed_notification
+    send_password_changed_notification, send_account_deleted_notification
 from borrowlist3000_bll.tokens import verify_email_restore_token
 from borrowlist3000_db import models
 from borrowlist3000_db.models import UserModel, BorrowerModel, BorrowedItemModel
@@ -137,6 +137,28 @@ class UndoChangeEmailMutation(graphene.Mutation):
 
         return UndoChangeEmailMutation(success=True,
                                        message=f"Successfully restored email address to {validated_data[1]}")
+
+
+class DeleteAccount(graphene.Mutation):
+    """
+    Completely and irreversibly delete the current user's account with all its data from the system.
+    """
+
+    class Arguments:
+        pass
+
+    message = graphene.Field(graphene.String, required=True)
+    success = graphene.Field(graphene.Boolean, required=True)
+
+    @classmethod
+    def mutate(cls, root, info: ResolveInfo) -> 'DeleteAccount':
+        user = info.context.user  # type: UserModel
+        if not user.is_authenticated:
+            return DeleteAccount(success=False, message="Authentication required")
+
+        send_account_deleted_notification(info.context, user)
+        user.delete()
+        return DeleteAccount(success=True, message="Successfully deleted user account")
 
 
 class AlterUser(graphene.Mutation):
