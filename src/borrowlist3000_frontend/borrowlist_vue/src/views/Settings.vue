@@ -1,6 +1,6 @@
 <template>
   <app-layout>
-    <div v-if="!$apollo.loading" class="mx-16">
+    <div v-if="user != null" class="mx-16">
       <v-form ref="form" :disabled="!editable" @submit.prevent="onFormSubmit">
         <v-container>
           <!-- Form Fields -->
@@ -30,6 +30,16 @@
           </v-row>
         </v-container>
       </v-form>
+
+      <v-spacer class="my-8" />
+
+      <v-container>
+        <v-row>
+          <v-btn color="red" outlined @click="onDeleteClicked"
+            >Delete Account
+          </v-btn>
+        </v-row>
+      </v-container>
     </div>
   </app-layout>
 </template>
@@ -80,6 +90,27 @@ export default class Settings extends Vue {
       });
 
       this.editable = false;
+    }
+  }
+
+  async onDeleteClicked(): Promise<void> {
+    if (
+      confirm(
+        "You are about to delete your account with all your data. Are you sure?"
+      )
+    ) {
+      await this.$apollo.mutate({
+        mutation: gql`
+          mutation {
+            deleteAccount {
+              success
+            }
+          }
+        `,
+      });
+
+      await this.$apollo.getClient().resetStore();
+      await this.$router.push({ name: "Auth" });
     }
   }
 }
