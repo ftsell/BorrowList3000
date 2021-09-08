@@ -87,3 +87,19 @@ def send_account_deleted_notification(request: HttpRequest, user: UserModel):
         recipient_list=[user.email],
         html_message=mail_content
     )
+
+
+def send_username_changed_notification(request: HttpRequest, user: UserModel):
+    """
+    Send a notification to the user's email address that their username has been changed.
+    """
+    mail_content = render_to_string("username_changed_notification.html", {
+        "user": user
+    }, request)
+    send_mail(
+        subject="Your username has been changed",
+        message=None,
+        from_email=settings.EMAIL_FROM,
+        recipient_list=[user.email],
+        html_message=mail_content
+    )

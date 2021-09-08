@@ -7,8 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from graphql import ResolveInfo
 
 from borrowlist3000_api import types
-from borrowlist3000_bll.mails import send_email_changed_notifications, send_email_restored_notification, \
-    send_password_changed_notification, send_account_deleted_notification
+from borrowlist3000_bll import mails
 from borrowlist3000_bll.tokens import verify_email_restore_token
 from borrowlist3000_db import models
 from borrowlist3000_db.models import UserModel, BorrowerModel, BorrowedItemModel
@@ -103,7 +102,7 @@ class SetEmailMutation(graphene.Mutation):
 
         if email_address != user.email:
             # only actually change the address if the are not equal
-            send_email_changed_notifications(info.context, user, email_address, user.email)
+            mails.send_email_changed_notifications(info.context, user, email_address, user.email)
             user.email = email_address
             user.save()
 
@@ -133,7 +132,7 @@ class UndoChangeEmailMutation(graphene.Mutation):
         if user.email != restore_address or True:
             user.email = restore_address
             user.save()
-            send_email_restored_notification(info.context, user)
+            mails.send_email_restored_notification(info.context, user)
 
         return UndoChangeEmailMutation(success=True,
                                        message=f"Successfully restored email address to {validated_data[1]}")
@@ -156,7 +155,7 @@ class DeleteAccount(graphene.Mutation):
         if not user.is_authenticated:
             return DeleteAccount(success=False, message="Authentication required")
 
-        send_account_deleted_notification(info.context, user)
+        mails.send_account_deleted_notification(info.context, user)
         user.delete()
         return DeleteAccount(success=True, message="Successfully deleted user account")
 
@@ -183,16 +182,21 @@ class AlterUser(graphene.Mutation):
         if not user.is_authenticated:
             return AlterUser(success=False, message="Authentication required")
 
+        if user.username != UserModel.normalize_username(user_input.username):
+            user.username = UserModel.normalize_username(user_input.username)
+            mails.send_username_changed_notification(info.context, user)
+            user.save()
+
         if user.email != user_input.email:
             new_address = UserModel.objects.normalize_email(user_input.email)
-            send_email_changed_notifications(info.context, user, new_address, user.email)
+            mails.send_email_changed_notifications(info.context, user, new_address, user.email)
             user.email = new_address
             user.save()
 
         if user_input.password is not None and not user.check_password(user_input.password):
             user.set_password(user_input.password)
             user.save()
-            send_password_changed_notification(info.context, user)
+            mails.send_password_changed_notification(info.context, user)
 
         return AlterUser(success=True, message="Successfully altered user account", user=user)
 

@@ -29,5 +29,6 @@ class BorrowedItemType(DjangoObjectType):
 
 
 class UserInput(graphene.InputObjectType):
+    username = graphene.String()
     password = graphene.String()
     email = graphene.String()
