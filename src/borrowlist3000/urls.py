@@ -15,12 +15,11 @@ Including another URLconf
 """
 from django.urls import path, include
 from django.shortcuts import redirect
-from django.views import defaults
 
 urlpatterns = [
     path("api/", include("borrowlist3000_api.urls")),
     # app/… urls are actually served via a special middleware.
     # This route serves as an indication that something went wrong with that middleware
-    path("app/", lambda request: defaults.server_error(request)),
+    path("app/", include("borrowlist3000_frontend.urls")),
     path("", lambda request: redirect("/app"))
 ]

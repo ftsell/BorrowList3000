@@ -42,7 +42,6 @@ class Base(Configuration):
         'django.contrib.auth.middleware.AuthenticationMiddleware',
         'django.contrib.messages.middleware.MessageMiddleware',
         'django.middleware.clickjacking.XFrameOptionsMiddleware',
-        'borrowlist3000_frontend.middleware.BorrowlistFrontendMiddleware',
     ]
 
     ROOT_URLCONF = 'borrowlist3000.urls'
