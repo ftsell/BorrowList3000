@@ -4,7 +4,7 @@
       <v-container>
         <!-- Form Fields -->
         <v-row>
-          <v-text-field v-model="user.username" label="Username" disabled />
+          <v-text-field v-model="user.username" label="Username" />
         </v-row>
         <v-row>
           <v-text-field
@@ -62,8 +62,10 @@ export default class UserEditForm extends Vue {
     if (this.formElement.validate()) {
       await this.$apollo.mutate({
         mutation: gql`
-          mutation ($email: String, $password: String) {
-            alterUser(user: { email: $email, password: $password }) {
+          mutation ($email: String, $password: String, $username: String) {
+            alterUser(
+              user: { email: $email, password: $password, username: $username }
+            ) {
               user {
                 id
                 username
@@ -72,7 +74,11 @@ export default class UserEditForm extends Vue {
             }
           }
         `,
-        variables: this.user,
+        variables: {
+          username: this.user.username,
+          password: this.user.password,
+          email: this.user.email,
+        },
       });
 
       this.editable = false;
