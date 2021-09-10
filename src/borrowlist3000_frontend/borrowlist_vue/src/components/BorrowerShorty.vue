@@ -2,7 +2,7 @@
   <v-card shaped outlined>
     <v-card-text>
       <div class="d-flex align-start flex-row">
-        <borrower-profile-picture class="mr-4" />
+        <borrower-profile-picture class="mr-4" :name="borrower.name" />
 
         <div class="mr-8 mt-1">
           <span class="text-capitalize text-h3 font-weight-light">{{
