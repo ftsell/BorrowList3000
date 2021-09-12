@@ -2,11 +2,16 @@ import uuid
 
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.utils.crypto import get_random_string
 from django.db import models
 
 
 def uuid_default() -> uuid.UUID:
     return uuid.uuid4()
+
+
+def password_reset_token_default() -> str:
+    return get_random_string(60)
 
 
 class UserManager(BaseUserManager):
@@ -32,6 +37,12 @@ class UserModel(AbstractBaseUser):
     EMAIL_FIELD = "email"
 
     objects = UserManager()
+
+
+class PasswordReset(models.Model):
+    token = models.CharField(primary_key=True, max_length=60, default=password_reset_token_default)
+    user = models.ForeignKey(to=UserModel, on_delete=models.CASCADE, related_name="password_resets", related_query_name="password_reset")
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 class BorrowerModel(models.Model):

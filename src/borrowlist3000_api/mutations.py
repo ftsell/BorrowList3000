@@ -3,7 +3,9 @@ from typing import *
 from uuid import UUID
 
 import graphene
+from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
+from django.utils import timezone
 from graphql import ResolveInfo
 
 from borrowlist3000_api import types
@@ -158,6 +160,66 @@ class DeleteAccount(graphene.Mutation):
         mails.send_account_deleted_notification(info.context, user)
         user.delete()
         return DeleteAccount(success=True, message="Successfully deleted user account")
+
+
+class ForgotPassword1(graphene.Mutation):
+    """
+    Start a password reset procedure for the given username.
+
+    The user will be sent an email to their configured address to complete it.
+    """
+
+    class Arguments:
+        username = graphene.Argument(graphene.String, required=True)
+
+    message = graphene.Field(graphene.String, required=True)
+    success = graphene.Field(graphene.Boolean, required=True)
+
+    @classmethod
+    def mutate(cls, root, info: ResolveInfo, username: str) -> 'ForgotPassword1':
+        if not settings.EMAIL_ENABLED:
+            raise Exception("email features are disabled")
+
+        try:
+            mails.send_password_reset_instructions(info.context, UserModel.objects.get(username__iexact=username))
+        finally:
+            return ForgotPassword1(success=True,
+                                   message="An email has been sent to your configured address with additional instructions")
+
+
+class ForgotPassword2(graphene.Mutation):
+    """
+    Complete a password reset procedure using the given token.
+    """
+
+    class Arguments:
+        token = graphene.Argument(graphene.String, required=True)
+        new_password = graphene.Argument(graphene.String, required=True)
+
+    message = graphene.Field(graphene.String, required=True)
+    success = graphene.Field(graphene.Boolean, required=True)
+
+    @classmethod
+    def mutate(cls, root, info: ResolveInfo, token: str, new_password: str) -> 'ForgotPassword2':
+        try:
+            password_reset = models.PasswordReset.objects.select_related("user").get(token=token)
+        except models.PasswordReset.DoesNotExist:
+            # token does not exist
+            return ForgotPassword2(success=False, message="Invalid token")
+
+        if password_reset.created_at + datetime.timedelta(hours=1) < timezone.now():
+            # token expired
+            return ForgotPassword2(success=False, message="Invalid token")
+
+        # actually change the password
+        user = password_reset.user
+        user.set_password(new_password)
+        user.save()
+        mails.send_password_changed_notification(info.context, user)
+
+        password_reset.delete()
+
+        return ForgotPassword2(success=True, message="Successfully reset password")
 
 
 class AlterUser(graphene.Mutation):

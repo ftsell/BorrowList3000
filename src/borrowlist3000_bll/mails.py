@@ -103,3 +103,24 @@ def send_username_changed_notification(request: HttpRequest, user: UserModel):
         recipient_list=[user.email],
         html_message=mail_content
     )
+
+
+def send_password_reset_instructions(request: HttpRequest, user: UserModel):
+    """
+    Send an email to the given user which includes instructions and a link to complete the password reset procedure.
+    """
+    # generate reset token
+    password_reset = user.password_resets.create()
+
+    # send mail
+    mail_content = render_to_string("mails/password_reset_instructions.html", {
+        "user": user,
+        "reset_token": password_reset.token
+    }, request)
+    send_mail(
+        subject="You have requested to reset your password",
+        message=None,
+        from_email=settings.EMAIL_FROM,
+        recipient_list=[user.email],
+        html_message=mail_content
+    )

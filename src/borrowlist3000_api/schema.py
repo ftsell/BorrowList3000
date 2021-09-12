@@ -17,6 +17,8 @@ class Mutation(graphene.ObjectType):
     set_email = mutations.SetEmailMutation.Field(deprecation_reason="superseded by 'undo_change_email'")
     undo_change_email = mutations.UndoChangeEmailMutation.Field()
     delete_account = mutations.DeleteAccount.Field()
+    forgot_password1 = mutations.ForgotPassword1.Field()
+    forgot_password2 = mutations.ForgotPassword2.Field()
     alter_user = mutations.AlterUser.Field()
     create_borrower = mutations.CreateBorrower.Field()
     delete_borrower = mutations.DeleteBorrower.Field()
