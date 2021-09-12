@@ -14,7 +14,7 @@ def send_email_changed_notifications(request: HttpRequest, user: UserModel, new_
     """
     if old_email_address is not None:
         restore_token = tokens.create_email_restore_token(user.id, old_email_address)
-        mail_content = render_to_string("email_changed_notification.html.j2", {
+        mail_content = render_to_string("mails/email_changed_notification.html", {
             "user": user,
             "new_email_address": new_email_address,
             "restore_token": restore_token,
@@ -27,7 +27,7 @@ def send_email_changed_notifications(request: HttpRequest, user: UserModel, new_
             html_message=mail_content,
         )
 
-    mail_content = render_to_string("email_changed_notification.html.j2", {
+    mail_content = render_to_string("mails/email_changed_notification.html", {
         "user": user,
         "new_email_address": new_email_address,
     }, request)
@@ -47,7 +47,7 @@ def send_email_restored_notification(request: HttpRequest, user: UserModel):
     For this to make sense it is expected that the user has its address already restored so that that is the *current*
     one.
     """
-    mail_content = render_to_string("email_restored_notification.html.j2", {
+    mail_content = render_to_string("mails/email_restored_notification.html", {
         "user": user
     }, request)
     send_mail(
@@ -63,7 +63,7 @@ def send_password_changed_notification(request: HttpRequest, user: UserModel):
     """
     Send a notification to the user's email address that their password has been changed.
     """
-    mail_content = render_to_string("password_changed_notification.html.j2", {}, request)
+    mail_content = render_to_string("mails/password_changed_notification.html", {}, request)
     send_mail(
         subject="Your password has been changed",
         message=None,
@@ -77,7 +77,7 @@ def send_account_deleted_notification(request: HttpRequest, user: UserModel):
     """
     Send a notification to the user's email address that their account has been deleted.
     """
-    mail_content = render_to_string("account_deleted_notification.html.j2", {
+    mail_content = render_to_string("mails/account_deleted_notification.html", {
         "user": user
     }, request)
     send_mail(
@@ -93,7 +93,7 @@ def send_username_changed_notification(request: HttpRequest, user: UserModel):
     """
     Send a notification to the user's email address that their username has been changed.
     """
-    mail_content = render_to_string("username_changed_notification.html", {
+    mail_content = render_to_string("mails/username_changed_notification.html", {
         "user": user
     }, request)
     send_mail(
