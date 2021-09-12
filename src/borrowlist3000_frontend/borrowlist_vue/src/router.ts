@@ -43,6 +43,14 @@ function routes(apolloProvider: VueApollo): RouteConfig[] {
                 ),
         },
         {
+            path: "/resetPassword",
+            name: "ResetPassword",
+            component: () =>
+                import(
+                    /* webpackChunkName: "chunk-resetPassword" */ "@/views/ResetPassword.vue"
+                ),
+        },
+        {
             path: "*",
             component: NotFound,
         },

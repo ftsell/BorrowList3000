@@ -28,6 +28,9 @@
         <v-col>
           <v-btn color="primary" outlined type="submit">Login</v-btn>
           <v-btn color="secondary" outlined @click="register">Register</v-btn>
+          <v-btn color="secondary" outlined @click="forgotPassword">
+            Forgot password
+          </v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -122,6 +125,25 @@ export default class AuthForm extends Vue {
         await this.login();
       }
     }
+  }
+
+  async forgotPassword(): Promise<void> {
+    const result = await this.$apollo.mutate({
+      mutation: gql`
+        mutation ($username: String!) {
+          forgotPassword1(username: $username) {
+            message
+          }
+        }
+      `,
+      variables: {
+        username: this.formData.username,
+      },
+    });
+
+    this.alerts.push({
+      message: result.data.forgotPassword1.message,
+    });
   }
 }
 </script>
