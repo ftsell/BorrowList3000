@@ -3,11 +3,20 @@
     <user-edit-form />
 
     <v-spacer class="my-8" />
+    <v-container>
+      <v-row>
+        <v-btn color="secondary" outlined @click="onLogoutClicked">
+          Logout
+        </v-btn>
+      </v-row>
+    </v-container>
+
+    <v-spacer class="my-8" />
 
     <v-container>
       <v-row>
-        <v-btn color="red" outlined @click="onDeleteClicked"
-          >Delete Account
+        <v-btn color="red" outlined @click="onDeleteClicked">
+          Delete Account
         </v-btn>
       </v-row>
     </v-container>
@@ -24,6 +33,21 @@ import UserEditForm from "@/components/forms/UserEditForm.vue";
   components: { AppLayout, UserEditForm },
 })
 export default class Settings extends Vue {
+  async onLogoutClicked(): Promise<void> {
+    await this.$apollo.mutate({
+      mutation: gql`
+        mutation {
+          logout {
+            success
+          }
+        }
+      `,
+    });
+
+    await this.$apollo.getClient().resetStore();
+    await this.$router.push({ name: "Auth" });
+  }
+
   async onDeleteClicked(): Promise<void> {
     if (
       confirm(
