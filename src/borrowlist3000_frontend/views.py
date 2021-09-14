@@ -21,6 +21,17 @@ class FrontendServer(WhiteNoiseMiddleware):
         self.autorefresh = False
         self.use_finders = False
 
+    def immutable_file_test(self, path, url):
+        # get file name by removing the static_prefix
+        name = url[len(self.static_prefix) :]
+
+        # return False if the file name does not have a hash component
+        name_without_hash = self.get_name_without_hash(name)
+        if name == name_without_hash:
+            return False
+
+        return True
+
     def process_request(self, request):
         result = super().process_request(request)
 

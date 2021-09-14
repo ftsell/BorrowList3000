@@ -1,7 +1,6 @@
 module.exports = {
     publicPath: "/app",
     integrity: true,
-    filenameHashing: false,
     devServer: {
         proxy: {
             "^/api": {
