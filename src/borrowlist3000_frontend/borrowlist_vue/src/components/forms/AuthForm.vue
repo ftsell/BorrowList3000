@@ -1,148 +1,130 @@
 <template>
-  <v-form ref="form" v-model="isValid" @submit.prevent="login">
-    <v-container>
-      <v-row>
-        <v-col>
-          <v-text-field
-            v-model="formData.username"
-            label="Username"
-            required
-            :rules="usernameRules"
-          />
-        </v-col>
-      </v-row>
-
-      <v-row>
-        <v-col>
-          <v-text-field
-            v-model="formData.password"
-            label="Password"
-            type="password"
-            required
-            :rules="passwordRules"
-          />
-        </v-col>
-      </v-row>
-
-      <v-row justify="start" class="d-flex">
-        <v-col>
-          <v-btn color="primary" outlined type="submit">Login</v-btn>
-          <v-btn color="secondary" outlined @click="register">Register</v-btn>
-          <v-btn color="secondary" outlined @click="forgotPassword">
-            Forgot password
-          </v-btn>
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-form>
+  <div>
+    <v-tabs v-model="currentTab">
+      <v-tab>Login</v-tab>
+      <v-tab>Register</v-tab>
+      <v-tab>Forgot Password</v-tab>
+    </v-tabs>
+    <v-tabs-items v-model="currentTab">
+      <v-tab-item>
+        <username-password-form
+          @submit="doLogin"
+          submit-text="Login"
+          explanation="To login to an existing account, enter your username and password."
+        />
+      </v-tab-item>
+      <v-tab-item>
+        <username-password-form
+          @submit="doRegister"
+          submit-text="Register"
+          explanation="To create a new account, enter your desired username and password."
+        />
+      </v-tab-item>
+      <v-tab-item>
+        <username-form
+          submit-text="Reset Password"
+          explanation="If you forgot your password, you can start a reset by entering your username here. An email with additional instructions will be sent to your configured email address."
+          @submit="doForgotPassword"
+        />
+      </v-tab-item>
+    </v-tabs-items>
+  </div>
 </template>
 
 <script lang="ts">
 import gql from "graphql-tag";
 import { Component, InjectReactive, Vue } from "vue-property-decorator";
+import UsernamePasswordForm from "@/components/forms/UsernamePasswordForm.vue";
+import UsernameForm from "@/components/forms/UsernameForm.vue";
 import { Alert } from "@/utils";
 
-@Component
+@Component({
+  components: { UsernameForm, UsernamePasswordForm },
+})
 export default class AuthForm extends Vue {
-  isValid = true;
-  formData = {
-    username: "",
-    password: "",
-  };
-  usernameRules = [(v: string) => !!v || "Username is required"];
-  passwordRules = [(v: string) => !!v || "Password is required"];
+  currentTab = 0;
 
   @InjectReactive() alerts!: Alert[];
 
-  get formElement(): any {
-    return this.$refs.form as Element;
-  }
-
-  async login(): Promise<void> {
-    this.formElement.validate();
-    if (this.isValid) {
-      const result = await this.$apollo.mutate({
-        mutation: gql`
-          mutation ($username: String!, $password: String!) {
-            login(username: $username, password: $password) {
-              success
-              message
-            }
-          }
-        `,
-        variables: {
-          username: this.formData.username,
-          password: this.formData.password,
-        },
-      });
-
-      if (result.data.login.success === false) {
-        this.alerts.push({
-          message: result.data.login.message,
-          type: "error",
-        });
-      } else {
-        // perform cache-busting
-        await this.$apollo.getClient().resetStore();
-
-        await this.$apollo.query({
-          query: gql`
-            {
-              loggedIn
-            }
-          `,
-          fetchPolicy: "network-only",
-        });
-
-        // finalize
-        this.$emit("onLoggedIn", result.data.login);
-      }
-    }
-  }
-
-  async register(): Promise<void> {
-    this.formElement.validate();
-    if (this.isValid) {
-      const result = await this.$apollo.mutate({
-        mutation: gql`
-          mutation ($username: String!, $password: String!) {
-            register(username: $username, password: $password) {
-              success
-              message
-            }
-          }
-        `,
-        variables: {
-          username: this.formData.username,
-          password: this.formData.password,
-        },
-      });
-
-      if (result.data.register.success === false) {
-        alert(result.data.register.message);
-      } else {
-        this.$emit("onRegistered", result.data.register);
-        await this.login();
-      }
-    }
-  }
-
-  async forgotPassword(): Promise<void> {
+  async doLogin(data: { username: string; password: string }): Promise<void> {
     const result = await this.$apollo.mutate({
       mutation: gql`
-        mutation ($username: String!) {
-          forgotPassword1(username: $username) {
+        mutation ($username: String!, $password: String!) {
+          login(username: $username, password: $password) {
+            success
             message
           }
         }
       `,
-      variables: {
-        username: this.formData.username,
-      },
+      variables: data,
+    });
+
+    if (result.data.login.success === false) {
+      this.alerts.push({
+        message: result.data.login.message,
+        type: "error",
+      });
+    } else {
+      // perform cache-busting
+      await this.$apollo.getClient().resetStore();
+
+      await this.$apollo.query({
+        query: gql`
+          {
+            loggedIn
+          }
+        `,
+        fetchPolicy: "network-only",
+      });
+
+      // finalize
+      this.$emit("loggedIn", result.data.login);
+    }
+  }
+
+  async doRegister(data: {
+    username: string;
+    password: string;
+  }): Promise<void> {
+    const result = await this.$apollo.mutate({
+      mutation: gql`
+        mutation ($username: String!, $password: String!) {
+          register(username: $username, password: $password) {
+            success
+            message
+          }
+        }
+      `,
+      variables: data,
+    });
+
+    if (result.data.register.success === false) {
+      this.alerts.push({
+        message: result.data.register.message,
+        type: "error",
+      });
+    } else {
+      this.$emit("registered", result.data.register);
+      await this.doLogin(data);
+    }
+  }
+
+  async doForgotPassword(data: { username: string }): Promise<void> {
+    const result = await this.$apollo.mutate({
+      mutation: gql`
+        mutation ($username: String!) {
+          forgotPassword1(username: $username) {
+            success
+            message
+          }
+        }
+      `,
+      variables: data,
     });
 
     this.alerts.push({
       message: result.data.forgotPassword1.message,
+      type: result.data.forgotPassword1.success ? "success" : "error",
     });
   }
 }

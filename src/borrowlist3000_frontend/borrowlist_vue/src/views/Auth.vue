@@ -1,9 +1,9 @@
 <template>
   <default-layout>
     <v-row align="center" justify="center">
-      <v-col cols="12">
-        <v-card>
-          <auth-form @onLoggedIn="onLoggedIn" />
+      <v-col cols="5">
+        <v-card rounded>
+          <auth-form @loggedIn="onLoggedIn" />
         </v-card>
       </v-col>
     </v-row>
