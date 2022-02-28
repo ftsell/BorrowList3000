@@ -1,29 +1,20 @@
 // vim: set filetype=groovy:
+library changelog: false, identifier: 'github.com/ftsell/jenkins-pipeline-library@main', retriever: modernSCM([$class: 'GitSCMSource', credentialsId: '', remote: 'https://github.com/ftsell/jenkins-pipeline-library.git', traits: [gitBranchDiscovery()]])
+
+def imageName = "ghcr.io/ftsell/borrowlist3000"
+def imageDigest
 
 pipeline {
     agent {
         kubernetes {
-            yaml """
-kind: Pod
-spec:
-  containers:
-    - name: kustomize
-      image: docker.io/nekottyo/kustomize-kubeval
-      tty: true
-      command:
-      - cat
-    - name: podman
-      image: quay.io/podman/stable
-      tty: true
-      securityContext:
-        privileged: true
-      command:
-        - cat
-"""
+          yaml genPodYaml(true, true)
         }
     }
     options {
         skipDefaultCheckout(true)
+    }
+    triggers {
+      pollSCM 'H * * * *'
     }
     stages {
         stage("Checkout SCM") {
@@ -31,80 +22,53 @@ spec:
                 checkout scm
             }
         }
-        stage("Check Kubernetes Config validity") {
+        stage("Validate K8S") {
+          steps {
+            container("kustomize") {
+              checkKustomize()
+            }
+          }
+        }
+        stage("Create Container Image") {
             steps {
-                container("kustomize") {
-                    gitStatusWrapper(
-                        credentialsId: 'github-access',
-                        description: 'Validates the generated kubernetes config',
-                        failureDescription: 'kubernetes config is not valid',
-                        successDescription: 'kubernetes config is valid',
-                        gitHubContext: 'check-k8s'
-                    ) {
-                        sh "kustomize build . > k8s.yml"
-                        sh "kubeval k8s.yml --strict"
+                container("podman") {
+                    script {
+                        if (env.TAG_NAME == null && env.BRANCH_IS_PRIMARY == "true") {
+                            imageName = "${imageName}:dev-latest"
+                        } else if (env.TAG_NAME != null) {
+                            imageName = "${imageName}:${env.TAG_NAME}"
+                        } else {
+                            imageName = "${imageName}:tmp"
+                        }
+                    }
+
+                    buildContainer(imageName)
+
+                    script {
+                      if (env.TAG_NAME != null || env.BRANCH_IS_PRIMARY == "true") {
+                        uploadContainer(imageName, "ghcr.io", "github-access")
+                      }
                     }
                 }
             }
         }
-        stage("Build Container Image") {
-            steps {
-                container("podman") {
-                    gitStatusWrapper(
-                        credentialsId: "github-access",
-                        description: "Builds the container image",
-                        failureDescription: "Container image failed to build",
-                        successDescription: "Container image was successfully built",
-                        gitHubContext: "build-container-image"
-                    ) {
-                        // sometimes node-gyp tries to locate python which is not present in the build container
-                        // i don't know why but that's why we retry the build up to 3 times
-                        retry(3) {
-                            sh "podman build -t borrowlist3000 ."
-                        }
-                    }
-                }
+        stage("Deploy") {
+          steps {
+            container("podman") {
+              script {
+                imageDigest = fetchImageDigest(imageName, "ghcr.io", "github-access")
+              }
             }
-        }
-        stage("Upload Container Image") {
-            steps {
-                container("podman") {
-                    gitStatusWrapper(
-                        credentialsId: "github-access",
-                        description: "Uploads the container image",
-                        failureDescription: "Could not upload the container image",
-                        successDescription: "Container image was uploaded",
-                        gitHubContext: "upload-container-image"
-                    ) {
-                        milestone(ordinal: 100)
-
-                        script {
-                            withCredentials([usernamePassword(
-                                credentialsId: 'github-access',
-                                passwordVariable: 'registry_password',
-                                usernameVariable: 'registry_username'
-                            )]) {
-                                if (env.TAG_NAME == null && env.BRANCH_IS_PRIMARY == "true") {
-                                    // commit events get pushed as :dev-latest
-                                    sh "podman login ghcr.io -u $registry_username -p $registry_password"
-                                    sh "podman tag borrowlist3000 ghcr.io/ftsell/borrowlist3000:dev-latest"
-                                    sh "podman push ghcr.io/ftsell/borrowlist3000:dev-latest"
-
-                                } else {
-                                    // tag events get pushed as the corresponding tag and :latest
-                                    sh "podman login ghcr.io -u $registry_username -p $registry_password"
-                                    sh "podman tag borrowlist3000 ghcr.io/ftsell/borrowlist3000:${env.TAG_NAME}"
-                                    sh "podman push ghcr.io/ftsell/borrowlist3000:${env.TAG_NAME}"
-
-                                    sh "podman tag borrowlist3000 ghcr.io/ftsell/borrowlist3000:latest"
-                                    sh "podman push ghcr.io/ftsell/borrowlist3000:latest"
-                                }
-                            }
-                        }
-                    }
+            container("kustomize") {
+              script {
+                if (env.TAG_NAM != null || env.BRANCH_IS_PRIMARY == "true") {
+                  deployContainer("borrowlist3000", imageName, imageDigest)
                 }
+              }
             }
+          }
         }
     }
 }
+
 
