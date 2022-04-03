@@ -3,3 +3,8 @@ management:
     web:
       exposure:
         include: "*"
+logging:
+  level:
+    root: debug
+    sun.rmi: info
+    javax.management.remote.rmi: info

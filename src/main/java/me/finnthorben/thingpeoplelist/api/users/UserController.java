@@ -1,5 +1,6 @@
 package me.finnthorben.thingpeoplelist.api.users;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
+@SecurityRequirement(name = "token")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -23,6 +25,6 @@ public class UserController {
 
     @GetMapping(value = "/{username}", produces = "application/json")
     User getUser(@PathVariable @NotNull @NotBlank String username) {
-        return userRepository.findUserByUsername(username).orElseThrow();
+        return userRepository.findUserByUsernameIgnoreCase(username).orElseThrow();
     }
 }
