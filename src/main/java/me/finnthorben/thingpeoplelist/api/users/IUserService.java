@@ -16,6 +16,8 @@ public interface IUserService extends UserDetailsService {
 
     void login(HttpSession session, String username, String password, SessionInfo info);
 
+    void logout(String sessionId);
+
     /**
      * List all sessions associated with the user that is associated with the given session.
      */

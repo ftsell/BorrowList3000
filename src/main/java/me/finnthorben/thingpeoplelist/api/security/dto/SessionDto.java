@@ -5,8 +5,10 @@ import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 
 public record SessionDto(
+        @NotBlank String sessionId,
         @NotBlank String ipAddress,
         @NotNull ZonedDateTime creationTime,
-        @NotNull ZonedDateTime lastAccessTime
+        @NotNull ZonedDateTime lastAccessTime,
+        boolean isCurrent
         ) {
 }

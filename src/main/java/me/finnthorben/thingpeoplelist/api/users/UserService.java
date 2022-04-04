@@ -55,6 +55,11 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public void logout(String sessionId) {
+        sessionRepository.deleteById(sessionId);
+    }
+
+    @Override
     public List<? extends Session> listAllSessionsOfUser(HttpSession session1) {
         String username = (String) session1.getAttribute(FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME);
         return sessionRepository.findByPrincipalName(username)

@@ -1,5 +1,6 @@
 package me.finnthorben.thingpeoplelist.api.security;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +10,7 @@ import me.finnthorben.thingpeoplelist.api.security.dto.RegisterRequest;
 import me.finnthorben.thingpeoplelist.api.security.dto.SessionDto;
 import me.finnthorben.thingpeoplelist.api.users.IUserService;
 import me.finnthorben.thingpeoplelist.api.users.User;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.session.Session;
 import org.springframework.validation.annotation.Validated;
@@ -16,6 +18,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.websocket.server.PathParam;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -34,7 +39,14 @@ public class AuthController {
 
     private final IUserService userService;
 
+    @PostMapping("/register")
+    @Operation(summary = "Register a new user account")
+    public void register(@RequestBody @Validated RegisterRequest request) {
+        User user = userService.createUser(request.username(), request.password(), request.email());
+    }
+
     @PostMapping("/login")
+    @Operation(summary = "Login to an existing user account")
     public LoginResponse login(@RequestBody @Validated LoginRequest request, HttpServletRequest http) {
         HttpSession session = http.getSession(true);
         userService.login(session, request.username(), request.password(),
@@ -42,13 +54,9 @@ public class AuthController {
         return new LoginResponse(session.getId());
     }
 
-    @PostMapping("/register")
-    public void register(@RequestBody @Validated RegisterRequest request) {
-        User user = userService.createUser(request.username(), request.password(), request.email());
-    }
-
     @GetMapping("/sessions")
     @SecurityRequirement(name = "token")
+    @Operation(summary = "List all active sessions")
     public List<SessionDto> listSessions(HttpSession session) {
         return userService.listAllSessionsOfUser(session)
                 .stream()
@@ -56,11 +64,36 @@ public class AuthController {
                     SessionInfo sessionInfo = iSession.getAttribute(SessionInfo.SESSION_INFO_INDEX_NAME);
 
                     return new SessionDto(
+                            iSession.getId(),
                             sessionInfo.ipAddress(),
                             iSession.getCreationTime().atZone(ZoneId.of("UTC")),
-                            iSession.getLastAccessedTime().atZone(ZoneId.of("UTC"))
+                            iSession.getLastAccessedTime().atZone(ZoneId.of("UTC")),
+                            iSession.getId().equals(session.getId())
                     );
                 })
                 .toList();
+    }
+
+    @DeleteMapping("/sessions")
+    @SecurityRequirement(name = "token")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Logout from all active sessions")
+    public void logoutAllSession(@RequestParam(defaultValue = "false", required = false) boolean includingCurrent, HttpSession session) {
+        List<? extends Session> sessions = userService.listAllSessionsOfUser(session);
+
+        for (Session iSession: sessions) {
+            if (!includingCurrent && iSession.getId().equals(session.getId())) {
+                continue;
+            }
+            userService.logout(iSession.getId());
+        }
+    }
+
+    @DeleteMapping("/sessions/{sessionId}")
+    @SecurityRequirement(name = "token")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Logout the given session")
+    public void logoutSession(@PathVariable @NotBlank String sessionId, HttpSession session) {
+        userService.logout(sessionId);
     }
 }
