@@ -1,6 +1,7 @@
 package me.finnthorben.thingpeoplelist.users;
 
 import lombok.*;
+import me.finnthorben.thingpeoplelist.people.Person;
 import org.hibernate.Hibernate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,10 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "User", uniqueConstraints = {
@@ -36,6 +34,10 @@ public class User implements UserDetails {
 
     @Email
     private String email;
+
+    @OneToMany(mappedBy = "user")
+    @ToString.Exclude
+    Set<Person> people;
 
     public User(String username, String password, String email) {
         this.username = username;
