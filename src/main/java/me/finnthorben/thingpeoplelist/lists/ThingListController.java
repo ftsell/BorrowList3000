@@ -1,5 +1,6 @@
 package me.finnthorben.thingpeoplelist.lists;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ public class ThingListController {
     private final ModelMapper modelMapper;
 
     @GetMapping("/")
+    @Operation(summary = "List all lists")
     List<ThingListDto> getAll(Authentication auth) {
         return listService.getAllForUser((User) auth.getPrincipal())
                 .stream()
@@ -32,6 +34,7 @@ public class ThingListController {
     }
 
     @GetMapping("/{name}")
+    @Operation(summary = "Retrieve information about a specific list")
     ThingListDto getByName(@PathVariable String name, Authentication auth) {
         return modelMapper.map(
                 listService.getByNameForUser(name, (User) auth.getPrincipal()),
@@ -41,6 +44,7 @@ public class ThingListController {
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Create a new list")
     ThingListDto create(@RequestBody ThingListDto listRequest, Authentication auth) {
         return modelMapper.map(
                 listService.create(listRequest.getName(), (User) auth.getPrincipal()),
