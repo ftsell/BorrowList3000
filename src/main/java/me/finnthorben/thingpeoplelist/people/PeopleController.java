@@ -40,6 +40,7 @@ public class PeopleController {
     }
 
     @GetMapping("/{name}")
+    @Operation(summary = "Retrieve information about a specific person")
     PersonDto getByName(@PathVariable String name, Authentication auth) {
         return modelMapper.map(
                 peopleService.getByNameForUser(name, (User) auth.getPrincipal()),
