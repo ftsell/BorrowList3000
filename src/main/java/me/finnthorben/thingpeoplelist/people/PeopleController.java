@@ -39,7 +39,7 @@ public class PeopleController {
         );
     }
 
-    @PostMapping("/{name}")
+    @GetMapping("/{name}")
     PersonDto getByName(@PathVariable String name, Authentication auth) {
         return modelMapper.map(
                 peopleService.getByNameForUser(name, (User) auth.getPrincipal()),
