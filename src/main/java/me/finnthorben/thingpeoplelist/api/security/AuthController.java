@@ -19,13 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.websocket.server.PathParam;
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -38,6 +32,7 @@ import java.util.List;
 public class AuthController {
 
     private final IUserService userService;
+    private final IAuthService authService;
 
     @PostMapping("/register")
     @Operation(summary = "Register a new user account")
@@ -48,9 +43,8 @@ public class AuthController {
     @PostMapping("/login")
     @Operation(summary = "Login to an existing user account")
     public LoginResponse login(@RequestBody @Validated LoginRequest request, HttpServletRequest http) {
-        HttpSession session = http.getSession(true);
-        userService.login(session, request.username(), request.password(),
-                new SessionInfo(http.getRemoteAddr(), http.getHeader("User-Agent")));
+        HttpSession session = authService.login(() -> http.getSession(true), new SessionInfo(http.getRemoteAddr(), http.getHeader("User-Agent")),
+                request.username(), request.password());
         return new LoginResponse(session.getId());
     }
 
@@ -81,11 +75,11 @@ public class AuthController {
     public void logoutAllSession(@RequestParam(defaultValue = "false", required = false) boolean includingCurrent, HttpSession session) {
         List<? extends Session> sessions = userService.listAllSessionsOfUser(session);
 
-        for (Session iSession: sessions) {
+        for (Session iSession : sessions) {
             if (!includingCurrent && iSession.getId().equals(session.getId())) {
                 continue;
             }
-            userService.logout(iSession.getId());
+            authService.logout(iSession.getId());
         }
     }
 
@@ -93,7 +87,7 @@ public class AuthController {
     @SecurityRequirement(name = "token")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Logout the given session")
-    public void logoutSession(@PathVariable @NotBlank String sessionId, HttpSession session) {
-        userService.logout(sessionId);
+    public void logoutSession(@PathVariable @NotBlank String sessionId) {
+        authService.logout(sessionId);
     }
 }
