@@ -1,8 +1,6 @@
 package me.finnthorben.thingpeoplelist.api.users;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,14 +18,17 @@ import java.util.UUID;
         @UniqueConstraint(name = "uc_username", columnNames = {"username"})
 })
 @Getter
+@Setter
 @ToString
 @NoArgsConstructor
 public class User implements UserDetails {
     @Id
     @GeneratedValue
+    @Setter(AccessLevel.NONE)
     private UUID id;
 
     @NotBlank
+    @Setter(AccessLevel.NONE)
     private String username;
 
     @NotBlank

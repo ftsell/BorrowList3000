@@ -45,4 +45,13 @@ public class UserService implements IUserService {
         return userRepository.findUserByUsernameIgnoreCase(username)
                 .orElseThrow(() -> new UsernameNotFoundException(null));
     }
+
+    @Override
+    public UserDetails updatePassword(UserDetails user, String newPassword) {
+        if (!passwordEncoder.matches(newPassword, user.getPassword())) {
+            ((User) user).setPassword(passwordEncoder.encode(newPassword));
+            return userRepository.save((User) user);
+        }
+        return user;
+    }
 }
