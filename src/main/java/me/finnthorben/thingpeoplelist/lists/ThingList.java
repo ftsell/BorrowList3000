@@ -1,4 +1,4 @@
-package me.finnthorben.thingpeoplelist.people;
+package me.finnthorben.thingpeoplelist.lists;
 
 import lombok.*;
 import me.finnthorben.thingpeoplelist.users.User;
@@ -10,18 +10,18 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-@Table(name = "Person")
-@IdClass(Person.PersonId.class)
+@Table(name = "List")
+@IdClass(ThingList.ListId.class)
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class Person {
+public class ThingList {
     @EqualsAndHashCode
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class PersonId implements Serializable {
+    public static class ListId implements Serializable {
         String name;
         UUID user;
     }
@@ -38,9 +38,9 @@ public class Person {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Person person = (Person) o;
-        return name != null && Objects.equals(name, person.name)
-                && user != null && Objects.equals(user, person.user);
+        ThingList thingList = (ThingList) o;
+        return name != null && Objects.equals(name, thingList.name)
+                && user != null && Objects.equals(user, thingList.user);
     }
 
     @Override

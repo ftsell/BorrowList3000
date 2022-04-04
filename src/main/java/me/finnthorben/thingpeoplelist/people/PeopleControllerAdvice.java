@@ -6,7 +6,7 @@ import org.springframework.hateoas.mediatype.problem.Problem;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-@RestControllerAdvice()
+@RestControllerAdvice
 @Slf4j
 @RequiredArgsConstructor
 public class PeopleControllerAdvice {

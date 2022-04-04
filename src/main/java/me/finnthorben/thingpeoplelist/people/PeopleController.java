@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import me.finnthorben.thingpeoplelist.people.dto.PersonDto;
 import me.finnthorben.thingpeoplelist.users.User;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +32,7 @@ public class PeopleController {
     }
 
     @PostMapping("/")
+    @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a new person")
     PersonDto create(@RequestBody PersonDto personRequest, Authentication auth) {
         return modelMapper.map(
