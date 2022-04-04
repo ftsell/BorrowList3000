@@ -6,15 +6,20 @@ import lombok.extern.slf4j.Slf4j;
 import me.finnthorben.thingpeoplelist.api.security.dto.LoginRequest;
 import me.finnthorben.thingpeoplelist.api.security.dto.LoginResponse;
 import me.finnthorben.thingpeoplelist.api.security.dto.RegisterRequest;
+import me.finnthorben.thingpeoplelist.api.security.dto.SessionDto;
 import me.finnthorben.thingpeoplelist.api.users.IUserService;
 import me.finnthorben.thingpeoplelist.api.users.User;
 import org.springframework.http.MediaType;
+import org.springframework.session.Session;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,8 +36,9 @@ public class AuthController {
 
     @PostMapping("/login")
     public LoginResponse login(@RequestBody @Validated LoginRequest request, HttpServletRequest http) {
-        HttpSession session = userService.login(request.username(), request.password(),
-                new SessionInfo(http.getRemoteAddr(), LocalDateTime.now()));
+        HttpSession session = http.getSession(true);
+        userService.login(session, request.username(), request.password(),
+                new SessionInfo(http.getRemoteAddr(), http.getHeader("User-Agent")));
         return new LoginResponse(session.getId());
     }
 
@@ -43,7 +49,18 @@ public class AuthController {
 
     @GetMapping("/sessions")
     @SecurityRequirement(name = "token")
-    public List<SessionInfo> listSessions() {
-        return new ArrayList<>();
+    public List<SessionDto> listSessions(HttpSession session) {
+        return userService.listAllSessionsOfUser(session)
+                .stream()
+                .map((iSession) -> {
+                    SessionInfo sessionInfo = iSession.getAttribute(SessionInfo.SESSION_INFO_INDEX_NAME);
+
+                    return new SessionDto(
+                            sessionInfo.ipAddress(),
+                            iSession.getCreationTime().atZone(ZoneId.of("UTC")),
+                            iSession.getLastAccessedTime().atZone(ZoneId.of("UTC"))
+                    );
+                })
+                .toList();
     }
 }
