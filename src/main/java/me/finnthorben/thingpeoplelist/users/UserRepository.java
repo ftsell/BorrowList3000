@@ -1,4 +1,4 @@
-package me.finnthorben.thingpeoplelist.api.users;
+package me.finnthorben.thingpeoplelist.users;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

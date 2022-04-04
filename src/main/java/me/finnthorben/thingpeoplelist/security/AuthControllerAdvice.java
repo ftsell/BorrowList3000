@@ -1,6 +1,6 @@
-package me.finnthorben.thingpeoplelist.api.security;
+package me.finnthorben.thingpeoplelist.security;
 
-import me.finnthorben.thingpeoplelist.api.users.IUserService;
+import me.finnthorben.thingpeoplelist.users.IUserService;
 import org.springframework.hateoas.mediatype.problem.Problem;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

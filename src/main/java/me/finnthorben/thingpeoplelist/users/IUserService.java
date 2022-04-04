@@ -1,4 +1,4 @@
-package me.finnthorben.thingpeoplelist.api.users;
+package me.finnthorben.thingpeoplelist.users;
 
 import org.springframework.security.core.userdetails.UserDetailsPasswordService;
 import org.springframework.security.core.userdetails.UserDetailsService;

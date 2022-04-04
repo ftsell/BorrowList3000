@@ -1,10 +1,10 @@
-package me.finnthorben.thingpeoplelist.api.users;
+package me.finnthorben.thingpeoplelist.users;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import me.finnthorben.thingpeoplelist.api.users.dto.ChangeUserDto;
-import me.finnthorben.thingpeoplelist.api.users.dto.UserDto;
+import me.finnthorben.thingpeoplelist.users.dto.ChangeUserDto;
+import me.finnthorben.thingpeoplelist.users.dto.UserDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;

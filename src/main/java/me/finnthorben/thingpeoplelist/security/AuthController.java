@@ -1,15 +1,15 @@
-package me.finnthorben.thingpeoplelist.api.security;
+package me.finnthorben.thingpeoplelist.security;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.finnthorben.thingpeoplelist.api.security.dto.LoginRequest;
-import me.finnthorben.thingpeoplelist.api.security.dto.LoginResponse;
-import me.finnthorben.thingpeoplelist.api.security.dto.RegisterRequest;
-import me.finnthorben.thingpeoplelist.api.security.dto.SessionDto;
-import me.finnthorben.thingpeoplelist.api.users.IUserService;
-import me.finnthorben.thingpeoplelist.api.users.User;
+import me.finnthorben.thingpeoplelist.security.dto.LoginRequest;
+import me.finnthorben.thingpeoplelist.security.dto.LoginResponse;
+import me.finnthorben.thingpeoplelist.security.dto.RegisterRequest;
+import me.finnthorben.thingpeoplelist.security.dto.SessionDto;
+import me.finnthorben.thingpeoplelist.users.IUserService;
+import me.finnthorben.thingpeoplelist.users.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.session.Session;

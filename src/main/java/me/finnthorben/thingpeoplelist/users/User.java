@@ -1,4 +1,4 @@
-package me.finnthorben.thingpeoplelist.api.users;
+package me.finnthorben.thingpeoplelist.users;
 
 import lombok.*;
 import org.hibernate.Hibernate;

@@ -1,4 +1,4 @@
-package me.finnthorben.thingpeoplelist.api.users.dto;
+package me.finnthorben.thingpeoplelist.users.dto;
 
 import lombok.Data;
 

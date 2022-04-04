@@ -1,4 +1,4 @@
-package me.finnthorben.thingpeoplelist.api;
+package me.finnthorben.thingpeoplelist;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

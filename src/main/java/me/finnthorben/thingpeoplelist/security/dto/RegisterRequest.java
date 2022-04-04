@@ -1,4 +1,4 @@
-package me.finnthorben.thingpeoplelist.api.security.dto;
+package me.finnthorben.thingpeoplelist.security.dto;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;

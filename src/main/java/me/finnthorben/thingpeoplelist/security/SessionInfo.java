@@ -1,4 +1,4 @@
-package me.finnthorben.thingpeoplelist.api.security;
+package me.finnthorben.thingpeoplelist.security;
 
 import java.io.Serializable;
 

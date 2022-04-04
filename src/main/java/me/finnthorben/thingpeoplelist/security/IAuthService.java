@@ -1,4 +1,4 @@
-package me.finnthorben.thingpeoplelist.api.security;
+package me.finnthorben.thingpeoplelist.security;
 
 import javax.servlet.http.HttpSession;
 import java.util.function.Supplier;

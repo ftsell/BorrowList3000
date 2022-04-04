@@ -2,8 +2,7 @@ package me.finnthorben.thingpeoplelist;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.finnthorben.thingpeoplelist.api.users.IUserService;
-import me.finnthorben.thingpeoplelist.api.users.User;
+import me.finnthorben.thingpeoplelist.users.IUserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

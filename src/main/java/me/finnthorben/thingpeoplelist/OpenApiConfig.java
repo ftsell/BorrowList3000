@@ -1,4 +1,4 @@
-package me.finnthorben.thingpeoplelist.api;
+package me.finnthorben.thingpeoplelist;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
