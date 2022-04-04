@@ -4,6 +4,11 @@ management:
       probes:
         enabled: true
 
+server:
+  servlet:
+    session:
+      timeout: 365d
+
 springdoc:
   paths-to-match: /api/**
   api-docs:
