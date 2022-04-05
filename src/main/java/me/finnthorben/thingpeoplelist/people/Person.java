@@ -1,6 +1,7 @@
 package me.finnthorben.thingpeoplelist.people;
 
 import lombok.*;
+import me.finnthorben.thingpeoplelist.things.Thing;
 import me.finnthorben.thingpeoplelist.users.User;
 import org.hibernate.Hibernate;
 
@@ -27,11 +28,13 @@ public class Person {
     }
 
     @Id
+    @Setter(AccessLevel.NONE)
     String name;
 
     @Id
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)
+    @Setter(AccessLevel.NONE)
     User user;
 
     @Override

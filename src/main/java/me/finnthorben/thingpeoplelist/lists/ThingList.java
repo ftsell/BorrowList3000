@@ -1,22 +1,23 @@
 package me.finnthorben.thingpeoplelist.lists;
 
 import lombok.*;
+import me.finnthorben.thingpeoplelist.things.Thing;
 import me.finnthorben.thingpeoplelist.users.User;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
 @Table(name = "List")
 @IdClass(ThingList.ListId.class)
 @Getter
-@Setter
 @ToString
 @NoArgsConstructor
-@AllArgsConstructor
 public class ThingList {
     @EqualsAndHashCode
     @NoArgsConstructor
@@ -33,6 +34,16 @@ public class ThingList {
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     User user;
+
+    @OneToMany(mappedBy = "list")
+    @ToString.Exclude
+    Set<Thing> things;
+
+    public ThingList(String name, User user) {
+        this.name = name;
+        this.user = user;
+        this.things = new HashSet<>();
+    }
 
     @Override
     public boolean equals(Object o) {
