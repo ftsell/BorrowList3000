@@ -3,7 +3,6 @@ import { defineStore } from "pinia";
 const LOCAL_STORAGE_KEY = "ThingPeopleListAuth";
 
 export interface AuthState {
-  isAuthenticated: boolean;
   authToken: string | null;
 }
 
@@ -16,12 +15,14 @@ export const useAuthStore = defineStore({
     }
     return {
       authToken: null,
-      isAuthenticated: false,
     } as AuthState;
   },
   actions: {
     persistAuth() {
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this.$state));
     },
+  },
+  getters: {
+    isAuthenticated: (state) => state.authToken != null,
   },
 });

@@ -4,7 +4,6 @@ apis/ThingControllerApi.ts
 apis/ThingListControllerApi.ts
 apis/UserControllerApi.ts
 apis/index.ts
-index.ts
 models/ChangeUserDto.ts
 models/CreateThingDto.ts
 models/LoginRequest.ts

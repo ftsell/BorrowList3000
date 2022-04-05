@@ -1,30 +1,34 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from "vue-router";
-import HelloWorld from "@/components/HelloWorld.vue";
+import { RouterView } from "vue-router";
+import { onMounted } from "vue";
+import { useRestApi } from "@/apiClient";
+import { useAuthStore } from "@/stores/authStore";
+import { nextTick } from "vue";
+
+let api = useRestApi();
+let authStore = useAuthStore();
+
+onMounted(async () => {
+  if (!authStore.isAuthenticated) {
+    const response = await api.value.auth.login({
+      loginRequest: {
+        username: "ftsell",
+        password: "foobar123",
+      },
+    });
+
+    authStore.authToken = response.authToken;
+    authStore.persistAuth();
+  }
+
+  await nextTick(async () => {
+    console.log(await api.value.auth.listSessions());
+  });
+});
 </script>
 
 <template>
-  <header>
-    <img
-      alt="Vue logo"
-      class="logo"
-      src="@/assets/logo.svg"
-      width="125"
-      height="125"
-    />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
   <RouterView />
 </template>
 
-<style>
-</style>
+<style></style>
