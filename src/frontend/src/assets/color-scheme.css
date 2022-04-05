@@ -1,0 +1,30 @@
+/* https://colordesigner.io/#468966-466989-1C2A37-2A2C2B-F2F5F8 */
+
+@media (prefers-color-scheme: light) {
+    html {
+        --color-primary: #468966;
+        --color-secondary: #466989;
+        --color-secondary-alt: #1C2A37;
+        --color-foreground: #2A2C2B;
+        --color-background: #f2f5f8;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    html {
+        --color-primary: #468966;
+        --color-secondary: #466989;
+        --color-secondary-alt: #1C2A37;
+        --color-background: #2A2C2B;
+        --color-foreground: #f2f5f8;
+    }
+}
+
+* {
+    background: var(--color-background);
+    color: var(--color-foreground);
+}
+
+h1,h2,h3,h4,h5,h6 {
+    color: var(--color-primary);
+}

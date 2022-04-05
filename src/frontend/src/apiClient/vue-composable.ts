@@ -53,7 +53,6 @@ export function useRestApi(): Ref<UnwrapRef<ApiCollection>> {
   const result = ref(createApiCollection(authStore));
 
   watchEffect(() => {
-    console.log("Creating new api collection, auth=", authStore.authToken);
     result.value = createApiCollection(authStore);
   });
 

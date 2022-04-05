@@ -3,7 +3,6 @@ import { RouterView } from "vue-router";
 import { onMounted } from "vue";
 import { useRestApi } from "@/apiClient";
 import { useAuthStore } from "@/stores/authStore";
-import { nextTick } from "vue";
 
 let api = useRestApi();
 let authStore = useAuthStore();
@@ -20,10 +19,6 @@ onMounted(async () => {
     authStore.authToken = response.authToken;
     authStore.persistAuth();
   }
-
-  await nextTick(async () => {
-    console.log(await api.value.auth.listSessions());
-  });
 });
 </script>
 
@@ -31,4 +26,7 @@ onMounted(async () => {
   <RouterView />
 </template>
 
-<style></style>
+<style>
+@import "normalize.css/normalize.css";
+@import "./assets/color-scheme.css";
+</style>
