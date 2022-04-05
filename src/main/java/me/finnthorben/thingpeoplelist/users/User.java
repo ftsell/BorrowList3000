@@ -31,6 +31,7 @@ public class User implements UserDetails {
     private String username;
 
     @NotBlank
+    @ToString.Exclude
     private String password;
 
     @Email
