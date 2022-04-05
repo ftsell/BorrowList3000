@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
+    "gen-api-client": "TS_POST_PROCESS_FILE='prettier --write' openapi-generator-cli generate -g typescript-fetch -i ../../target/openapi.json -o src/apiClient/ -t codegen-templates/openapi-typescript-fetch --enable-post-process-file",
     "preview": "vite preview --port 5050",
     "typecheck": "vue-tsc --noEmit",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
@@ -25,6 +26,7 @@
     "prettier": "^2.5.1",
     "typescript": "~4.6.3",
     "vite": "^2.9.1",
-    "vue-tsc": "^0.33.9"
+    "vue-tsc": "^0.33.9",
+    "@openapitools/openapi-generator-cli": "^2.4.26"
   }
 }

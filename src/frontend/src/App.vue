@@ -1,6 +1,23 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from "vue-router";
 import HelloWorld from "@/components/HelloWorld.vue";
+import { onMounted } from "vue";
+import { AuthControllerApi, Configuration } from "@/apiClient";
+
+onMounted(async () => {
+  let api = new AuthControllerApi(
+    new Configuration({
+      basePath: "",
+    })
+  );
+  let response = await api.login({
+    loginRequest: {
+      username: "ftsell",
+      password: "foobar123",
+    },
+  });
+  console.log(response.authToken);
+});
 </script>
 
 <template>
