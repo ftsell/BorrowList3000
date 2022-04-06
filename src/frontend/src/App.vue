@@ -3,6 +3,7 @@ import { RouterView } from "vue-router";
 import { onMounted } from "vue";
 import { useRestApi } from "@/apiClient";
 import { useAuthStore } from "@/stores/authStore";
+import HeaderBar from "@/components/featureComponents/HeaderBar.vue";
 
 let api = useRestApi();
 let authStore = useAuthStore();
@@ -12,8 +13,8 @@ onMounted(async () => {
     const response = await api.value.auth.login({
       loginRequest: {
         username: "ftsell",
-        password: "foobar123",
-      },
+        password: "foobar123"
+      }
     });
 
     authStore.authToken = response.authToken;
@@ -23,10 +24,19 @@ onMounted(async () => {
 </script>
 
 <template>
-  <RouterView />
+  <HeaderBar />
+  <main>
+    <RouterView />
+  </main>
 </template>
 
 <style>
 @import "normalize.css/normalize.css";
 @import "./assets/color-scheme.css";
+</style>
+
+<style scoped>
+main {
+  margin: 0 20vw 0;
+}
 </style>
