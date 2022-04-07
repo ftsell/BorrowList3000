@@ -13,8 +13,8 @@ onMounted(async () => {
     const response = await api.value.auth.login({
       loginRequest: {
         username: "ftsell",
-        password: "foobar123"
-      }
+        password: "foobar123",
+      },
     });
 
     authStore.authToken = response.authToken;
@@ -25,9 +25,7 @@ onMounted(async () => {
 
 <template>
   <HeaderBar />
-  <main>
-    <RouterView />
-  </main>
+  <RouterView />
 </template>
 
 <style>
@@ -35,8 +33,4 @@ onMounted(async () => {
 @import "./assets/color-scheme.css";
 </style>
 
-<style scoped>
-main {
-  margin: 0 20vw 0;
-}
-</style>
+<style scoped></style>
