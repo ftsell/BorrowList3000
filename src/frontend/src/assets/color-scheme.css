@@ -12,6 +12,7 @@
     .elevated {
         box-shadow: 0 0 16px 8px rgba(70, 137, 102, 0.05),   /* basically primary color */
             1px 1px 4px 1px rgb(42, 44, 43); /* basically foreground color */
+        filter: brightness(105%);
     }
 }
 
@@ -33,6 +34,12 @@
 * {
     background: var(--color-background);
     color: var(--color-foreground);
+    font-family: sans-serif;
+    box-sizing: border-box;
+}
+
+*::before, *::after {
+    box-sizing: border-box;
 }
 
 h1,h2,h3,h4,h5,h6 {

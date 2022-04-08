@@ -8,9 +8,7 @@ import Login from "@/components/featureComponents/Login.vue";
     <Card title="Login">
       <Login />
     </Card>
-    <Card title="Register">
-      <h2>Register</h2>
-    </Card>
+    <Card title="Register"> </Card>
   </main>
 </template>
 
@@ -23,26 +21,13 @@ main {
 }
 
 main > * {
+  flex-basis: 100px;
   flex-grow: 1;
-  animation-fill-mode: forwards;
-  animation-name: unFocus;
-  animation-duration: 0.5s;
+  transition: flex-grow 0.5s ease-in-out;
 }
 
 main > *:hover,
-main > *:active {
-  animation-name: focus;
-}
-
-@keyframes focus {
-  to {
-    flex-grow: 1.3;
-  }
-}
-
-@keyframes unFocus {
-  from {
-    flex-grow: 1.3;
-  }
+main > *:focus-within {
+  flex-grow: 1.4;
 }
 </style>

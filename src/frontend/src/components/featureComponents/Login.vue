@@ -1,7 +1,17 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import TextField from "@/components/componentLibrary/TextField.vue";
+</script>
 
 <template>
-  <p class="test">Hi</p>
+  <form>
+    <p>Login to an existing account with your own credentials</p>
+    <TextField
+      id="username"
+      type="text"
+      label="Username"
+      placeholder="e.g. JohnDoe86"
+    />
+  </form>
 </template>
 
 <style scoped></style>
