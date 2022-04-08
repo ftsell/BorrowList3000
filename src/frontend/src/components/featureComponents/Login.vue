@@ -5,6 +5,8 @@ import { useRestApi } from "@/apiClient";
 import { useAuthStore } from "@/stores/authStore";
 import { useField, useForm } from "vee-validate";
 import { string } from "yup";
+import { ref } from "vue";
+import CircularProgress from "@/components/componentLibrary/CircularProgress.vue";
 
 const form = useForm({
   initialValues: {
@@ -53,12 +55,19 @@ const onSubmit = form.handleSubmit(async (values) => {
       tab-index="2"
     />
 
-    <CustomButton text="Login" type="submit" :outlined="true" tabindex="3" />
+    <CustomButton text="Login" type="submit" :outlined="true" tabindex="3" class="space-right" />
+    <span v-if="form.isSubmitting.value || true">
+      <CircularProgress :indeterminate="true" />
+    </span>
   </form>
 </template>
 
 <style scoped>
 .space-after {
   margin-bottom: 32px;
+}
+
+.space-right {
+  margin-right: 24px;
 }
 </style>

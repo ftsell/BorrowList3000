@@ -6,9 +6,11 @@ const props = defineProps<{
   type?: string;
   outlined?: boolean;
 }>();
+
 defineEmits<{
   (e: "click"): void;
 }>();
+
 const cssClasses = computed(() => {
   return {
     outlined: Boolean(props.outlined),
