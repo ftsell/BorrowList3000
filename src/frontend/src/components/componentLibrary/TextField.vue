@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { ErrorObject } from "@vuelidate/core";
+
 defineProps<{
   id: string;
   type: string;
@@ -6,6 +8,7 @@ defineProps<{
   placeholder?: string;
   tabIndex?: number | string;
   modelValue?: string;
+  errors?: ErrorObject[];
 }>();
 defineEmits<{
   (e: "update:modelValue", value: string): void;
@@ -23,13 +26,18 @@ defineEmits<{
       :value="modelValue"
       @input="$emit('update:modelValue', $event.target.value)"
     />
+    <Transition name="fade">
+      <p v-if="errors && errors.length > 0" class="error">
+        {{ errors[0].$message }}
+      </p>
+    </Transition>
   </div>
 </template>
 
 <style scoped>
 .input-container {
   position: relative;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
 }
 
 input {
@@ -60,5 +68,28 @@ label {
   left: 1em;
   top: -0.5em;
   padding: 0 0.5em;
+}
+
+.error {
+  color: red;
+  text-align: right;
+  font-size: 0.9em;
+  position: absolute;
+  right: 1em;
+  top: -0.5em;
+  padding: 0 0.5em;
+  margin: 0;
+}
+
+/*noinspection CssUnusedSymbol*/
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+/*noinspection CssUnusedSymbol*/
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
