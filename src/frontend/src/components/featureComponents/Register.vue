@@ -1,29 +1,63 @@
 <script setup lang="ts">
 import TextField from "@/components/componentLibrary/TextField.vue";
-import { ref } from "vue";
+import CustomButton from "@/components/componentLibrary/CustomButton.vue";
+import { useField, useForm } from "vee-validate";
+import { string } from "yup";
+import { useRestApi } from "@/apiClient";
+import { useAuthStore } from "@/stores/authStore";
 
-const username = ref("");
-const password = ref("");
+const form = useForm({
+  initialValues: {
+    username: "",
+    password: "",
+  },
+});
+const username = useField("username", string().required());
+const password = useField("password", string().required());
+
+const api = useRestApi();
+const authStore = useAuthStore();
+
+const onSubmit = form.handleSubmit(async (values) => {
+  await api.value.auth.register({
+    registerRequest: values,
+  });
+
+  const loginResponse = await api.value.auth.login({
+    loginRequest: values,
+  });
+  authStore.authToken = loginResponse.authToken;
+  authStore.persistAuth();
+});
 </script>
 
 <template>
-  <form>
+  <form @submit="onSubmit">
     <p class="space-after">Create a new account with the given credentials</p>
     <TextField
-      v-model="username"
+      v-model="username.value.value"
+      :error-message="username.errorMessage.value"
       id="register-username"
       type="text"
       label="Username"
       placeholder="e.g. JohnDoe86"
-      tab-index="3"
+      tab-index="4"
     />
     <TextField
-      v-model="password"
+      v-model="password.value.value"
+      :error-message="password.errorMessage.value"
       id="register-password"
       type="password"
       label="Password"
       placeholder="**********"
-      tab-index="4"
+      tab-index="5"
+    />
+    <CustomButton
+      class="right-align"
+      text="Register"
+      type="submit"
+      :outlined="true"
+      tabindex="6"
     />
   </form>
 </template>
@@ -31,5 +65,9 @@ const password = ref("");
 <style scoped>
 .space-after {
   margin-bottom: 32px;
+}
+
+.right-align {
+  float: right;
 }
 </style>
