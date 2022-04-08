@@ -4,7 +4,11 @@ defineProps<{
   type: string;
   label?: string;
   placeholder?: string;
-  tabIndex?: number;
+  tabIndex?: number | string;
+  modelValue?: string;
+}>();
+defineEmits<{
+  (e: "update:modelValue", value: string): void;
 }>();
 </script>
 
@@ -16,6 +20,8 @@ defineProps<{
       :type="type"
       :placeholder="placeholder"
       :tabindex="tabIndex"
+      :value="modelValue"
+      @input="$emit('update:modelValue', $event.target.value)"
     />
   </div>
 </template>
@@ -23,6 +29,7 @@ defineProps<{
 <style scoped>
 .input-container {
   position: relative;
+  margin-bottom: 16px;
 }
 
 input {
