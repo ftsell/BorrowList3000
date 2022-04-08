@@ -10,8 +10,6 @@ import java.util.List;
 public interface IUserService extends UserDetailsService, UserDetailsPasswordService {
     class UserAlreadyExistsException extends RuntimeException {}
 
-    class InvalidCredentialsException extends RuntimeException {}
-
     User createUser(String username, String password, String email);
 
     /**

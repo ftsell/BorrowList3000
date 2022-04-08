@@ -3,6 +3,7 @@ package me.finnthorben.thingpeoplelist.security;
 import me.finnthorben.thingpeoplelist.users.IUserService;
 import org.springframework.hateoas.mediatype.problem.Problem;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -29,7 +30,7 @@ public class AuthControllerAdvice {
                 .withDetail("You tried to query for a user that does not exist or could not be found");
     }
 
-    @ExceptionHandler(IUserService.InvalidCredentialsException.class)
+    @ExceptionHandler(BadCredentialsException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ResponseBody
     Problem invalidCredentialsHandler() {
