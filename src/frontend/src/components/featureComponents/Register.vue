@@ -8,24 +8,22 @@ const password = ref("");
 
 <template>
   <form>
-    <p class="space-after">
-      Login to an existing account with your own credentials
-    </p>
+    <p class="space-after">Create a new account with the given credentials</p>
     <TextField
       v-model="username"
-      id="login-username"
+      id="register-username"
       type="text"
       label="Username"
       placeholder="e.g. JohnDoe86"
-      tab-index="1"
+      tab-index="3"
     />
     <TextField
       v-model="password"
-      id="login-password"
+      id="register-password"
       type="password"
       label="Password"
       placeholder="**********"
-      tab-index="2"
+      tab-index="4"
     />
   </form>
 </template>

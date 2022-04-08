@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Card from "@/components/componentLibrary/Card.vue";
 import Login from "@/components/featureComponents/Login.vue";
+import Register from "@/components/featureComponents/Register.vue";
 </script>
 
 <template>
@@ -8,7 +9,9 @@ import Login from "@/components/featureComponents/Login.vue";
     <Card title="Login">
       <Login />
     </Card>
-    <Card title="Register"> </Card>
+    <Card title="Register">
+      <Register />
+    </Card>
   </main>
 </template>
 
