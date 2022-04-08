@@ -4,6 +4,7 @@
     html {
         --color-primary: rgb(70, 137, 102);
         --color-secondary: rgb(70, 105, 137);
+        --color-secondary--06: rgba(70, 105, 137, 0.6);
         --color-secondary-alt: rgb(28, 42, 55);
         --color-foreground: rgb(42, 44, 43);
         --color-background: rgb(242, 245, 248);
@@ -20,6 +21,7 @@
     html {
         --color-primary: rgb(70, 137, 102);
         --color-secondary: rgb(70, 105, 137);
+        --color-secondary--06: rgba(70, 105, 137, 0.6);
         --color-secondary-alt: rgb(28, 42, 55);
         --color-background: rgb(42, 44, 43);
         --color-foreground: rgb(242, 245, 248);

@@ -10,6 +10,7 @@ import TextField from "@/components/componentLibrary/TextField.vue";
       type="text"
       label="Username"
       placeholder="e.g. JohnDoe86"
+      tab-index="1"
     />
   </form>
 </template>
