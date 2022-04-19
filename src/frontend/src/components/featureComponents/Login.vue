@@ -57,7 +57,7 @@ const onSubmit = form.handleSubmit(async (values) => {
 
     <CustomButton text="Login" type="submit" :outlined="true" tabindex="3" class="space-right" />
     <span v-if="form.isSubmitting.value || true">
-      <CircularProgress :indeterminate="true" />
+      <CircularProgress :progress="0.5" />
     </span>
   </form>
 </template>
