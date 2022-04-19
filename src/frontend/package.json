@@ -7,8 +7,7 @@
     "gen-api-client": "TS_POST_PROCESS_FILE='prettier --write' openapi-generator-cli generate -g typescript-fetch -i ../../target/openapi.json -o src/apiClient/ -t codegen-templates/openapi-typescript-fetch --enable-post-process-file",
     "preview": "vite preview --port 5050",
     "typecheck": "vue-tsc --noEmit",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
-    "prepare": "npm run gen-api-client"
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
     "normalize.css": "^8.0.1",
