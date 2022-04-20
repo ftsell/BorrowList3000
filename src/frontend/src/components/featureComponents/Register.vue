@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import TextField from "@/components/componentLibrary/TextField.vue";
 import CustomButton from "@/components/componentLibrary/CustomButton.vue";
+import CircularProgress from "@/components/componentLibrary/CircularProgress.vue";
 import { useField, useForm } from "vee-validate";
 import { string } from "yup";
 import { useRestApi } from "@/apiClient";
@@ -52,13 +53,19 @@ const onSubmit = form.handleSubmit(async (values) => {
       placeholder="**********"
       tab-index="5"
     />
-    <CustomButton
-      class="right-align"
-      text="Register"
-      type="submit"
-      :outlined="true"
-      tabindex="6"
-    />
+
+    <div class="form-bottom">
+      <CustomButton
+        text="Register"
+        type="submit"
+        :outlined="true"
+        tabindex="6"
+      />
+      <div v-show="form.isSubmitting.value" class="loading-container">
+        <CircularProgress :indeterminate="true" :size="36" />
+        <span>Loading…</span>
+      </div>
+    </div>
   </form>
 </template>
 
@@ -67,7 +74,15 @@ const onSubmit = form.handleSubmit(async (values) => {
   margin-bottom: 32px;
 }
 
-.right-align {
-  float: right;
+.form-bottom {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.loading-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 </style>

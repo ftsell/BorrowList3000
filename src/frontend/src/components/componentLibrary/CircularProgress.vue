@@ -3,25 +3,26 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-const SVG_SIZE = 48;
-const STROKE_WIDTH = 4;
-
-const props = defineProps<{
-  progress?: number;
-  indeterminate?: boolean;
-}>();
+const props = defineProps({
+  size: { type: Number, default: 48 },
+  strokeWidth: { type: Number, default: 4 },
+  progress: { type: Number, default: 0 },
+  indeterminate: { type: Boolean, default: false },
+});
 
 defineEmits<{
   (e: "update:progress", value: string): void;
 }>();
 
-const circumference = computed(() => (SVG_SIZE - STROKE_WIDTH * 2) * Math.PI);
+const circumference = computed(
+  () => (props.size - props.strokeWidth * 2) * Math.PI
+);
 const circumferenceProgress = computed(
   () => circumference.value - (props.progress ?? 0) * circumference.value
 );
 
 const cssClasses = computed(() => ({
-  indeterminate: props.indeterminate ?? false,
+  indeterminate: props.indeterminate,
 }));
 </script>
 
@@ -29,29 +30,33 @@ const cssClasses = computed(() => ({
   <svg
     xmlns="http://www.w3.org/2000/svg"
     :class="cssClasses"
-    :width="SVG_SIZE"
-    :height="SVG_SIZE"
+    :width="size"
+    :height="size"
   >
     <circle
       class="background"
-      :cx="SVG_SIZE / 2"
-      :cy="SVG_SIZE / 2"
-      :r="SVG_SIZE / 2 - STROKE_WIDTH"
-      :stroke-width="STROKE_WIDTH"
+      :cx="size / 2"
+      :cy="size / 2"
+      :r="size / 2 - strokeWidth"
+      :stroke-width="strokeWidth"
       fill="transparent"
     />
     <circle
       class="foreground"
-      :cx="SVG_SIZE / 2"
-      :cy="SVG_SIZE / 2"
-      :r="SVG_SIZE / 2 - STROKE_WIDTH"
-      :stroke-width="STROKE_WIDTH"
+      :cx="size / 2"
+      :cy="size / 2"
+      :r="size / 2 - strokeWidth"
+      :stroke-width="strokeWidth"
       fill="transparent"
     />
   </svg>
 </template>
 
 <style scoped>
+svg {
+  display: inline-block;
+}
+
 .background {
   stroke: var(--color-secondary--06);
 }

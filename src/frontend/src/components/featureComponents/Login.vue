@@ -5,7 +5,6 @@ import { useRestApi } from "@/apiClient";
 import { useAuthStore } from "@/stores/authStore";
 import { useField, useForm } from "vee-validate";
 import { string } from "yup";
-import { ref } from "vue";
 import CircularProgress from "@/components/componentLibrary/CircularProgress.vue";
 
 const form = useForm({
@@ -55,16 +54,13 @@ const onSubmit = form.handleSubmit(async (values) => {
       tab-index="2"
     />
 
-    <CustomButton
-      text="Login"
-      type="submit"
-      :outlined="true"
-      tabindex="3"
-      class="space-right"
-    />
-    <span v-if="form.isSubmitting.value || true">
-      <CircularProgress :progress="0.5" />
-    </span>
+    <div class="form-bottom">
+      <CustomButton text="Login" type="submit" :outlined="true" tabindex="3" />
+      <div v-show="form.isSubmitting.value" class="loading-container">
+        <CircularProgress :indeterminate="true" :size="36" />
+        <span>Loading…</span>
+      </div>
+    </div>
   </form>
 </template>
 
@@ -73,7 +69,15 @@ const onSubmit = form.handleSubmit(async (values) => {
   margin-bottom: 32px;
 }
 
-.space-right {
-  margin-right: 24px;
+.form-bottom {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.loading-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 </style>
