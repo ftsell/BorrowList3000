@@ -7,6 +7,10 @@ import { string } from "yup";
 import { useRestApi } from "@/apiClient";
 import { useAuthStore } from "@/stores/authStore";
 
+const emit = defineEmits<{
+  (e: "authSuccessful"): void;
+}>();
+
 const form = useForm({
   initialValues: {
     username: "",
@@ -29,6 +33,7 @@ const onSubmit = form.handleSubmit(async (values) => {
   });
   authStore.authToken = loginResponse.authToken;
   authStore.persistAuth();
+  emit("authSuccessful");
 });
 </script>
 

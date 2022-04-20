@@ -7,6 +7,10 @@ import { useField, useForm } from "vee-validate";
 import { string } from "yup";
 import CircularProgress from "@/components/componentLibrary/CircularProgress.vue";
 
+const emit = defineEmits<{
+  (e: "authSuccessful"): void;
+}>();
+
 const form = useForm({
   initialValues: {
     username: "",
@@ -25,6 +29,7 @@ const onSubmit = form.handleSubmit(async (values) => {
   });
   authStore.authToken = response.authToken;
   authStore.persistAuth();
+  emit("authSuccessful");
 });
 </script>
 

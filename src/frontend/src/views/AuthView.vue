@@ -2,15 +2,24 @@
 import Card from "@/components/componentLibrary/Card.vue";
 import Login from "@/components/featureComponents/Login.vue";
 import Register from "@/components/featureComponents/Register.vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+
+async function onAuthSuccessful() {
+  await router.push({
+    name: "home",
+  });
+}
 </script>
 
 <template>
   <main>
     <Card title="Login">
-      <Login />
+      <Login @authSuccessful="onAuthSuccessful" />
     </Card>
     <Card title="Register">
-      <Register />
+      <Register @authSuccessful="onAuthSuccessful" />
     </Card>
   </main>
 </template>
