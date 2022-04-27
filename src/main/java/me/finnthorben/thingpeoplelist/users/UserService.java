@@ -2,14 +2,14 @@ package me.finnthorben.thingpeoplelist.users;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.finnthorben.thingpeoplelist.security.sessions.Session;
+import me.finnthorben.thingpeoplelist.security.sessions.SessionRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.session.FindByIndexNameSessionRepository;
-import org.springframework.session.Session;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 
@@ -20,7 +20,6 @@ public class UserService implements IUserService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    private final FindByIndexNameSessionRepository<? extends Session> sessionRepository;
 
     @Override
     public User createUser(String username, String password, String email) {
@@ -31,26 +30,19 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public List<? extends Session> listAllSessionsOfUser(HttpSession session1) {
-        String username = (String) session1.getAttribute(FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME);
-        return sessionRepository.findByPrincipalName(username)
-                .values()
-                .stream()
-                .toList();
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findUserByUsernameIgnoreCase(username)
-                .orElseThrow(() -> new UsernameNotFoundException(null));
-    }
-
-    @Override
-    public UserDetails updatePassword(UserDetails user, String newPassword) {
+    public Mono<UserDetails> updatePassword(UserDetails user, String newPassword) {
+        // TODO Make properly reactive with own scheduler
         if (!passwordEncoder.matches(newPassword, user.getPassword())) {
             ((User) user).setPassword(passwordEncoder.encode(newPassword));
-            return userRepository.save((User) user);
+            return Mono.just(userRepository.save((User) user));
         }
-        return user;
+        return Mono.just(user);
+    }
+
+    @Override
+    public Mono<UserDetails> findByUsername(String username) {
+        // TODO Make properly reactive with own scheduler
+        return Mono.just(userRepository.findUserByUsernameIgnoreCase(username)
+                .orElseThrow(() -> new UsernameNotFoundException(username)));
     }
 }

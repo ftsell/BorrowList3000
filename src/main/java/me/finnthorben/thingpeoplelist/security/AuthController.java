@@ -4,23 +4,30 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.finnthorben.thingpeoplelist.security.auth.IAuthService;
+import me.finnthorben.thingpeoplelist.security.auth.SessionTokenAuthentication;
 import me.finnthorben.thingpeoplelist.security.dto.LoginRequest;
 import me.finnthorben.thingpeoplelist.security.dto.LoginResponse;
 import me.finnthorben.thingpeoplelist.security.dto.RegisterRequest;
 import me.finnthorben.thingpeoplelist.security.dto.SessionDto;
+import me.finnthorben.thingpeoplelist.security.sessions.ISessionService;
 import me.finnthorben.thingpeoplelist.users.IUserService;
 import me.finnthorben.thingpeoplelist.users.User;
+import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.session.Session;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotBlank;
-import java.time.ZoneId;
+import java.net.InetSocketAddress;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,6 +41,10 @@ public class AuthController {
     private final IUserService userService;
     private final IAuthService authService;
 
+    private final ISessionService sessionService;
+
+    private final ModelMapper modelMapper;
+
     @PostMapping("/register")
     @Operation(summary = "Register a new user account")
     public void register(@RequestBody @Validated RegisterRequest request) {
@@ -42,52 +53,51 @@ public class AuthController {
 
     @PostMapping("/login")
     @Operation(summary = "Login to an existing user account")
-    public LoginResponse login(@RequestBody @Validated LoginRequest request, HttpServletRequest http) {
-        HttpSession session = authService.login(() -> http.getSession(true), new SessionInfo(http.getRemoteAddr(), http.getHeader("User-Agent")),
-                request.username(), request.password());
-        return new LoginResponse(session.getId());
+    public Mono<LoginResponse> login(@RequestBody @Validated LoginRequest request, ServerWebExchange http) {
+        // TODO Actually allow null values in session data instead of doing this weird optional dance to empty strings
+        return authService
+                .login(
+                        request.username(),
+                        request.password(),
+                        Optional.ofNullable(http.getRequest().getRemoteAddress()).map(InetSocketAddress::toString).orElse(""),
+                        Optional.ofNullable(http.getRequest().getHeaders().get(HttpHeaders.USER_AGENT)).flatMap(l -> l.stream().findFirst()).orElse(""))
+                .map(session -> new LoginResponse(session.getToken().toString()));
     }
 
     @GetMapping("/sessions")
     @SecurityRequirement(name = "token")
     @Operation(summary = "List all active sessions")
-    public List<SessionDto> listSessions(HttpSession session) {
-        return userService.listAllSessionsOfUser(session)
-                .stream()
-                .map((iSession) -> {
-                    SessionInfo sessionInfo = iSession.getAttribute(SessionInfo.SESSION_INFO_INDEX_NAME);
-
-                    return new SessionDto(
-                            iSession.getId(),
-                            sessionInfo.ipAddress(),
-                            iSession.getCreationTime().atZone(ZoneId.of("UTC")),
-                            iSession.getLastAccessedTime().atZone(ZoneId.of("UTC")),
-                            iSession.getId().equals(session.getId())
-                    );
-                })
-                .toList();
+    public Mono<List<SessionDto>> listSessions(Authentication auth) {
+        return sessionService.listAllSessionsOfUser((User) auth.getPrincipal())
+                .map(sessions -> sessions.stream()
+                        .map(session -> {
+                            SessionDto dto = modelMapper.map(session, SessionDto.class);
+                            dto.setCurrent(auth.getCredentials().equals(session.getToken().toString()));
+                            return dto;
+                        })
+                        .toList());
     }
 
     @DeleteMapping("/sessions")
     @SecurityRequirement(name = "token")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Logout from all active sessions")
-    public void logoutAllSession(@RequestParam(defaultValue = "false", required = false) boolean includingCurrent, HttpSession session) {
-        List<? extends Session> sessions = userService.listAllSessionsOfUser(session);
+    public Mono<Void> logoutAllSession(@RequestParam(defaultValue = "false", required = false) boolean includingCurrent, Authentication auth) {
+        SessionTokenAuthentication sessionAuth = (SessionTokenAuthentication) auth;
 
-        for (Session iSession : sessions) {
-            if (!includingCurrent && iSession.getId().equals(session.getId())) {
-                continue;
-            }
-            authService.logout(iSession.getId());
-        }
+        if (includingCurrent)
+            authService.logout(sessionAuth.getUser());
+        else
+            authService.logout(sessionAuth.getUser(), sessionAuth.getSession());
+
+        return Mono.empty();
     }
 
     @DeleteMapping("/sessions/{sessionId}")
     @SecurityRequirement(name = "token")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Logout the given session")
-    public void logoutSession(@PathVariable @NotBlank String sessionId) {
+    public void logoutSession(@PathVariable @NotBlank UUID sessionId) {
         authService.logout(sessionId);
     }
 }

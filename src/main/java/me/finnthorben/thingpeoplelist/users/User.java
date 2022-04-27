@@ -3,6 +3,7 @@ package me.finnthorben.thingpeoplelist.users;
 import lombok.*;
 import me.finnthorben.thingpeoplelist.lists.ThingList;
 import me.finnthorben.thingpeoplelist.people.Person;
+import me.finnthorben.thingpeoplelist.security.sessions.Session;
 import org.hibernate.Hibernate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -44,6 +45,10 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     @ToString.Exclude
     Set<ThingList> lists;
+
+    @OneToMany(mappedBy = "user")
+    @ToString.Exclude
+    Set<Session> sessions;
 
     public User(String username, String password, String email) {
         this.username = username;

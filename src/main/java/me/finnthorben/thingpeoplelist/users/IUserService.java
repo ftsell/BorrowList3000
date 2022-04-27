@@ -1,19 +1,10 @@
 package me.finnthorben.thingpeoplelist.users;
 
-import org.springframework.security.core.userdetails.UserDetailsPasswordService;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.session.Session;
+import org.springframework.security.core.userdetails.ReactiveUserDetailsPasswordService;
+import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 
-import javax.servlet.http.HttpSession;
-import java.util.List;
-
-public interface IUserService extends UserDetailsService, UserDetailsPasswordService {
+public interface IUserService extends ReactiveUserDetailsService, ReactiveUserDetailsPasswordService {
     class UserAlreadyExistsException extends RuntimeException {}
 
     User createUser(String username, String password, String email);
-
-    /**
-     * List all sessions associated with the user that is associated with the given session.
-     */
-    List<? extends Session> listAllSessionsOfUser(HttpSession session1);
 }

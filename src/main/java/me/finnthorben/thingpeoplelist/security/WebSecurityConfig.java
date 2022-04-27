@@ -1,49 +1,55 @@
 package me.finnthorben.thingpeoplelist.security;
 
 import lombok.RequiredArgsConstructor;
+import me.finnthorben.thingpeoplelist.security.auth.SessionTokenAuthenticationManager;
+import me.finnthorben.thingpeoplelist.security.sessions.ISessionService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.authentication.*;
+//import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.session.web.http.HeaderHttpSessionIdResolver;
-import org.springframework.session.web.http.HttpSessionIdResolver;
+import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebFluxSecurity
 @RequiredArgsConstructor
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
-                .antMatchers("/api/auth/login", "/api/auth/register").permitAll()   // TODO Make this anonymous() and not permitAll()
-                .antMatchers("/api/schema/**", "/api/swagger-ui/**").permitAll()
-                .antMatchers("/api/**").authenticated()
-                .anyRequest().permitAll()
+public class WebSecurityConfig {
+    @Bean
+    public SecurityWebFilterChain springSecurityFilterChain(
+            ServerHttpSecurity http,
+            @Qualifier("sessionTokenAuthenticationFilter") AuthenticationWebFilter sessionTokenFilter) {
+        return http
+                .authorizeExchange()
+                .pathMatchers("/api/auth/login", "/api/auth/register").permitAll()
+                .pathMatchers("/api/schema/**", "/api/swagger-ui/**", "/api/webjars/swagger-ui/**").permitAll()
+                .pathMatchers("/api/**").authenticated()
+                .anyExchange().permitAll()
                 .and()
                 .formLogin().disable()
                 .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER);
-    }
-
-    @Override
-    @Bean
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+                .addFilterAt(sessionTokenFilter, SecurityWebFiltersOrder.AUTHENTICATION)
+                .build();
     }
 
     @Bean
-    public HttpSessionIdResolver httpSessionIdResolver() {
-        return new HeaderHttpSessionIdResolver("Authorization");
+    public ReactiveAuthenticationManager authenticationManager(
+            ReactiveUserDetailsService userDetailsService,
+            ISessionService sessionService) {
+        return new DelegatingReactiveAuthenticationManager(
+                new SessionTokenAuthenticationManager(sessionService),
+                new UserDetailsRepositoryReactiveAuthenticationManager(userDetailsService)
+        );
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 }

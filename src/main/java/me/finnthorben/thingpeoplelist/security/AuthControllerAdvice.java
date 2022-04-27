@@ -1,7 +1,7 @@
 package me.finnthorben.thingpeoplelist.security;
 
+import me.finnthorben.thingpeoplelist.genericapi.Problem;
 import me.finnthorben.thingpeoplelist.users.IUserService;
-import org.springframework.hateoas.mediatype.problem.Problem;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,26 +16,29 @@ public class AuthControllerAdvice {
     @ResponseStatus(HttpStatus.CONFLICT)
     @ResponseBody
     Problem userAlreadyExistsHandler() {
-        return Problem.create()
-                .withTitle("User already exists")
-                .withDetail("You tried to register a new user although a user with the given username already exists");
+        return new Problem(
+                "User already exists",
+                "You tried to register a new user although a user with the given username already exists"
+        );
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     Problem userNotFoundHandler() {
-        return Problem.create()
-                .withTitle("Such a user does not exist")
-                .withDetail("You tried to query for a user that does not exist or could not be found");
+        return new Problem(
+                "Such a user does not exist",
+                "You tried to query for a user that does not exist or could not be found"
+        );
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ResponseBody
     Problem invalidCredentialsHandler() {
-        return Problem.create()
-                .withTitle("Invalid Credentials")
-                .withDetail("The provided credentials were invalid and you could not be logged in");
+        return new Problem(
+                "Invalid Credentials",
+                "The provided credentials were invalid and you could not not be logged in"
+        );
     }
 }
