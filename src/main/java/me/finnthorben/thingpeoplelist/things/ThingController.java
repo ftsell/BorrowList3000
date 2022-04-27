@@ -33,7 +33,7 @@ public class ThingController {
     @GetMapping("/")
     @Operation(summary = "List all things in this list")
     List<ThingDto> getAll(@PathVariable String listName, Authentication auth) {
-        ThingList list = listService.getByNameForUser(listName, (User) auth.getPrincipal());
+        ThingList list = listService.getByNameForUser(listName, (User) auth.getPrincipal()).block();
         return thingService.getAllForList(list)
                 .stream()
                 .map((thing) -> modelMapper.map(thing, ThingDto.class))
@@ -46,7 +46,7 @@ public class ThingController {
     ThingDto create(@PathVariable String listName,
                     @RequestBody @Validated CreateThingDto createRequest,
                     Authentication auth) {
-        ThingList list = listService.getByNameForUser(listName, (User) auth.getPrincipal());
+        ThingList list = listService.getByNameForUser(listName, (User) auth.getPrincipal()).block();
         Person person = peopleService.getByNameForUser(createRequest.getPersonName(), (User) auth.getPrincipal());
         return modelMapper.map(
                 thingService.create(createRequest.getName(), createRequest.getDescription(), list, person),

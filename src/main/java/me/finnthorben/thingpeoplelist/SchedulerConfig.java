@@ -7,7 +7,7 @@ import reactor.core.scheduler.Schedulers;
 
 @Configuration
 public class SchedulerConfig {
-    @Bean
+    @Bean("jdbcScheduler")
     public Scheduler jdbcScheduler() {
         return Schedulers.boundedElastic();
     }

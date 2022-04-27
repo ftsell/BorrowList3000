@@ -4,8 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.finnthorben.thingpeoplelist.users.User;
 import org.springframework.stereotype.Service;
-
-import java.util.Set;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
 
 @Service
 @Slf4j
@@ -14,23 +15,30 @@ public class ThingListServiceImpl implements ThingListService {
 
     private final ThingListRepository thingListRepository;
 
-    @Override
-    public ThingList create(String name, User user) {
-        if (thingListRepository.findByNameIgnoreCaseAndUser(name, user).isPresent()) {
-            throw new ThingListAlreadyExistsException(name, user);
-        }
+    private final Scheduler jdbcScheduler;
 
-        return thingListRepository.save(new ThingList(name, user));
+    @Override
+    public Mono<ThingList> create(String name, User user) {
+        return Mono.fromCallable(() -> {
+            if (thingListRepository.findByNameIgnoreCaseAndUser(name, user).isPresent()) {
+                throw new ThingListAlreadyExistsException(name, user);
+            }
+
+            return thingListRepository.save(new ThingList(name, user));
+        }).subscribeOn(jdbcScheduler);
     }
 
     @Override
-    public Set<ThingList> getAllForUser(User user) {
-        return thingListRepository.findByUser(user);
+    public Flux<ThingList> getAllForUser(User user) {
+        return Mono.fromCallable(() -> thingListRepository.findByUser(user))
+                .subscribeOn(jdbcScheduler)
+                .flatMapMany(Flux::fromIterable);
     }
 
     @Override
-    public ThingList getByNameForUser(String name, User user) {
-        return thingListRepository.findByNameIgnoreCaseAndUser(name, user)
-                .orElseThrow(() -> new NoSuchThingListException(name, user));
+    public Mono<ThingList> getByNameForUser(String name, User user) {
+        return Mono.fromCallable(() -> thingListRepository.findByNameIgnoreCaseAndUser(name, user)
+                .orElseThrow(() -> new NoSuchThingListException(name, user)))
+                .subscribeOn(jdbcScheduler);
     }
 }

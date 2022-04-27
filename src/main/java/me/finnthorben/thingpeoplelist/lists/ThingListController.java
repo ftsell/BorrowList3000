@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -26,29 +28,26 @@ public class ThingListController {
 
     @GetMapping("/")
     @Operation(summary = "List all lists")
-    List<ThingListDto> getAll(Authentication auth) {
-        return listService.getAllForUser((User) auth.getPrincipal())
-                .stream()
-                .map((list) -> modelMapper.map(list, ThingListDto.class))
-                .toList();
+    Flux<ThingListDto> getAll(Authentication auth) {
+        return listService
+                .getAllForUser((User) auth.getPrincipal())
+                .map(list -> modelMapper.map(list, ThingListDto.class));
     }
 
     @GetMapping("/{name}")
     @Operation(summary = "Retrieve information about a specific list")
-    ThingListDto getByName(@PathVariable String name, Authentication auth) {
-        return modelMapper.map(
-                listService.getByNameForUser(name, (User) auth.getPrincipal()),
-                ThingListDto.class
-        );
+    Mono<ThingListDto> getByName(@PathVariable String name, Authentication auth) {
+        return listService
+                .getByNameForUser(name, (User) auth.getPrincipal())
+                .map(list -> modelMapper.map(list, ThingListDto.class));
     }
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a new list")
-    ThingListDto create(@RequestBody ThingListDto listRequest, Authentication auth) {
-        return modelMapper.map(
-                listService.create(listRequest.getName(), (User) auth.getPrincipal()),
-                ThingListDto.class
-        );
+    Mono<ThingListDto> create(@RequestBody ThingListDto listRequest, Authentication auth) {
+        return listService
+                .create(listRequest.getName(), (User) auth.getPrincipal())
+                .map(list -> modelMapper.map(list, ThingListDto.class));
     }
 }
