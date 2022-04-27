@@ -32,7 +32,7 @@ public class LoadData {
             ThingList list = listService.create("Borrowlist", user).block();
             log.info("Preloading: " + list.toString());
 
-            Thing thing = thingService.create("Book", "Lord of the Rings 1", list, person);
+            Thing thing = thingService.create("Book", "Lord of the Rings 1", list, person).block();
             log.info("Preloading: " + thing.toString());
         };
     }
