@@ -5,10 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import me.finnthorben.thingpeoplelist.users.User;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
 
 import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -18,15 +19,17 @@ public class SessionServiceImpl implements SessionService {
 
     private final SessionRepository sessionRepository;
 
+    private final Scheduler jdbcScheduler;
+
     @Override
     public Mono<Session> getValidSession(UUID sessionId, boolean updateLastAccessTime) {
-        // TODO Make properly reactive with own scheduler
         // TODO Validate that the user account is valid
-        return Mono.justOrEmpty(sessionRepository.findByToken(sessionId))
+        return Mono.fromCallable(() -> sessionRepository.findByToken(sessionId))
                 .doOnNext(session -> {
                     session.setLastAccessTime(ZonedDateTime.now());
                     sessionRepository.save(session);
-                });
+                })
+                .subscribeOn(jdbcScheduler);
     }
 
     @Override
@@ -35,8 +38,9 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public Mono<List<Session>> listAllSessionsOfUser(User user) {
-        // TODO Make properly reactive with own scheduler
-        return Mono.just(sessionRepository.findByUser(user));
+    public Flux<Session> listAllSessionsOfUser(User user) {
+        return Mono.fromCallable(() -> sessionRepository.findByUser(user))
+                .flatMapMany(Flux::fromIterable)
+                .subscribeOn(jdbcScheduler);
     }
 }

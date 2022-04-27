@@ -29,34 +29,42 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public Mono<Session> login(String username, String password, String ipAddress, String userAgent) {
-        return Mono.fromCallable(() -> {
-            // authenticate the user
-            UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(username, password);
-            Authentication auth = authManager.authenticate(authReq).block();    // TODO Make properly reactive
-            SecurityContext securityContext = SecurityContextHolder.getContext();
-            securityContext.setAuthentication(auth);
-
-            // persist the authenticated security context into the session
-            Session session = new Session((User) auth.getPrincipal(), ipAddress, userAgent);
-            sessionRepository.save(session);
-            return session;
-        }).subscribeOn(jdbcScheduler);
+        return Mono
+                .just(new UsernamePasswordAuthenticationToken(username, password))
+                .flatMap(authManager::authenticate)
+                .doOnNext(auth -> {
+                    // set authentication for the current thread
+                    SecurityContext securityContext = SecurityContextHolder.getContext();
+                    securityContext.setAuthentication(auth);
+                })
+                .map(auth -> {
+                    // construct a session from the validated authentication
+                    Session session = new Session((User) auth.getPrincipal(), ipAddress, userAgent);
+                    return sessionRepository.save(session);
+                })
+                .subscribeOn(jdbcScheduler);
     }
 
     @Override
-    public void logout(UUID sessionId) {
-        sessionRepository.deleteById(sessionId);
+    public Mono<Void> logout(UUID sessionId) {
+        return Mono.fromRunnable(() -> sessionRepository.deleteById(sessionId))
+                .cast(Void.class)
+                .subscribeOn(jdbcScheduler);
     }
 
     @Override
     @Transactional
-    public void logout(User user, Session exceptSession) {
-        sessionRepository.deleteByUserAndIdIsNot(user, exceptSession.getId());
+    public Mono<Void> logout(User user, Session exceptSession) {
+        return Mono.fromRunnable(() -> sessionRepository.deleteByUserAndIdIsNot(user, exceptSession.getId()))
+                .cast(Void.class)
+                .subscribeOn(jdbcScheduler);
     }
 
     @Override
     @Transactional
-    public void logout(User user) {
-        sessionRepository.deleteByUser(user);
+    public Mono<Void> logout(User user) {
+        return Mono.fromRunnable(() -> sessionRepository.deleteByUser(user))
+                .cast(Void.class)
+                .subscribeOn(jdbcScheduler);
     }
 }

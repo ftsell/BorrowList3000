@@ -21,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import javax.validation.constraints.NotBlank;
@@ -67,15 +68,14 @@ public class AuthController {
     @GetMapping("/sessions")
     @SecurityRequirement(name = "token")
     @Operation(summary = "List all active sessions")
-    public Mono<List<SessionDto>> listSessions(Authentication auth) {
-        return sessionService.listAllSessionsOfUser((User) auth.getPrincipal())
-                .map(sessions -> sessions.stream()
-                        .map(session -> {
-                            SessionDto dto = modelMapper.map(session, SessionDto.class);
-                            dto.setCurrent(auth.getCredentials().equals(session.getToken().toString()));
-                            return dto;
-                        })
-                        .toList());
+    public Flux<SessionDto> listSessions(Authentication auth) {
+        return sessionService
+                .listAllSessionsOfUser((User) auth.getPrincipal())
+                .map(session -> {
+                    SessionDto dto = modelMapper.map(session, SessionDto.class);
+                    dto.setCurrent(auth.getCredentials().equals(session.getToken().toString()));
+                    return dto;
+                });
     }
 
     @DeleteMapping("/sessions")
@@ -86,18 +86,16 @@ public class AuthController {
         SessionTokenAuthentication sessionAuth = (SessionTokenAuthentication) auth;
 
         if (includingCurrent)
-            authService.logout(sessionAuth.getUser());
+            return authService.logout(sessionAuth.getUser());
         else
-            authService.logout(sessionAuth.getUser(), sessionAuth.getSession());
-
-        return Mono.empty();
+            return authService.logout(sessionAuth.getUser(), sessionAuth.getSession());
     }
 
     @DeleteMapping("/sessions/{sessionId}")
     @SecurityRequirement(name = "token")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Logout the given session")
-    public void logoutSession(@PathVariable @NotBlank UUID sessionId) {
-        authService.logout(sessionId);
+    public Mono<Void> logoutSession(@PathVariable @NotBlank UUID sessionId) {
+        return authService.logout(sessionId);
     }
 }

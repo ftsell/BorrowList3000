@@ -140,7 +140,7 @@ public class AuthTests {
                 .header("Authorization", session.getToken().toString())
                 .exchange()
                 .expectStatus().is2xxSuccessful();
-        assertThat(sessionService.listAllSessionsOfUser(user).block()).isEmpty();
+        assertThat(sessionService.listAllSessionsOfUser(user).collectList().block()).isEmpty();
     }
 
     @Test
@@ -156,6 +156,6 @@ public class AuthTests {
                 .header("Authorization", session.getToken().toString())
                 .exchange()
                 .expectStatus().is2xxSuccessful();
-        assertThat(sessionService.listAllSessionsOfUser(user).block()).isEmpty();
+        assertThat(sessionService.listAllSessionsOfUser(user).collectList().block()).isEmpty();
     }
 }
