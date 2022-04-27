@@ -20,7 +20,7 @@ import java.util.List;
 public class PeopleController {
 
     private final ModelMapper modelMapper;
-    private final IPeopleService peopleService;
+    private final PeopleService peopleService;
 
     @GetMapping("/")
     @Operation(summary = "List all defined people")

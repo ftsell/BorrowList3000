@@ -10,15 +10,15 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RequiredArgsConstructor
 public class PeopleControllerAdvice {
-    @ExceptionHandler(IPeopleService.NoSuchPersonException.class)
+    @ExceptionHandler(PeopleService.NoSuchPersonException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    Problem noSuchPersonHandler(IPeopleService.NoSuchPersonException exc) {
+    Problem noSuchPersonHandler(PeopleService.NoSuchPersonException exc) {
         return new Problem("No such person", exc.getLocalizedMessage());
     }
 
-    @ExceptionHandler(IPeopleService.PersonAlreadyExistsException.class)
+    @ExceptionHandler(PeopleService.PersonAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    Problem personAlreadyExistsHandler(IPeopleService.PersonAlreadyExistsException exc) {
+    Problem personAlreadyExistsHandler(PeopleService.PersonAlreadyExistsException exc) {
         return new Problem("Person already exists", exc.getLocalizedMessage());
     }
 }

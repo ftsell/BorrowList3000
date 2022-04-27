@@ -1,62 +1,29 @@
 package me.finnthorben.thingpeoplelist.security.auth;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import me.finnthorben.thingpeoplelist.security.sessions.Session;
-import me.finnthorben.thingpeoplelist.security.sessions.SessionRepository;
 import me.finnthorben.thingpeoplelist.users.User;
-import org.springframework.security.authentication.ReactiveAuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 
-import javax.transaction.Transactional;
 import java.util.UUID;
 
-@Service
-@Slf4j
-@RequiredArgsConstructor
-public class AuthService implements IAuthService {
+public interface AuthService {
+    /**
+     * Perform authorization of a user account with the given credentials and associate it with a session if successful
+     */
+    Mono<Session> login(String username, String password, String ipAddress, String userAgent);
 
-    private final ReactiveAuthenticationManager authManager;
-    private final SessionRepository sessionRepository;
+    /**
+     * Delete the session with the given ID, effectively logging it out
+     */
+    void logout(UUID sessionId);
 
-    private final Scheduler jdbcScheduler;
+    /**
+     * Logout all sessions of the given user except the given session
+     */
+    void logout(User user, Session exceptSession);
 
-    @Override
-    public Mono<Session> login(String username, String password, String ipAddress, String userAgent) {
-        return Mono.fromCallable(() -> {
-            // authenticate the user
-            UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(username, password);
-            Authentication auth = authManager.authenticate(authReq).block();    // TODO Make properly reactive
-            SecurityContext securityContext = SecurityContextHolder.getContext();
-            securityContext.setAuthentication(auth);
-
-            // persist the authenticated security context into the session
-            Session session = new Session((User) auth.getPrincipal(), ipAddress, userAgent);
-            sessionRepository.save(session);
-            return session;
-        }).subscribeOn(jdbcScheduler);
-    }
-
-    @Override
-    public void logout(UUID sessionId) {
-        sessionRepository.deleteById(sessionId);
-    }
-
-    @Override
-    @Transactional
-    public void logout(User user, Session exceptSession) {
-        sessionRepository.deleteByUserAndIdIsNot(user, exceptSession.getId());
-    }
-
-    @Override
-    @Transactional
-    public void logout(User user) {
-        sessionRepository.deleteByUser(user);
-    }
+    /**
+     * Logout all sessions of the given user
+     */
+    void logout(User user);
 }

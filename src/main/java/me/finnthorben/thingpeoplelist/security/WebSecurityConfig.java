@@ -2,7 +2,7 @@ package me.finnthorben.thingpeoplelist.security;
 
 import lombok.RequiredArgsConstructor;
 import me.finnthorben.thingpeoplelist.security.auth.SessionTokenAuthenticationManager;
-import me.finnthorben.thingpeoplelist.security.sessions.ISessionService;
+import me.finnthorben.thingpeoplelist.security.sessions.SessionService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,7 +41,7 @@ public class WebSecurityConfig {
     @Bean
     public ReactiveAuthenticationManager authenticationManager(
             ReactiveUserDetailsService userDetailsService,
-            ISessionService sessionService) {
+            SessionService sessionService) {
         return new DelegatingReactiveAuthenticationManager(
                 new SessionTokenAuthenticationManager(sessionService),
                 new UserDetailsRepositoryReactiveAuthenticationManager(userDetailsService)

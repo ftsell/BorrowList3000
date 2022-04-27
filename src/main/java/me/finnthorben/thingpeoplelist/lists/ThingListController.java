@@ -21,7 +21,7 @@ import java.util.List;
 @SecurityRequirement(name = "token")
 public class ThingListController {
 
-    private final IThingListService listService;
+    private final ThingListService listService;
     private final ModelMapper modelMapper;
 
     @GetMapping("/")

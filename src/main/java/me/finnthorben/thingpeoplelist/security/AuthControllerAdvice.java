@@ -1,7 +1,7 @@
 package me.finnthorben.thingpeoplelist.security;
 
 import me.finnthorben.thingpeoplelist.genericapi.Problem;
-import me.finnthorben.thingpeoplelist.users.IUserService;
+import me.finnthorben.thingpeoplelist.users.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
 public class AuthControllerAdvice {
-    @ExceptionHandler(IUserService.UserAlreadyExistsException.class)
+    @ExceptionHandler(UserService.UserAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     @ResponseBody
     Problem userAlreadyExistsHandler() {

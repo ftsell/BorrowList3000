@@ -1,36 +1,36 @@
 package me.finnthorben.thingpeoplelist.people;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import me.finnthorben.thingpeoplelist.users.User;
-import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
 import java.util.Set;
 
-@Service
-@Slf4j
-@RequiredArgsConstructor
-public class PeopleService implements IPeopleService {
 
-    private final PeopleRepository peopleRepository;
-
-    @Override
-    public Person create(String name, User user) {
-        if (peopleRepository.existsByNameIgnoreCaseAndUser(name, user)) {
-            throw new PersonAlreadyExistsException(name, user);
+public interface PeopleService {
+    class PersonAlreadyExistsException extends RuntimeException {
+        public PersonAlreadyExistsException(String personName, User user) {
+            super("Person with name " + personName + " already exists for user " + user.getUsername());
         }
-        Person x = new Person(name, user);
-        return peopleRepository.save(x);
     }
 
-    @Override
-    public Set<Person> getAllForUser(User user) {
-        return peopleRepository.findByUser(user);
+    class NoSuchPersonException extends NoSuchElementException {
+        public NoSuchPersonException(String personName, User user) {
+            super("Person with name " + personName + " does not exist for user " + user.getUsername());
+        }
     }
 
-    @Override
-    public Person getByNameForUser(String name, User user) {
-        return peopleRepository.findByNameIgnoreCaseAndUser(name, user)
-                .orElseThrow(() -> new NoSuchPersonException(name, user));
-    }
+    /**
+     * Create a new persisted person with the specified data
+     */
+    Person create(String name, User user);
+
+    /**
+     * Get all people that a specific user knows
+     */
+    Set<Person> getAllForUser(User user);
+
+    /**
+     * Get a specific person by name that a given user knows
+     */
+    Person getByNameForUser(String name, User user);
 }

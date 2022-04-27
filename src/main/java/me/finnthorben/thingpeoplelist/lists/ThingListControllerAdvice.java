@@ -10,15 +10,15 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 @RequiredArgsConstructor
 public class ThingListControllerAdvice {
-    @ExceptionHandler(IThingListService.NoSuchThingListException.class)
+    @ExceptionHandler(ThingListService.NoSuchThingListException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    Problem noSuchListHandler(IThingListService.NoSuchThingListException exc) {
+    Problem noSuchListHandler(ThingListService.NoSuchThingListException exc) {
         return new Problem("No such List", exc.getLocalizedMessage());
     }
 
-    @ExceptionHandler(IThingListService.ThingListAlreadyExistsException.class)
+    @ExceptionHandler(ThingListService.ThingListAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    Problem listAlreadyExistsHandler(IThingListService.ThingListAlreadyExistsException exc) {
+    Problem listAlreadyExistsHandler(ThingListService.ThingListAlreadyExistsException exc) {
         return new Problem("List already exists", exc.getLocalizedMessage());
     }
 }

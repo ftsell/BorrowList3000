@@ -3,9 +3,9 @@ package me.finnthorben.thingpeoplelist.things;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import me.finnthorben.thingpeoplelist.lists.IThingListService;
+import me.finnthorben.thingpeoplelist.lists.ThingListService;
 import me.finnthorben.thingpeoplelist.lists.ThingList;
-import me.finnthorben.thingpeoplelist.people.IPeopleService;
+import me.finnthorben.thingpeoplelist.people.PeopleService;
 import me.finnthorben.thingpeoplelist.people.Person;
 import me.finnthorben.thingpeoplelist.things.dto.CreateThingDto;
 import me.finnthorben.thingpeoplelist.things.dto.ThingDto;
@@ -25,9 +25,9 @@ import java.util.List;
 @SecurityRequirement(name = "token")
 public class ThingController {
 
-    private final IThingService thingService;
-    private final IThingListService listService;
-    private final IPeopleService peopleService;
+    private final ThingService thingService;
+    private final ThingListService listService;
+    private final PeopleService peopleService;
     private final ModelMapper modelMapper;
 
     @GetMapping("/")

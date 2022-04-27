@@ -2,7 +2,7 @@ package me.finnthorben.thingpeoplelist.security.auth;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.finnthorben.thingpeoplelist.security.sessions.ISessionService;
+import me.finnthorben.thingpeoplelist.security.sessions.SessionService;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -14,7 +14,7 @@ import java.util.UUID;
 @Slf4j
 public class SessionTokenAuthenticationManager implements ReactiveAuthenticationManager {
 
-    private final ISessionService sessionService;
+    private final SessionService sessionService;
 
     @Override
     public Mono<Authentication> authenticate(Authentication auth) throws AuthenticationException {

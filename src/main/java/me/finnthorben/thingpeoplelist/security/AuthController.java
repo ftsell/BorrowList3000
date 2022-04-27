@@ -4,14 +4,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.finnthorben.thingpeoplelist.security.auth.IAuthService;
+import me.finnthorben.thingpeoplelist.security.auth.AuthService;
 import me.finnthorben.thingpeoplelist.security.auth.SessionTokenAuthentication;
 import me.finnthorben.thingpeoplelist.security.dto.LoginRequest;
 import me.finnthorben.thingpeoplelist.security.dto.LoginResponse;
 import me.finnthorben.thingpeoplelist.security.dto.RegisterRequest;
 import me.finnthorben.thingpeoplelist.security.dto.SessionDto;
-import me.finnthorben.thingpeoplelist.security.sessions.ISessionService;
-import me.finnthorben.thingpeoplelist.users.IUserService;
+import me.finnthorben.thingpeoplelist.security.sessions.SessionService;
+import me.finnthorben.thingpeoplelist.users.UserService;
 import me.finnthorben.thingpeoplelist.users.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpHeaders;
@@ -38,10 +38,10 @@ import java.util.UUID;
 )
 public class AuthController {
 
-    private final IUserService userService;
-    private final IAuthService authService;
+    private final UserService userService;
+    private final AuthService authService;
 
-    private final ISessionService sessionService;
+    private final SessionService sessionService;
 
     private final ModelMapper modelMapper;
 

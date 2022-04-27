@@ -1,36 +1,35 @@
 package me.finnthorben.thingpeoplelist.lists;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import me.finnthorben.thingpeoplelist.users.User;
-import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
 import java.util.Set;
 
-@Service
-@Slf4j
-@RequiredArgsConstructor
-public class ThingListService implements IThingListService {
-
-    private final ThingListRepository thingListRepository;
-
-    @Override
-    public ThingList create(String name, User user) {
-        if (thingListRepository.findByNameIgnoreCaseAndUser(name, user).isPresent()) {
-            throw new ThingListAlreadyExistsException(name, user);
+public interface ThingListService {
+    class ThingListAlreadyExistsException extends RuntimeException {
+        public ThingListAlreadyExistsException(String thingListName, User user) {
+            super("User " + user.getUsername() + " already has a '" + thingListName + "' list");
         }
-
-        return thingListRepository.save(new ThingList(name, user));
     }
 
-    @Override
-    public Set<ThingList> getAllForUser(User user) {
-        return thingListRepository.findByUser(user);
+    class NoSuchThingListException extends NoSuchElementException {
+        public NoSuchThingListException(String thingListName, User user) {
+            super("User " + user.getUsername() + " does not have a list named " + thingListName);
+        }
     }
 
-    @Override
-    public ThingList getByNameForUser(String name, User user) {
-        return thingListRepository.findByNameIgnoreCaseAndUser(name, user)
-                .orElseThrow(() -> new NoSuchThingListException(name, user));
-    }
+    /**
+     * Create a new list of things owned by the given user
+     */
+    ThingList create(String name, User user);
+
+    /**
+     * Get all ThingLists of the given user
+     */
+    Set<ThingList> getAllForUser(User user);
+
+    /**
+     * Get a specific ThingList by name that the given user owns
+     */
+    ThingList getByNameForUser(String name, User user);
 }

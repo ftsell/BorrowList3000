@@ -27,7 +27,7 @@ public class SessionTokenAuthenticationConverter implements ServerAuthentication
 
     final static String SESSION_TOKEN_HEADER = "Authorization";
 
-    private final IAuthService authService;
+    private final AuthService authService;
 
     @Override
     public Mono<Authentication> convert(ServerWebExchange exchange) {

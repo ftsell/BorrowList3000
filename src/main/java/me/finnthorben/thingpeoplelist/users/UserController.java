@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final ModelMapper modelMapper;
-    private final IUserService userService;
+    private final UserService userService;
 
     @GetMapping("/me")
     @Operation(summary = "Retrieve the currently logged in user")

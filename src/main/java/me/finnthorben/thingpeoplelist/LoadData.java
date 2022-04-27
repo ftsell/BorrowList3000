@@ -2,13 +2,13 @@ package me.finnthorben.thingpeoplelist;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.finnthorben.thingpeoplelist.lists.IThingListService;
+import me.finnthorben.thingpeoplelist.lists.ThingListService;
 import me.finnthorben.thingpeoplelist.lists.ThingList;
-import me.finnthorben.thingpeoplelist.people.IPeopleService;
+import me.finnthorben.thingpeoplelist.people.PeopleService;
 import me.finnthorben.thingpeoplelist.people.Person;
-import me.finnthorben.thingpeoplelist.things.IThingService;
+import me.finnthorben.thingpeoplelist.things.ThingService;
 import me.finnthorben.thingpeoplelist.things.Thing;
-import me.finnthorben.thingpeoplelist.users.IUserService;
+import me.finnthorben.thingpeoplelist.users.UserService;
 import me.finnthorben.thingpeoplelist.users.User;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Profile;
 @Profile("dev")
 public class LoadData {
     @Bean
-    CommandLineRunner initDatabase(IUserService userService, IPeopleService peopleService, IThingListService listService, IThingService thingService) {
+    CommandLineRunner initDatabase(UserService userService, PeopleService peopleService, ThingListService listService, ThingService thingService) {
         return args -> {
             User user = userService.createUser("ftsell", "foobar123", null);
             log.info("Preloading: " + user.toString() + " (password=foobar123)");

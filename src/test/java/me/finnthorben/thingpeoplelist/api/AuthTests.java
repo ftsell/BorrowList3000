@@ -1,12 +1,12 @@
 package me.finnthorben.thingpeoplelist.api;
 
-import me.finnthorben.thingpeoplelist.security.auth.IAuthService;
+import me.finnthorben.thingpeoplelist.security.auth.AuthService;
 import me.finnthorben.thingpeoplelist.security.dto.SessionDto;
-import me.finnthorben.thingpeoplelist.security.sessions.ISessionService;
+import me.finnthorben.thingpeoplelist.security.sessions.SessionService;
 import me.finnthorben.thingpeoplelist.security.sessions.Session;
 import me.finnthorben.thingpeoplelist.security.dto.LoginRequest;
 import me.finnthorben.thingpeoplelist.security.dto.RegisterRequest;
-import me.finnthorben.thingpeoplelist.users.IUserService;
+import me.finnthorben.thingpeoplelist.users.UserService;
 import me.finnthorben.thingpeoplelist.users.User;
 import me.finnthorben.thingpeoplelist.users.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -28,13 +28,13 @@ public class AuthTests {
     private UserRepository userRepository;
 
     @Autowired
-    private IAuthService authService;
+    private AuthService authService;
 
     @Autowired
-    private IUserService userService;
+    private UserService userService;
 
     @Autowired
-    private ISessionService sessionService;
+    private SessionService sessionService;
 
     @Autowired
     private WebTestClient client;

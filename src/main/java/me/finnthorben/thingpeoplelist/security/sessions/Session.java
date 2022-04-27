@@ -18,11 +18,13 @@ import java.util.UUID;
 )
 @Getter
 @NoArgsConstructor
+@ToString
 public class Session {
     @Id
     @GeneratedValue
     private UUID id;
 
+    @ToString.Exclude
     private UUID token;
 
     @ManyToOne(optional = false)
