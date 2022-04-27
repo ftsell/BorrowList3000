@@ -54,7 +54,7 @@ public class AuthTests {
     @Test
     void testLogin() {
         // preparation
-        userService.createUser("test", "test", null);
+        userService.createUser("test", "test", null).block();
 
         // execution
         client
@@ -70,7 +70,7 @@ public class AuthTests {
     @Test
     void testResourceProtection() {
         // preparation
-        userService.createUser("test", "test", null);
+        userService.createUser("test", "test", null).block();
         Session session = authService.login("test", "test", null, null).block();
         assertThat(session).isNotNull();
 
@@ -93,7 +93,7 @@ public class AuthTests {
     @Test
     void testListSessions() {
         // preparation
-        userService.createUser("test", "test", null);
+        userService.createUser("test", "test", null).block();
         Session session = authService.login("test", "test", "::1", "test-agent").block();
         assertThat(session).isNotNull();
 
@@ -119,7 +119,7 @@ public class AuthTests {
     @Test
     void testLogoutAllSessionsExceptCurrent() {
         // preparation
-        userService.createUser("test", "test", null);
+        userService.createUser("test", "test", null).block();
         Session session = authService.login("test", "test", null, null).block();
         authService.login("test", "test", null, null).block();
         assertThat(session).isNotNull();
@@ -128,7 +128,7 @@ public class AuthTests {
     @Test
     void testLogoutAllSessionsIncludingCurrent() {
         // preparation
-        User user = userService.createUser("test", "test", null);
+        User user = userService.createUser("test", "test", null).block();
         Session session = authService.login("test", "test", null, null).block();
         authService.login("test", "test", null, null).block();
         assertThat(session).isNotNull();
@@ -146,7 +146,7 @@ public class AuthTests {
     @Test
     void testLogoutSpecificSession() {
         // preparation
-        User user = userService.createUser("test", "test", null);
+        User user = userService.createUser("test", "test", null).block();
         Session session = authService.login("test", "test", null, null).block();
 
         // execution

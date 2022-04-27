@@ -48,8 +48,9 @@ public class AuthController {
 
     @PostMapping("/register")
     @Operation(summary = "Register a new user account")
-    public void register(@RequestBody @Validated RegisterRequest request) {
-        User user = userService.createUser(request.username(), request.password(), request.email());
+    public Mono<Void> register(@RequestBody @Validated RegisterRequest request) {
+        return userService.createUser(request.username(), request.password(), request.email())
+                .then();
     }
 
     @PostMapping("/login")

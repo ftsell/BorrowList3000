@@ -23,7 +23,7 @@ public class LoadData {
     @Bean
     CommandLineRunner initDatabase(UserService userService, PeopleService peopleService, ThingListService listService, ThingService thingService) {
         return args -> {
-            User user = userService.createUser("ftsell", "foobar123", null);
+            User user = userService.createUser("ftsell", "foobar123", null).block();
             log.info("Preloading: " + user.toString() + " (password=foobar123)");
 
             Person person = peopleService.create("Ole", user).block();
