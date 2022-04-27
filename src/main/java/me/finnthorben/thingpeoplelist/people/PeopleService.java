@@ -1,9 +1,10 @@
 package me.finnthorben.thingpeoplelist.people;
 
 import me.finnthorben.thingpeoplelist.users.User;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 
 public interface PeopleService {
@@ -22,15 +23,15 @@ public interface PeopleService {
     /**
      * Create a new persisted person with the specified data
      */
-    Person create(String name, User user);
+    Mono<Person> create(String name, User user);
 
     /**
      * Get all people that a specific user knows
      */
-    Set<Person> getAllForUser(User user);
+    Flux<Person> getAllForUser(User user);
 
     /**
      * Get a specific person by name that a given user knows
      */
-    Person getByNameForUser(String name, User user);
+    Mono<Person> getByNameForUser(String name, User user);
 }

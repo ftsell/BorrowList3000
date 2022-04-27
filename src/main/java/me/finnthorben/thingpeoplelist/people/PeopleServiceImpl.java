@@ -4,8 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.finnthorben.thingpeoplelist.users.User;
 import org.springframework.stereotype.Service;
-
-import java.util.Set;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
 
 @Service
 @Slf4j
@@ -14,23 +15,29 @@ public class PeopleServiceImpl implements PeopleService {
 
     private final PeopleRepository peopleRepository;
 
+    private final Scheduler jdbcScheduler;
+
     @Override
-    public Person create(String name, User user) {
-        if (peopleRepository.existsByNameIgnoreCaseAndUser(name, user)) {
-            throw new PersonAlreadyExistsException(name, user);
-        }
-        Person x = new Person(name, user);
-        return peopleRepository.save(x);
+    public Mono<Person> create(String name, User user) {
+        return Mono.fromCallable(() -> {
+            if (peopleRepository.existsByNameIgnoreCaseAndUser(name, user))
+                throw new PersonAlreadyExistsException(name, user);
+
+            return peopleRepository.save(new Person(name, user));
+        }).subscribeOn(jdbcScheduler);
     }
 
     @Override
-    public Set<Person> getAllForUser(User user) {
-        return peopleRepository.findByUser(user);
+    public Flux<Person> getAllForUser(User user) {
+        return Mono.fromCallable(() -> peopleRepository.findByUser(user))
+                .subscribeOn(jdbcScheduler)
+                .flatMapMany(Flux::fromIterable);
     }
 
     @Override
-    public Person getByNameForUser(String name, User user) {
-        return peopleRepository.findByNameIgnoreCaseAndUser(name, user)
-                .orElseThrow(() -> new NoSuchPersonException(name, user));
+    public Mono<Person> getByNameForUser(String name, User user) {
+        return Mono.fromCallable(() -> peopleRepository.findByNameIgnoreCaseAndUser(name, user)
+                .orElseThrow(() -> new NoSuchPersonException(name, user)))
+                .subscribeOn(jdbcScheduler);
     }
 }

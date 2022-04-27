@@ -26,7 +26,7 @@ public class LoadData {
             User user = userService.createUser("ftsell", "foobar123", null);
             log.info("Preloading: " + user.toString() + " (password=foobar123)");
 
-            Person person = peopleService.create("Ole", user);
+            Person person = peopleService.create("Ole", user).block();
             log.info("Preloading: " + person.toString());
 
             ThingList list = listService.create("Borrowlist", user).block();

@@ -47,7 +47,7 @@ public class ThingController {
                     @RequestBody @Validated CreateThingDto createRequest,
                     Authentication auth) {
         ThingList list = listService.getByNameForUser(listName, (User) auth.getPrincipal()).block();
-        Person person = peopleService.getByNameForUser(createRequest.getPersonName(), (User) auth.getPrincipal());
+        Person person = peopleService.getByNameForUser(createRequest.getPersonName(), (User) auth.getPrincipal()).block();
         return modelMapper.map(
                 thingService.create(createRequest.getName(), createRequest.getDescription(), list, person),
                 ThingDto.class
