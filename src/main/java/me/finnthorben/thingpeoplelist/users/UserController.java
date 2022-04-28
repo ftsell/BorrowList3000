@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 
 @RestController
@@ -30,8 +31,8 @@ public class UserController {
 
     @PatchMapping(value = "/me", consumes = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Update information of the currently logged in user")
-    UserDto patchMe(@RequestBody @Validated ChangeUserDto changeRequest, Authentication authentication) {
-        userService.updatePassword((UserDetails) authentication.getPrincipal(), changeRequest.getPassword());
-        return modelMapper.map(authentication.getPrincipal(), UserDto.class);
+    Mono<UserDto> patchMe(@RequestBody @Validated ChangeUserDto changeRequest, Authentication authentication) {
+        return userService.updatePassword((UserDetails) authentication.getPrincipal(), changeRequest.getPassword())
+                .thenReturn(modelMapper.map(authentication.getPrincipal(), UserDto.class));
     }
 }
