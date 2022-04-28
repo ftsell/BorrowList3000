@@ -33,7 +33,7 @@ public class SessionTokenAuthenticationManager implements ReactiveAuthentication
     }
 
     private Mono<Authentication> validateToken(String token) {
-        return sessionService.getValidSession(UUID.fromString(token))
+        return sessionService.getValidSession(token)
                 .map(session -> {
                     SessionTokenAuthentication newAuth = new SessionTokenAuthentication(token, session, null);
                     newAuth.setAuthenticated(true);

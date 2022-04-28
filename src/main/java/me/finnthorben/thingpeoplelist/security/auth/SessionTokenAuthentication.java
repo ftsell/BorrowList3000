@@ -23,6 +23,7 @@ import java.util.Collection;
 public class SessionTokenAuthentication extends AbstractAuthenticationToken {
 
     @NonNull
+    @ToString.Exclude
     private final String token;
 
     @Nullable

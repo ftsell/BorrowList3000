@@ -10,7 +10,6 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
 import java.time.ZonedDateTime;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +21,7 @@ public class SessionServiceImpl implements SessionService {
     private final Scheduler jdbcScheduler;
 
     @Override
-    public Mono<Session> getValidSession(UUID sessionId, boolean updateLastAccessTime) {
+    public Mono<Session> getValidSession(String sessionId, boolean updateLastAccessTime) {
         // TODO Validate that the user account is valid
         return Mono.fromCallable(() -> sessionRepository.findByToken(sessionId))
                 .doOnNext(session -> {
@@ -33,7 +32,7 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public Mono<Session> getValidSession(@NonNull UUID sessionId) {
+    public Mono<Session> getValidSession(@NonNull String sessionId) {
         return getValidSession(sessionId, true);
     }
 

@@ -63,7 +63,7 @@ public class AuthController {
                         request.password(),
                         Optional.ofNullable(http.getRequest().getRemoteAddress()).map(InetSocketAddress::toString).orElse(""),
                         Optional.ofNullable(http.getRequest().getHeaders().get(HttpHeaders.USER_AGENT)).flatMap(l -> l.stream().findFirst()).orElse(""))
-                .map(session -> new LoginResponse(session.getToken().toString()));
+                .map(session -> new LoginResponse(session.getToken()));
     }
 
     @GetMapping("/sessions")
@@ -74,7 +74,7 @@ public class AuthController {
                 .listAllSessionsOfUser((User) auth.getPrincipal())
                 .map(session -> {
                     SessionDto dto = modelMapper.map(session, SessionDto.class);
-                    dto.setCurrent(auth.getCredentials().equals(session.getToken().toString()));
+                    dto.setCurrent(auth.getCredentials().equals(session.getToken()));
                     return dto;
                 });
     }

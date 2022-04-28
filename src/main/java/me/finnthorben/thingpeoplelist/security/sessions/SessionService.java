@@ -4,8 +4,6 @@ import me.finnthorben.thingpeoplelist.users.User;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.UUID;
-
 public interface SessionService {
 
     /**
@@ -14,7 +12,7 @@ public interface SessionService {
      *
      * Also, automatically updates the last access time in the session object if desired
      */
-    Mono<Session> getValidSession(UUID sessionId, boolean updateLastAccessTime);
+    Mono<Session> getValidSession(String sessionId, boolean updateLastAccessTime);
 
     /**
      * Retrieve the session with the given ID from persistent storage and validate it so that only sessions linked
@@ -22,7 +20,7 @@ public interface SessionService {
      *
      * Also, automatically updates the last access time in the session object.
      */
-    Mono<Session> getValidSession(UUID sessionId);
+    Mono<Session> getValidSession(String sessionId);
 
     /**
      * List all sessions of the given user

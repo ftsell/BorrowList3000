@@ -27,7 +27,7 @@ public class SessionTokenAuthenticationConverter implements ServerAuthentication
 
     final static String SESSION_TOKEN_HEADER = "Authorization";
 
-    private final AuthService authService;
+    public final static String SESSION_TOKEN_PREFIX = "SessionToken";
 
     @Override
     public Mono<Authentication> convert(ServerWebExchange exchange) {
@@ -37,7 +37,8 @@ public class SessionTokenAuthenticationConverter implements ServerAuthentication
 
     @Override
     public Mono<MatchResult> matches(ServerWebExchange exchange) {
-        if (exchange.getRequest().getHeaders().containsKey(SESSION_TOKEN_HEADER)) {
+        String authHeader = exchange.getRequest().getHeaders().getFirst(SESSION_TOKEN_HEADER);
+        if (authHeader != null && authHeader.startsWith(SESSION_TOKEN_PREFIX)) {
             log.debug("ServerWebExchange matches to be processed by SessionTokenAuthenticationConverter");
             return MatchResult.match();
         }

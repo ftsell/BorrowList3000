@@ -12,7 +12,7 @@ import java.util.UUID;
 @Repository
 public interface SessionRepository extends JpaRepository<Session, UUID> {
     @Nullable
-    Session findByToken(@NonNull UUID token);
+    Session findByToken(@NonNull String token);
 
     List<Session> findByUser(@NonNull User user);
 

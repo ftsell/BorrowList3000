@@ -85,7 +85,7 @@ public class AuthTests {
         client
                 .get()
                 .uri("/api/users/me")
-                .header("Authorization", session.getToken().toString())
+                .header("Authorization", session.getToken())
                 .exchange()
                 .expectStatus().is2xxSuccessful();
     }
@@ -101,7 +101,7 @@ public class AuthTests {
         client
                 .get()
                 .uri("/api/auth/sessions")
-                .header("Authorization", session.getToken().toString())
+                .header("Authorization", session.getToken())
                 .exchange()
                 .expectStatus().is2xxSuccessful()
                 .expectBodyList(SessionDto.class)
@@ -137,7 +137,7 @@ public class AuthTests {
         client
                 .delete()
                 .uri("/api/auth/sessions?includingCurrent=true")
-                .header("Authorization", session.getToken().toString())
+                .header("Authorization", session.getToken())
                 .exchange()
                 .expectStatus().is2xxSuccessful();
         assertThat(sessionService.listAllSessionsOfUser(user).collectList().block()).isEmpty();
@@ -153,7 +153,7 @@ public class AuthTests {
         client
                 .delete()
                 .uri("/api/auth/sessions/" + session.getId().toString())
-                .header("Authorization", session.getToken().toString())
+                .header("Authorization", session.getToken())
                 .exchange()
                 .expectStatus().is2xxSuccessful();
         assertThat(sessionService.listAllSessionsOfUser(user).collectList().block()).isEmpty();
