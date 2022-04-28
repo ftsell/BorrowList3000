@@ -17,6 +17,7 @@ specifiers:
   vee-validate: ^4.5.10
   vite: ^2.9.1
   vue: ^3.2.31
+  vue-boring-avatars: ^1.1.0
   vue-router: ^4.0.14
   vue-tsc: ^0.33.9
   yup: ^0.32.11
@@ -26,6 +27,7 @@ dependencies:
   pinia: 2.0.13_typescript@4.6.3+vue@3.2.31
   vee-validate: 4.5.10_vue@3.2.31
   vue: 3.2.31
+  vue-boring-avatars: 1.1.0_vue@3.2.31
   vue-router: 4.0.14_vue@3.2.31
   yup: 0.32.11
 
@@ -2187,6 +2189,14 @@ packages:
   /vscode-uri/3.0.3:
     resolution: {integrity: sha512-EcswR2S8bpR7fD0YPeS7r2xXExrScVMxg4MedACaWHEtx9ftCF/qHG1xGkolzTPcEmjTavCQgbVzHUIdTMzFGA==}
     dev: true
+
+  /vue-boring-avatars/1.1.0_vue@3.2.31:
+    resolution: {integrity: sha512-eiq79Dh1E6mhRiSLPPcL2oTyJFHfQow+5p7oUJr9i/DpqyCjEX0ayEvZhie1EDKyDcVfVbmqXXBeXBQOr2UAdw==}
+    peerDependencies:
+      vue: ^3.0.0
+    dependencies:
+      vue: 3.2.31
+    dev: false
 
   /vue-demi/0.12.5_vue@3.2.31:
     resolution: {integrity: sha512-BREuTgTYlUr0zw0EZn3hnhC3I6gPWv+Kwh4MCih6QcAeaTlaIX0DwOVN0wHej7hSvDPecz4jygy/idsgKfW58Q==}
