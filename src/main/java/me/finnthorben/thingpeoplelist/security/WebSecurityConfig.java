@@ -34,6 +34,7 @@ public class WebSecurityConfig {
                 .and()
                 .formLogin().disable()
                 .csrf().disable()
+                .httpBasic().disable()
                 .addFilterAt(sessionTokenFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .build();
     }
