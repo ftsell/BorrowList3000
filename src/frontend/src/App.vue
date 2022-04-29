@@ -4,11 +4,18 @@ import { useAutomaticUserFetching } from "@/stores/userStore";
 import { useAutomaticListFetching } from "@/stores/listStore";
 import { useAutomaticPeopleFetching } from "@/stores/peopleStore";
 import { useAutomaticThingFetching } from "@/stores/thingStore";
+import { applyPersistedAuthState, useAuthStore } from "@/stores/authStore";
+import { onMounted } from "vue";
 
+const authStore = useAuthStore();
 useAutomaticUserFetching();
 useAutomaticListFetching();
 useAutomaticPeopleFetching();
 useAutomaticThingFetching();
+
+onMounted(async () => {
+  await applyPersistedAuthState(authStore);
+});
 </script>
 
 <template>
