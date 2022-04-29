@@ -2,9 +2,11 @@
 import { RouterView } from "vue-router";
 import { useAutomaticUserFetching } from "@/stores/userStore";
 import { userAutomaticListFetching } from "@/stores/listStore";
+import { useAutomaticPeopleFetching } from "@/stores/peopleStore";
 
 useAutomaticUserFetching();
 userAutomaticListFetching();
+useAutomaticPeopleFetching();
 </script>
 
 <template>
