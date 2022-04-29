@@ -14,6 +14,12 @@ export const useUserStore = defineStore({
     ({
       me: null,
     } as UserState),
+  actions: {
+    async fetchFromApi() {
+      const api = useRestApi();
+      this.me = await api.value.user.getMe();
+    },
+  },
 });
 
 /**
@@ -25,11 +31,10 @@ export const useUserStore = defineStore({
 export function useAutomaticUserFetching(): void {
   const authStore = useAuthStore();
   const userStore = useUserStore();
-  const api = useRestApi();
 
   watch([() => authStore.isAuthenticated], async () => {
     if (authStore.authToken != null) {
-      userStore.me = await api.value.user.getMe();
+      await userStore.fetchFromApi();
     } else {
       userStore.me = null;
     }
