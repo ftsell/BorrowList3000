@@ -4,12 +4,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.finnthorben.thingpeoplelist.lists.dto.PatchThingListRequest;
 import me.finnthorben.thingpeoplelist.lists.dto.ThingListDto;
 import me.finnthorben.thingpeoplelist.users.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -39,6 +41,20 @@ public class ThingListController {
     Mono<ThingListDto> getByName(@PathVariable String name, Authentication auth) {
         return listService
                 .getByNameForUser(name, (User) auth.getPrincipal())
+                .map(list -> modelMapper.map(list, ThingListDto.class));
+    }
+
+    @PatchMapping("/{name}")
+    @Operation(summary = "Update the specified list with the given data")
+    Mono<ThingListDto> updateByName(@PathVariable String name,
+                                    @RequestBody @Validated PatchThingListRequest patchRequest,
+                                    Authentication auth) {
+        return listService
+                .getByNameForUser(name, (User) auth.getPrincipal())
+                .flatMap(list -> {
+                    modelMapper.map(patchRequest, list);
+                    return listService.saveThingList(list);
+                })
                 .map(list -> modelMapper.map(list, ThingListDto.class));
     }
 

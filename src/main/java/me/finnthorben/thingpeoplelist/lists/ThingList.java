@@ -4,6 +4,8 @@ import lombok.*;
 import me.finnthorben.thingpeoplelist.things.Thing;
 import me.finnthorben.thingpeoplelist.users.User;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.GenericGenerator;
+import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,26 +15,22 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "List")
-@IdClass(ThingList.ListId.class)
+@Table(name = "ThingList")
 @Getter
 @ToString
 @NoArgsConstructor
 public class ThingList {
-    @EqualsAndHashCode
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class ListId implements Serializable {
-        String name;
-        UUID user;
-    }
-
     @Id
+    @GeneratedValue
+    UUID id;
+
+    @NonNull
+    @Setter
     String name;
 
-    @Id
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)
+    @ToString.Exclude
     User user;
 
     @OneToMany(mappedBy = "list")
@@ -50,12 +48,11 @@ public class ThingList {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         ThingList thingList = (ThingList) o;
-        return name != null && Objects.equals(name, thingList.name)
-                && user != null && Objects.equals(user, thingList.user);
+        return id != null && Objects.equals(id, thingList.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, user);
+        return getClass().hashCode();
     }
 }

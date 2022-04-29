@@ -33,4 +33,9 @@ public interface ThingListService {
      * Get a specific ThingList by name that the given user owns
      */
     Mono<ThingList> getByNameForUser(String name, User user);
+
+    /**
+     * Persist any changes made to the given list
+     */
+    Mono<ThingList> saveThingList(ThingList list);
 }

@@ -22,10 +22,7 @@ public class Thing {
     UUID id;
 
     @ManyToOne(optional = false)
-    @JoinColumns({
-            @JoinColumn(name = "list_name", nullable = false),
-            @JoinColumn(name = "list_user", nullable = false)
-    })
+    @JoinColumn(name="list_id")
     ThingList list;
 
     @ManyToOne(optional = false)

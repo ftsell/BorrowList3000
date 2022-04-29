@@ -41,4 +41,10 @@ public class ThingListServiceImpl implements ThingListService {
                 .orElseThrow(() -> new NoSuchThingListException(name, user)))
                 .subscribeOn(jdbcScheduler);
     }
+
+    @Override
+    public Mono<ThingList> saveThingList(ThingList list) {
+        return Mono.fromCallable(() -> thingListRepository.save(list))
+                .subscribeOn(jdbcScheduler);
+    }
 }
