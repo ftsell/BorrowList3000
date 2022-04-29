@@ -6,8 +6,8 @@ const userStore = useUserStore();
 </script>
 
 <template>
-  <div class="profile-badge">
-    <h4 v-if="userStore.me">Logged in as {{ userStore.me.username }}</h4>
+  <div v-if="userStore.me" class="profile-badge">
+    <h4>Logged in as {{ userStore.me.username }}</h4>
     <NameBadge :name="userStore.me?.username" />
   </div>
 </template>
