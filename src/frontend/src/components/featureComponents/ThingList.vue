@@ -5,18 +5,29 @@ import Thing from "@/components/featureComponents/Thing.vue";
 import { useThingStore } from "@/stores/thingStore";
 import Icon from "@/components/componentLibrary/Icon.vue";
 import editIcon from "@/assets/icons/feather_adjust.svg";
+import Popup from "@/components/componentLibrary/Popup.vue";
+import { ref } from "vue";
 
 defineProps<{
   list: ThingListDto;
 }>();
 
 const thingStore = useThingStore();
+
+const isEditing = ref(false);
 </script>
 
 <template>
   <Card :title="list.name">
     <template v-slot:title-bar>
-      <Icon :url="editIcon" alt="Edit List Name" />
+      <div class="list-action-container">
+        <Icon
+          class="action-icon"
+          :url="editIcon"
+          alt="Edit List Name"
+          @click="isEditing = !isEditing"
+        />
+      </div>
     </template>
     <template v-slot:default>
       <div class="things-container">
@@ -28,6 +39,10 @@ const thingStore = useThingStore();
       </div>
     </template>
   </Card>
+
+  <Popup :title="`Edit ${list.name}`" v-model:open="isEditing">
+    <span>Hi</span>
+  </Popup>
 </template>
 
 <style scoped>
@@ -37,5 +52,18 @@ const thingStore = useThingStore();
   flex-wrap: wrap;
   column-gap: 128px;
   row-gap: 32px;
+}
+
+.list-action-container {
+  margin-left: 16px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.list-action-container .action-icon {
+  width: 28px;
+  height: 28px;
 }
 </style>

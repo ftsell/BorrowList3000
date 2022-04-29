@@ -36,6 +36,7 @@ defineProps<{
 
 .card .title-bar .title-bar-extra {
   flex-grow: 1;
+  margin-right: 16px;
 }
 
 .card .title {
