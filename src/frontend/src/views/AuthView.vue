@@ -7,9 +7,16 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 
 async function onAuthSuccessful() {
-  await router.push({
-    name: "home",
-  });
+  if (router.currentRoute.value.query["next"] != null) {
+    const next = Array.isArray(router.currentRoute.value.query["next"])
+      ? router.currentRoute.value.query["next"][0]
+      : router.currentRoute.value.query["next"];
+    await router.push(next ?? { name: "home" });
+  } else {
+    await router.push({
+      name: "home",
+    });
+  }
 }
 </script>
 
