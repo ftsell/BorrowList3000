@@ -17,6 +17,7 @@ useAutomaticThingFetching();
 
 <style>
 @import "normalize.css/normalize.css";
+@import "./assets/utils.css";
 @import "./assets/color-scheme.css";
 </style>
 

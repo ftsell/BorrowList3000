@@ -7,7 +7,7 @@ const userStore = useUserStore();
 
 <template>
   <div v-if="userStore.me" class="profile-badge">
-    <h4>Logged in as {{ userStore.me.username }}</h4>
+    <h4 class="no-select">Logged in as {{ userStore.me.username }}</h4>
     <NameBadge :name="userStore.me?.username" />
   </div>
 </template>
