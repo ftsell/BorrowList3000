@@ -14,7 +14,7 @@ const router = createRouter({
     {
       path: "/auth",
       name: "auth",
-      component: () => import("../views/AuthView.vue"),
+      component: () => import("@/views/AuthView.vue"),
     },
     /*
     {
@@ -26,6 +26,11 @@ const router = createRouter({
       component: () => import("../views/AboutView.vue"),
     },
      */
+    {
+      path: "/:catchAll(.*)*",
+      name: "not-found",
+      component: () => import("@/views/404.vue"),
+    },
   ],
 });
 
