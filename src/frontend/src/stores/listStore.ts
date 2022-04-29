@@ -32,7 +32,7 @@ export const useListStore = defineStore({
  * Also handles clearing of user data when authentication parameters are
  * cleared.
  */
-export function userAutomaticListFetching(): void {
+export function useAutomaticListFetching(): void {
   const authStore = useAuthStore();
   const listStore = useListStore();
 

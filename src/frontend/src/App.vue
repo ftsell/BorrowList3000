@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { RouterView } from "vue-router";
 import { useAutomaticUserFetching } from "@/stores/userStore";
-import { userAutomaticListFetching } from "@/stores/listStore";
+import { useAutomaticListFetching } from "@/stores/listStore";
 import { useAutomaticPeopleFetching } from "@/stores/peopleStore";
+import { useAutomaticThingFetching } from "@/stores/thingStore";
 
 useAutomaticUserFetching();
-userAutomaticListFetching();
+useAutomaticListFetching();
 useAutomaticPeopleFetching();
+useAutomaticThingFetching();
 </script>
 
 <template>
