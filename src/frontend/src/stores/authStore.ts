@@ -1,58 +1,69 @@
 import { defineStore } from "pinia";
 import { useRestApi } from "@/apiClient";
 
-const LOCAL_STORAGE_KEY = "ThingPeopleListAuth";
+const LOCAL_STORAGE_KEY = "ThingPeopleListSessionToken";
+
+export enum TokenValidation {
+  UNCHECKED = "unchecked",
+  PENDING = "pending",
+  VALID = "valid",
+  INVALID = "invalid",
+}
 
 export interface AuthState {
   authToken: string | null;
+  tokenValidation: TokenValidation;
 }
 
 export const useAuthStore = defineStore({
   id: "auth",
   state: () =>
     ({
-      authToken: null,
+      authToken: localStorage.getItem(LOCAL_STORAGE_KEY),
+      tokenValidation: TokenValidation.UNCHECKED,
     } as AuthState),
   actions: {
     persistAuth() {
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this.$state));
+      if (this.authToken != null) {
+        localStorage.setItem(LOCAL_STORAGE_KEY, this.authToken);
+      } else {
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
+      }
     },
-  },
-  getters: {
-    isAuthenticated: (state) => state.authToken != null,
-  },
-});
+    async validateAuthToken(removeInvalidToken: boolean) {
+      // if there is no token, we cannot validate anything
+      if (this.authToken == null) {
+        return;
+      }
 
-/**
- * Retrieve the persisted auth state from local storage (if it exists)
- * and validate the credentials.
- */
-export async function applyPersistedAuthState(
-  authStore: ReturnType<typeof useAuthStore>
-): Promise<void> {
-  // retrieve persisted auth state
-  const persisted = localStorage.getItem(LOCAL_STORAGE_KEY);
-  if (persisted != null) {
-    const state = JSON.parse(persisted) as AuthState;
-    if (state.authToken != null) {
-      // validate the token by trying it out
+      this.$state.tokenValidation = TokenValidation.PENDING;
+
+      // try to validate the token by using it
       const api = useRestApi();
       try {
         await api.value.user.getMe({
           headers: {
-            Authorization: state.authToken,
+            Authorization: this.authToken,
           },
         });
       } catch (e) {
-        if ((e as Response).status === 401) {
-          // auth token is invalid
-          localStorage.removeItem(LOCAL_STORAGE_KEY);
-          return;
+        if (removeInvalidToken) {
+          this.tokenValidation = TokenValidation.UNCHECKED;
+          this.authToken = null;
+          this.persistAuth();
+        } else {
+          this.$state.tokenValidation = TokenValidation.INVALID;
         }
+        return;
       }
 
-      // put persisted token into store
-      Object.apply(authStore, state as never);
-    }
-  }
-}
+      // if we have not run into an error, the token is valid
+      this.tokenValidation = TokenValidation.VALID;
+    },
+  },
+  getters: {
+    isAuthenticated: (state) =>
+      state.authToken != null &&
+      state.tokenValidation === TokenValidation.VALID,
+  },
+});

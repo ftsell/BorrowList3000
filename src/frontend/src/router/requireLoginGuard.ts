@@ -1,8 +1,12 @@
 import type { NavigationGuard } from "vue-router";
-import { useAuthStore } from "@/stores/authStore";
+import { TokenValidation, useAuthStore } from "@/stores/authStore";
 
-export const requireLogin: NavigationGuard = function (to) {
+export const requireLogin: NavigationGuard = async function (to) {
   const authStore = useAuthStore();
+  if (authStore.tokenValidation === TokenValidation.UNCHECKED) {
+    await authStore.validateAuthToken(true);
+  }
+
   if (!authStore.isAuthenticated) {
     return {
       name: "auth",
