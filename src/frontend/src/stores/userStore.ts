@@ -30,12 +30,12 @@ export function useAutomaticUserFetching(): void {
   watchEffect(async () => {
     if (oldAuthToken !== authStore.authToken) {
       oldAuthToken = authStore.authToken;
+    }
 
-      if (authStore.authToken != null) {
-        userStore.me = await api.value.user.getMe();
-      } else {
-        userStore.me = null;
-      }
+    if (authStore.authToken != null) {
+      userStore.me = await api.value.user.getMe();
+    } else {
+      userStore.me = null;
     }
   });
 }
