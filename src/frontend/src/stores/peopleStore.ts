@@ -2,7 +2,7 @@ import type { PersonDto } from "@/apiClient";
 import { defineStore } from "pinia";
 import { useRestApi } from "@/apiClient";
 import { useAuthStore } from "@/stores/authStore";
-import { watchEffect } from "vue";
+import { watch } from "vue";
 
 export interface PeopleState {
   people: PersonDto[] | null;
@@ -36,7 +36,7 @@ export function useAutomaticPeopleFetching(): void {
   const authStore = useAuthStore();
   const peopleStore = usePeopleStore();
 
-  watchEffect(async () => {
+  watch([() => authStore.isAuthenticated], async () => {
     if (authStore.authToken != null) {
       await peopleStore.fetchFromApi();
     } else {

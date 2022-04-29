@@ -1,6 +1,6 @@
 import type { UserDto } from "@/apiClient";
 import { defineStore } from "pinia";
-import { watchEffect } from "vue";
+import { watch } from "vue";
 import { useAuthStore } from "@/stores/authStore";
 import { useRestApi } from "@/apiClient";
 
@@ -26,7 +26,8 @@ export function useAutomaticUserFetching(): void {
   const authStore = useAuthStore();
   const userStore = useUserStore();
   const api = useRestApi();
-  watchEffect(async () => {
+
+  watch([() => authStore.isAuthenticated], async () => {
     if (authStore.authToken != null) {
       userStore.me = await api.value.user.getMe();
     } else {

@@ -2,7 +2,7 @@ import type { ThingListDto } from "@/apiClient";
 import { defineStore } from "pinia";
 import { useAuthStore } from "@/stores/authStore";
 import { useRestApi } from "@/apiClient";
-import { watchEffect } from "vue";
+import { watch } from "vue";
 
 export interface ListState {
   lists: ThingListDto[] | null;
@@ -36,7 +36,7 @@ export function useAutomaticListFetching(): void {
   const authStore = useAuthStore();
   const listStore = useListStore();
 
-  watchEffect(async () => {
+  watch([() => authStore.isAuthenticated], async () => {
     if (authStore.authToken != null) {
       await listStore.fetchFromApi();
     } else {

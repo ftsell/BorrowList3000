@@ -43,7 +43,7 @@ export function useAutomaticThingFetching(): void {
   const thingStore = useThingStore();
 
   watch(
-    [authStore, listStore],
+    [() => authStore.isAuthenticated, () => listStore.lists],
     async () => {
       // clear complete store if we are not authenticated
       if (authStore.authToken == null) {
