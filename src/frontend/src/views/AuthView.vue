@@ -33,20 +33,16 @@ async function onAuthSuccessful() {
 
 <style scoped>
 main {
-  margin: 0 20vw;
+  margin: 128px 5vw;
   display: flex;
-  justify-content: space-around;
-  gap: 64px;
+  flex-wrap: wrap;
+  justify-content: center;
+  row-gap: 32px;
+  column-gap: 64px;
 }
 
 main > * {
-  flex-basis: 100px;
   flex-grow: 1;
-  transition: flex-grow 0.5s ease-in-out;
-}
-
-main > *:hover,
-main > *:focus-within {
-  flex-grow: 1.4;
+  max-width: 640px;
 }
 </style>
