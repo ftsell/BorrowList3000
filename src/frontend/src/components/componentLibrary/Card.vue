@@ -8,8 +8,16 @@ defineProps<{
 
 <template>
   <div class="card elevated">
-    <h2 v-if="title" class="card-title">{{ title }}</h2>
+    <!-- Title bar & title -->
+    <div class="title-bar" v-if="title">
+      <h2 v-if="title" class="title">{{ title }}</h2>
+      <div class="title-bar-extra">
+        <slot name="title-bar" />
+      </div>
+    </div>
     <VerticalDivider v-if="title" />
+
+    <!-- Card content -->
     <slot />
   </div>
 </template>
@@ -20,7 +28,17 @@ defineProps<{
   border-radius: 4px;
 }
 
-.card .card-title {
+.card .title-bar {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.card .title-bar .title-bar-extra {
+  flex-grow: 1;
+}
+
+.card .title {
   margin-top: 6px;
   margin-bottom: 6px;
 }
