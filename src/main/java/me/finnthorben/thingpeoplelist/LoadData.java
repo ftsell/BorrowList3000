@@ -29,11 +29,14 @@ public class LoadData {
             Person person = peopleService.create("Ole", user).block();
             log.info("Preloading: " + person.toString());
 
-            ThingList list = listService.create("Borrowlist", user).block();
-            log.info("Preloading: " + list.toString());
-
-            Thing thing = thingService.create("Book", "Lord of the Rings 1", list, person).block();
-            log.info("Preloading: " + thing.toString());
+            for (String listName : new String[]{"Borrowlist", "Lendlist", "Moneylist"}) {
+                ThingList list = listService.create(listName, user).block();
+                log.info("Preloading: " + list.toString());
+                for (String thingName : new String[]{"a", "b", "c", "d", "e"}) {
+                    Thing thing = thingService.create(thingName, "something", list, person).block();
+                    log.info("Preloading: " + thing.toString());
+                }
+            }
         };
     }
 }
