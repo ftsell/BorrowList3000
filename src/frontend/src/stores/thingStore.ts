@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 import { useRestApi } from "@/apiClient";
 import { useAuthStore } from "@/stores/authStore";
 import { useListStore } from "@/stores/listStore";
-import { watchEffect } from "vue";
+import { watch } from "vue";
 
 export interface ThingState {
   // A map of list-names to things in that list
@@ -42,26 +42,33 @@ export function useAutomaticThingFetching(): void {
   const listStore = useListStore();
   const thingStore = useThingStore();
 
-  watchEffect(async () => {
-    // clear complete store if we are not authenticated
-    if (authStore.authToken == null) {
-      thingStore.things = null;
-    } else {
-      // otherwise, if the store is uninitialized, initialize it
-      if (thingStore.things == null) {
-        thingStore.things = {};
-      }
+  watch(
+    [authStore, listStore],
+    async () => {
+      // clear complete store if we are not authenticated
+      if (authStore.authToken == null) {
+        thingStore.things = null;
+      } else {
+        // otherwise, if the store is uninitialized, initialize it
+        if (thingStore.things == null) {
+          thingStore.things = {};
+        }
 
-      if (listStore.lists != null) {
-        // construct promises for the things of all lists that have not yet
-        // been fetched and then fetch them
-        const promises = listStore.lists
-          .filter(
-            (list) => !Object.keys(thingStore.things ?? {}).includes(list.name)
-          )
-          .map((list) => thingStore.fetchFromApiForList(list.name));
-        await Promise.all(promises);
+        if (listStore.lists != null) {
+          // construct promises for the things of all lists that have not yet
+          // been fetched and then fetch them
+          const promises = listStore.lists
+            .filter(
+              (list) =>
+                !Object.keys(thingStore.things ?? {}).includes(list.name)
+            )
+            .map((list) => thingStore.fetchFromApiForList(list.name));
+          await Promise.all(promises);
+        }
       }
+    },
+    {
+      immediate: true,
     }
-  });
+  );
 }
