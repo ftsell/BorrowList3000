@@ -26,12 +26,7 @@ export function useAutomaticUserFetching(): void {
   const authStore = useAuthStore();
   const userStore = useUserStore();
   const api = useRestApi();
-  let oldAuthToken = authStore.authToken;
   watchEffect(async () => {
-    if (oldAuthToken !== authStore.authToken) {
-      oldAuthToken = authStore.authToken;
-    }
-
     if (authStore.authToken != null) {
       userStore.me = await api.value.user.getMe();
     } else {
