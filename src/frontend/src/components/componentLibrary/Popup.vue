@@ -21,15 +21,19 @@ function onBackgroundClick(e: Event): void {
 
 <template>
   <teleport to="body">
-    <div v-if="open" class="popup-container" @click="onBackgroundClick">
-      <Card class="popup" :title="title">
-        <slot />
-      </Card>
-    </div>
+    <Transition name="fade">
+      <div v-if="open" class="popup-container" @click="onBackgroundClick">
+        <Card class="popup" :title="title">
+          <slot />
+        </Card>
+      </div>
+    </Transition>
   </teleport>
 </template>
 
 <style scoped>
+@import "@/assets/transitions/fade.css";
+
 .popup-container {
   position: absolute;
   top: 0;

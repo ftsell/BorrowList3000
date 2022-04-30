@@ -34,6 +34,8 @@ defineEmits<{
 </template>
 
 <style scoped>
+@import "@/assets/transitions/fade.css";
+
 .input-container {
   position: relative;
   margin-bottom: 24px;
@@ -78,17 +80,5 @@ label {
   top: -0.5em;
   padding: 0 0.5em;
   margin: 0;
-}
-
-/*noinspection CssUnusedSymbol*/
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s ease;
-}
-
-/*noinspection CssUnusedSymbol*/
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
 }
 </style>

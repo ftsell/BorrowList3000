@@ -1,0 +1,13 @@
+/* CSS rules for the "fade" vue transition */
+
+/*noinspection CssUnusedSymbol*/
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.2s ease;
+}
+
+/*noinspection CssUnusedSymbol*/
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
