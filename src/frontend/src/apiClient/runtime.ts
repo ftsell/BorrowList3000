@@ -137,7 +137,6 @@ export class BaseAPI {
 
 export class RequiredError extends Error {
   name: "RequiredError" = "RequiredError";
-
   constructor(public field: string, msg?: string) {
     super(msg);
   }
@@ -332,13 +331,11 @@ export interface ResponseContext {
 
 export interface Middleware {
   pre?(context: RequestContext): Promise<FetchParams | void>;
-
   post?(context: ResponseContext): Promise<Response | void>;
 }
 
 export interface ApiResponse<T> {
   raw: Response;
-
   value(): Promise<T>;
 }
 

@@ -13,9 +13,11 @@
  */
 
 import * as runtime from "../runtime";
-import type { Problem, ThingListDto } from "../models";
+import type { PatchThingListRequest, Problem, ThingListDto } from "../models";
 
 import {
+  PatchThingListRequestFromJSON,
+  PatchThingListRequestToJSON,
   ProblemFromJSON,
   ProblemToJSON,
   ThingListDtoFromJSON,
@@ -28,6 +30,11 @@ export interface Create2Request {
 
 export interface GetByName1Request {
   name: string;
+}
+
+export interface UpdateByNameRequest {
+  name: string;
+  patchThingListRequest: PatchThingListRequest;
 }
 
 /**
@@ -179,6 +186,79 @@ export class ThingListControllerApi extends runtime.BaseAPI {
     initOverrides?: RequestInit
   ): Promise<ThingListDto> {
     const response = await this.getByName1Raw(requestParameters, initOverrides);
+    return await response.value();
+  }
+
+  /**
+   * Update the specified list with the given data
+   */
+  async updateByNameRaw(
+    requestParameters: UpdateByNameRequest,
+    initOverrides?: RequestInit
+  ): Promise<runtime.ApiResponse<ThingListDto>> {
+    if (
+      requestParameters.name === null ||
+      requestParameters.name === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "name",
+        "Required parameter requestParameters.name was null or undefined when calling updateByName."
+      );
+    }
+
+    if (
+      requestParameters.patchThingListRequest === null ||
+      requestParameters.patchThingListRequest === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "patchThingListRequest",
+        "Required parameter requestParameters.patchThingListRequest was null or undefined when calling updateByName."
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    headerParameters["Content-Type"] = "application/json";
+
+    if (this.configuration && this.configuration.apiKey) {
+      headerParameters["Authorization"] =
+        this.configuration.apiKey("Authorization"); // token authentication
+    }
+
+    const response = await this.request(
+      {
+        path: `/api/lists/{name}`.replace(
+          `{${"name"}}`,
+          encodeURIComponent(String(requestParameters.name))
+        ),
+        method: "PATCH",
+        headers: headerParameters,
+        query: queryParameters,
+        body: PatchThingListRequestToJSON(
+          requestParameters.patchThingListRequest
+        ),
+      },
+      initOverrides
+    );
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      ThingListDtoFromJSON(jsonValue)
+    );
+  }
+
+  /**
+   * Update the specified list with the given data
+   */
+  async updateByName(
+    requestParameters: UpdateByNameRequest,
+    initOverrides?: RequestInit
+  ): Promise<ThingListDto> {
+    const response = await this.updateByNameRaw(
+      requestParameters,
+      initOverrides
+    );
     return await response.value();
   }
 }

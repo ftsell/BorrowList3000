@@ -33,6 +33,12 @@ export interface SessionDto {
   ipAddress: string;
   /**
    *
+   * @type {string}
+   * @memberof SessionDto
+   */
+  userAgent: string;
+  /**
+   *
    * @type {Date}
    * @memberof SessionDto
    */
@@ -48,7 +54,7 @@ export interface SessionDto {
    * @type {boolean}
    * @memberof SessionDto
    */
-  isCurrent?: boolean;
+  current?: boolean;
 }
 
 export function SessionDtoFromJSON(json: any): SessionDto {
@@ -65,9 +71,10 @@ export function SessionDtoFromJSONTyped(
   return {
     sessionId: json["sessionId"],
     ipAddress: json["ipAddress"],
+    userAgent: json["userAgent"],
     creationTime: new Date(json["creationTime"]),
     lastAccessTime: new Date(json["lastAccessTime"]),
-    isCurrent: !exists(json, "isCurrent") ? undefined : json["isCurrent"],
+    current: !exists(json, "current") ? undefined : json["current"],
   };
 }
 
@@ -81,8 +88,9 @@ export function SessionDtoToJSON(value?: SessionDto | null): any {
   return {
     sessionId: value.sessionId,
     ipAddress: value.ipAddress,
+    userAgent: value.userAgent,
     creationTime: value.creationTime.toISOString(),
     lastAccessTime: value.lastAccessTime.toISOString(),
-    isCurrent: value.isCurrent,
+    current: value.current,
   };
 }

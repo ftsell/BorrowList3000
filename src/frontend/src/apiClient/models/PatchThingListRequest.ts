@@ -16,41 +16,38 @@ import { exists, mapValues } from "../runtime";
 /**
  *
  * @export
- * @interface Problem
+ * @interface PatchThingListRequest
  */
-export interface Problem {
+export interface PatchThingListRequest {
   /**
    *
    * @type {string}
-   * @memberof Problem
+   * @memberof PatchThingListRequest
    */
-  title: string;
-  /**
-   *
-   * @type {string}
-   * @memberof Problem
-   */
-  detail: string;
+  name?: string;
 }
 
-export function ProblemFromJSON(json: any): Problem {
-  return ProblemFromJSONTyped(json, false);
+export function PatchThingListRequestFromJSON(
+  json: any
+): PatchThingListRequest {
+  return PatchThingListRequestFromJSONTyped(json, false);
 }
 
-export function ProblemFromJSONTyped(
+export function PatchThingListRequestFromJSONTyped(
   json: any,
   ignoreDiscriminator: boolean
-): Problem {
+): PatchThingListRequest {
   if (json === undefined || json === null) {
     return json;
   }
   return {
-    title: json["title"],
-    detail: json["detail"],
+    name: !exists(json, "name") ? undefined : json["name"],
   };
 }
 
-export function ProblemToJSON(value?: Problem | null): any {
+export function PatchThingListRequestToJSON(
+  value?: PatchThingListRequest | null
+): any {
   if (value === undefined) {
     return undefined;
   }
@@ -58,7 +55,6 @@ export function ProblemToJSON(value?: Problem | null): any {
     return null;
   }
   return {
-    title: value.title,
-    detail: value.detail,
+    name: value.name,
   };
 }

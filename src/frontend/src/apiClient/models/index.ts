@@ -4,6 +4,7 @@ export * from "./ChangeUserDto";
 export * from "./CreateThingDto";
 export * from "./LoginRequest";
 export * from "./LoginResponse";
+export * from "./PatchThingListRequest";
 export * from "./PersonDto";
 export * from "./Problem";
 export * from "./RegisterRequest";

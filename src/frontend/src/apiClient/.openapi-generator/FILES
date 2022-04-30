@@ -8,6 +8,7 @@ models/ChangeUserDto.ts
 models/CreateThingDto.ts
 models/LoginRequest.ts
 models/LoginResponse.ts
+models/PatchThingListRequest.ts
 models/PersonDto.ts
 models/Problem.ts
 models/RegisterRequest.ts
