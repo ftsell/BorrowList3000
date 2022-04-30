@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.finnthorben.thingpeoplelist.lists.dto.CreateThingListRequest;
 import me.finnthorben.thingpeoplelist.lists.dto.PatchThingListRequest;
 import me.finnthorben.thingpeoplelist.lists.dto.ThingListDto;
 import me.finnthorben.thingpeoplelist.users.User;
@@ -61,9 +62,9 @@ public class ThingListController {
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a new list")
-    Mono<ThingListDto> create(@RequestBody ThingListDto listRequest, Authentication auth) {
+    Mono<ThingListDto> create(@RequestBody CreateThingListRequest request, Authentication auth) {
         return listService
-                .create(listRequest.getName(), (User) auth.getPrincipal())
+                .create(request.getName(), (User) auth.getPrincipal())
                 .map(list -> modelMapper.map(list, ThingListDto.class));
     }
 }
