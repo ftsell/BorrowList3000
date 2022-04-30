@@ -7,6 +7,7 @@ import Icon from "@/components/componentLibrary/Icon.vue";
 import editIcon from "@/assets/icons/feather_adjust.svg";
 import Popup from "@/components/componentLibrary/Popup.vue";
 import { ref } from "vue";
+import EditThingList from "@/components/featureComponents/EditThingList.vue";
 
 defineProps<{
   list: ThingListDto;
@@ -41,7 +42,11 @@ const isEditing = ref(false);
   </Card>
 
   <Popup :title="`Edit ${list.name}`" v-model:open="isEditing">
-    <span>Hi</span>
+    <EditThingList
+      :list="list"
+      @finishEdit="isEditing = false"
+      @cancelEdit="isEditing = false"
+    />
   </Popup>
 </template>
 
