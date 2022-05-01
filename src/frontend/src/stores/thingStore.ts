@@ -6,7 +6,7 @@ import { useListStore } from "@/stores/listStore";
 import { watch } from "vue";
 
 export interface ThingState {
-  // A map of list-names to things in that list
+  // A map of list-ids to things in that list
   things: Record<string, ThingDto[]> | null;
 }
 
@@ -17,16 +17,16 @@ export const useThingStore = defineStore({
       things: null,
     } as ThingState),
   getters: {
-    getThingsForList: (state) => (listName: string) =>
-      state.things ? state.things[listName] : null,
+    getThingsForList: (state) => (listId: string) =>
+      state.things ? state.things[listId] : null,
   },
   actions: {
-    async fetchFromApiForList(listName: string) {
+    async fetchFromApiForList(listId: string) {
       const api = useRestApi();
       if (this.things == null) {
         this.things = {};
       }
-      this.things[listName] = await api.value.things.getAll({ listName });
+      this.things[listId] = await api.value.things.getAll({ listId });
     },
   },
 });
@@ -59,10 +59,9 @@ export function useAutomaticThingFetching(): void {
           // been fetched and then fetch them
           const promises = listStore.lists
             .filter(
-              (list) =>
-                !Object.keys(thingStore.things ?? {}).includes(list.name)
+              (list) => !Object.keys(thingStore.things ?? {}).includes(list.id)
             )
-            .map((list) => thingStore.fetchFromApiForList(list.name));
+            .map((list) => thingStore.fetchFromApiForList(list.id));
           await Promise.all(promises);
         }
       }

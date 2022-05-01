@@ -28,8 +28,8 @@ const api = useRestApi();
 const listStore = useListStore();
 
 const onSubmit = form.handleSubmit(async (values) => {
-  await api.value.lists.updateByName({
-    name: props.list.name,
+  await api.value.lists.updateById({
+    id: props.list.id,
     patchThingListRequest: {
       name: values.listName,
     },

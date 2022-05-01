@@ -17,6 +17,8 @@ export const usePeopleStore = defineStore({
   getters: {
     getPersonByName: (state) => (name: string) =>
       state.people?.find((p) => p.name === name),
+    getPersonById: (state) => (id: string) =>
+      state.people?.find((p) => p.id === id),
   },
   actions: {
     async fetchFromApi() {

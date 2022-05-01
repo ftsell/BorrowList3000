@@ -17,6 +17,8 @@ export const useListStore = defineStore({
   getters: {
     getListByName: (state) => (listName: string) =>
       state.lists?.find((l) => l.name === listName),
+    getListById: (state) => (id: string) =>
+      state.lists?.find((l) => l.id === id),
   },
   actions: {
     async fetchFromApi() {

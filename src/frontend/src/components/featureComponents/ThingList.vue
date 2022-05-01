@@ -33,8 +33,8 @@ const isEditing = ref(false);
     <template v-slot:default>
       <div class="things-container">
         <Thing
-          v-for="thing of thingStore.getThingsForList(list.name)"
-          :key="thing.name"
+          v-for="thing of thingStore.getThingsForList(list.id)"
+          :key="thing.id"
           :thing="thing"
         />
       </div>
