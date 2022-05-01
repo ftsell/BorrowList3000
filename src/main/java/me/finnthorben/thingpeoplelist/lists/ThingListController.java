@@ -37,7 +37,7 @@ public class ThingListController {
                 .map(list -> modelMapper.map(list, ThingListDto.class));
     }
 
-    @GetMapping("/{name}")
+    @GetMapping("/{id}")
     @Operation(summary = "Retrieve information about a specific list")
     Mono<ThingListDto> getById(@PathVariable UUID id, Authentication auth) {
         return listService
@@ -45,7 +45,7 @@ public class ThingListController {
                 .map(list -> modelMapper.map(list, ThingListDto.class));
     }
 
-    @PatchMapping("/{name}")
+    @PatchMapping("/{id}")
     @Operation(summary = "Update the specified list with the given data")
     Mono<ThingListDto> updateById(@PathVariable UUID id,
                                     @RequestBody @Validated PatchThingListRequest patchRequest,
