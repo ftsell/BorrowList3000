@@ -5,6 +5,7 @@ import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.UUID;
 
 @Data
 public class CreateThingDto {
@@ -16,5 +17,5 @@ public class CreateThingDto {
     String description;
 
     @NotBlank
-    String personName;
+    UUID personId;
 }

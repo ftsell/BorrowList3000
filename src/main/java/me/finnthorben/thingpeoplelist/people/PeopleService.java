@@ -5,6 +5,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.NoSuchElementException;
+import java.util.UUID;
 
 
 public interface PeopleService {
@@ -15,8 +16,8 @@ public interface PeopleService {
     }
 
     class NoSuchPersonException extends NoSuchElementException {
-        public NoSuchPersonException(String personName, User user) {
-            super("Person with name " + personName + " does not exist for user " + user.getUsername());
+        public NoSuchPersonException(UUID personId, User user) {
+            super("Person " + personId + " does not exist for user " + user.getUsername());
         }
     }
 
@@ -31,7 +32,7 @@ public interface PeopleService {
     Flux<Person> getAllForUser(User user);
 
     /**
-     * Get a specific person by name that a given user knows
+     * Get a specific person by their ID but only if it is linked to the given user account
      */
-    Mono<Person> getByNameForUser(String name, User user);
+    Mono<Person> getByIdForUser(UUID id, User user);
 }

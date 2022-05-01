@@ -46,7 +46,7 @@ public class ThingController {
                           @RequestBody @Validated CreateThingDto createRequest,
                           Authentication auth) {
         return Mono.zip(listService.getByIdForUser(listId, (User) auth.getPrincipal()),
-                        peopleService.getByNameForUser(createRequest.getPersonName(), (User) auth.getPrincipal()))
+                        peopleService.getByIdForUser(createRequest.getPersonId(), (User) auth.getPrincipal()))
                 .flatMap(data -> thingService.create(createRequest.getName(), createRequest.getDescription(), data.getT1(), data.getT2()))
                 .map(thing -> modelMapper.map(thing, ThingDto.class));
     }

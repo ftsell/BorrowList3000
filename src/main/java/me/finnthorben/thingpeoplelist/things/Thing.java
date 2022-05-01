@@ -26,10 +26,7 @@ public class Thing {
     ThingList list;
 
     @ManyToOne(optional = false)
-    @JoinColumns({
-            @JoinColumn(name = "person_name", nullable = false),
-            @JoinColumn(name = "person_user", nullable = false)
-    })
+    @JoinColumn(name = "person_id", nullable = false)
     Person person;
 
     String name;

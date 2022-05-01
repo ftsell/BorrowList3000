@@ -12,42 +12,38 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "Person")
-@IdClass(Person.PersonId.class)
 @Getter
-@Setter
 @ToString
 @NoArgsConstructor
-@AllArgsConstructor
 public class Person {
-    @EqualsAndHashCode
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class PersonId implements Serializable {
-        String name;
-        UUID user;
-    }
 
     @Id
-    @Setter(AccessLevel.NONE)
+    @GeneratedValue
+    UUID id;
+
+    @Setter
     String name;
 
-    @Id
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)
-    @Setter(AccessLevel.NONE)
+    @ToString.Exclude
     User user;
+
+    public Person(String name, User user) {
+        this.name = name;
+        this.user = user;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Person person = (Person) o;
-        return name != null && Objects.equals(name, person.name)
-                && user != null && Objects.equals(user, person.user);
+        return id != null && Objects.equals(id, person.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, user);
+        return getClass().hashCode();
     }
 }

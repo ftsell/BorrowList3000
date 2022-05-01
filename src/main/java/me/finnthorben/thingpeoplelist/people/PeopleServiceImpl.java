@@ -8,6 +8,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
+import java.util.UUID;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -35,9 +37,9 @@ public class PeopleServiceImpl implements PeopleService {
     }
 
     @Override
-    public Mono<Person> getByNameForUser(String name, User user) {
-        return Mono.fromCallable(() -> peopleRepository.findByNameIgnoreCaseAndUser(name, user)
-                .orElseThrow(() -> new NoSuchPersonException(name, user)))
+    public Mono<Person> getByIdForUser(UUID id, User user) {
+        return Mono.fromCallable(() -> peopleRepository.findByIdAndUser(id, user)
+                .orElseThrow(() -> new NoSuchPersonException(id, user)))
                 .subscribeOn(jdbcScheduler);
     }
 }

@@ -3,6 +3,7 @@ package me.finnthorben.thingpeoplelist.people;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import me.finnthorben.thingpeoplelist.people.dto.CreatePersonRequest;
 import me.finnthorben.thingpeoplelist.people.dto.PersonDto;
 import me.finnthorben.thingpeoplelist.users.User;
 import org.modelmapper.ModelMapper;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/api/people", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -35,17 +36,17 @@ public class PeopleController {
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a new person")
-    Mono<PersonDto> create(@RequestBody PersonDto personRequest, Authentication auth) {
+    Mono<PersonDto> create(@RequestBody CreatePersonRequest personRequest, Authentication auth) {
         return peopleService
                 .create(personRequest.getName(), (User) auth.getPrincipal())
                 .map(person -> modelMapper.map(person, PersonDto.class));
     }
 
-    @GetMapping("/{name}")
+    @GetMapping("/{id}")
     @Operation(summary = "Retrieve information about a specific person")
-    Mono<PersonDto> getByName(@PathVariable String name, Authentication auth) {
+    Mono<PersonDto> getByName(@PathVariable UUID id, Authentication auth) {
         return peopleService
-                .getByNameForUser(name, (User) auth.getPrincipal())
+                .getByIdForUser(id, (User) auth.getPrincipal())
                 .map(person -> modelMapper.map(person, PersonDto.class));
     }
 }
