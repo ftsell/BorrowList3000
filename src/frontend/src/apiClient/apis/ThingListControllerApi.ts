@@ -13,9 +13,16 @@
  */
 
 import * as runtime from "../runtime";
-import type { PatchThingListRequest, Problem, ThingListDto } from "../models";
+import type {
+  CreateThingListRequest,
+  PatchThingListRequest,
+  Problem,
+  ThingListDto,
+} from "../models";
 
 import {
+  CreateThingListRequestFromJSON,
+  CreateThingListRequestToJSON,
   PatchThingListRequestFromJSON,
   PatchThingListRequestToJSON,
   ProblemFromJSON,
@@ -25,15 +32,15 @@ import {
 } from "../models";
 
 export interface Create2Request {
-  thingListDto: ThingListDto;
+  createThingListRequest: CreateThingListRequest;
 }
 
-export interface GetByName1Request {
-  name: string;
+export interface GetByIdRequest {
+  id: string;
 }
 
-export interface UpdateByNameRequest {
-  name: string;
+export interface UpdateByIdRequest {
+  id: string;
   patchThingListRequest: PatchThingListRequest;
 }
 
@@ -49,12 +56,12 @@ export class ThingListControllerApi extends runtime.BaseAPI {
     initOverrides?: RequestInit
   ): Promise<runtime.ApiResponse<ThingListDto>> {
     if (
-      requestParameters.thingListDto === null ||
-      requestParameters.thingListDto === undefined
+      requestParameters.createThingListRequest === null ||
+      requestParameters.createThingListRequest === undefined
     ) {
       throw new runtime.RequiredError(
-        "thingListDto",
-        "Required parameter requestParameters.thingListDto was null or undefined when calling create2."
+        "createThingListRequest",
+        "Required parameter requestParameters.createThingListRequest was null or undefined when calling create2."
       );
     }
 
@@ -75,7 +82,9 @@ export class ThingListControllerApi extends runtime.BaseAPI {
         method: "POST",
         headers: headerParameters,
         query: queryParameters,
-        body: ThingListDtoToJSON(requestParameters.thingListDto),
+        body: CreateThingListRequestToJSON(
+          requestParameters.createThingListRequest
+        ),
       },
       initOverrides
     );
@@ -137,17 +146,14 @@ export class ThingListControllerApi extends runtime.BaseAPI {
   /**
    * Retrieve information about a specific list
    */
-  async getByName1Raw(
-    requestParameters: GetByName1Request,
+  async getByIdRaw(
+    requestParameters: GetByIdRequest,
     initOverrides?: RequestInit
   ): Promise<runtime.ApiResponse<ThingListDto>> {
-    if (
-      requestParameters.name === null ||
-      requestParameters.name === undefined
-    ) {
+    if (requestParameters.id === null || requestParameters.id === undefined) {
       throw new runtime.RequiredError(
-        "name",
-        "Required parameter requestParameters.name was null or undefined when calling getByName1."
+        "id",
+        "Required parameter requestParameters.id was null or undefined when calling getById."
       );
     }
 
@@ -162,9 +168,9 @@ export class ThingListControllerApi extends runtime.BaseAPI {
 
     const response = await this.request(
       {
-        path: `/api/lists/{name}`.replace(
-          `{${"name"}}`,
-          encodeURIComponent(String(requestParameters.name))
+        path: `/api/lists/{id}`.replace(
+          `{${"id"}}`,
+          encodeURIComponent(String(requestParameters.id))
         ),
         method: "GET",
         headers: headerParameters,
@@ -181,28 +187,25 @@ export class ThingListControllerApi extends runtime.BaseAPI {
   /**
    * Retrieve information about a specific list
    */
-  async getByName1(
-    requestParameters: GetByName1Request,
+  async getById(
+    requestParameters: GetByIdRequest,
     initOverrides?: RequestInit
   ): Promise<ThingListDto> {
-    const response = await this.getByName1Raw(requestParameters, initOverrides);
+    const response = await this.getByIdRaw(requestParameters, initOverrides);
     return await response.value();
   }
 
   /**
    * Update the specified list with the given data
    */
-  async updateByNameRaw(
-    requestParameters: UpdateByNameRequest,
+  async updateByIdRaw(
+    requestParameters: UpdateByIdRequest,
     initOverrides?: RequestInit
   ): Promise<runtime.ApiResponse<ThingListDto>> {
-    if (
-      requestParameters.name === null ||
-      requestParameters.name === undefined
-    ) {
+    if (requestParameters.id === null || requestParameters.id === undefined) {
       throw new runtime.RequiredError(
-        "name",
-        "Required parameter requestParameters.name was null or undefined when calling updateByName."
+        "id",
+        "Required parameter requestParameters.id was null or undefined when calling updateById."
       );
     }
 
@@ -212,7 +215,7 @@ export class ThingListControllerApi extends runtime.BaseAPI {
     ) {
       throw new runtime.RequiredError(
         "patchThingListRequest",
-        "Required parameter requestParameters.patchThingListRequest was null or undefined when calling updateByName."
+        "Required parameter requestParameters.patchThingListRequest was null or undefined when calling updateById."
       );
     }
 
@@ -229,9 +232,9 @@ export class ThingListControllerApi extends runtime.BaseAPI {
 
     const response = await this.request(
       {
-        path: `/api/lists/{name}`.replace(
-          `{${"name"}}`,
-          encodeURIComponent(String(requestParameters.name))
+        path: `/api/lists/{id}`.replace(
+          `{${"id"}}`,
+          encodeURIComponent(String(requestParameters.id))
         ),
         method: "PATCH",
         headers: headerParameters,
@@ -251,14 +254,11 @@ export class ThingListControllerApi extends runtime.BaseAPI {
   /**
    * Update the specified list with the given data
    */
-  async updateByName(
-    requestParameters: UpdateByNameRequest,
+  async updateById(
+    requestParameters: UpdateByIdRequest,
     initOverrides?: RequestInit
   ): Promise<ThingListDto> {
-    const response = await this.updateByNameRaw(
-      requestParameters,
-      initOverrides
-    );
+    const response = await this.updateByIdRaw(requestParameters, initOverrides);
     return await response.value();
   }
 }

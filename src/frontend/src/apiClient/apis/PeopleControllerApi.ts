@@ -13,9 +13,11 @@
  */
 
 import * as runtime from "../runtime";
-import type { PersonDto, Problem } from "../models";
+import type { CreatePersonRequest, PersonDto, Problem } from "../models";
 
 import {
+  CreatePersonRequestFromJSON,
+  CreatePersonRequestToJSON,
   PersonDtoFromJSON,
   PersonDtoToJSON,
   ProblemFromJSON,
@@ -23,11 +25,11 @@ import {
 } from "../models";
 
 export interface CreateRequest {
-  personDto: PersonDto;
+  createPersonRequest: CreatePersonRequest;
 }
 
 export interface GetByNameRequest {
-  name: string;
+  id: string;
 }
 
 /**
@@ -42,12 +44,12 @@ export class PeopleControllerApi extends runtime.BaseAPI {
     initOverrides?: RequestInit
   ): Promise<runtime.ApiResponse<PersonDto>> {
     if (
-      requestParameters.personDto === null ||
-      requestParameters.personDto === undefined
+      requestParameters.createPersonRequest === null ||
+      requestParameters.createPersonRequest === undefined
     ) {
       throw new runtime.RequiredError(
-        "personDto",
-        "Required parameter requestParameters.personDto was null or undefined when calling create."
+        "createPersonRequest",
+        "Required parameter requestParameters.createPersonRequest was null or undefined when calling create."
       );
     }
 
@@ -68,7 +70,7 @@ export class PeopleControllerApi extends runtime.BaseAPI {
         method: "POST",
         headers: headerParameters,
         query: queryParameters,
-        body: PersonDtoToJSON(requestParameters.personDto),
+        body: CreatePersonRequestToJSON(requestParameters.createPersonRequest),
       },
       initOverrides
     );
@@ -96,13 +98,10 @@ export class PeopleControllerApi extends runtime.BaseAPI {
     requestParameters: GetByNameRequest,
     initOverrides?: RequestInit
   ): Promise<runtime.ApiResponse<PersonDto>> {
-    if (
-      requestParameters.name === null ||
-      requestParameters.name === undefined
-    ) {
+    if (requestParameters.id === null || requestParameters.id === undefined) {
       throw new runtime.RequiredError(
-        "name",
-        "Required parameter requestParameters.name was null or undefined when calling getByName."
+        "id",
+        "Required parameter requestParameters.id was null or undefined when calling getByName."
       );
     }
 
@@ -117,9 +116,9 @@ export class PeopleControllerApi extends runtime.BaseAPI {
 
     const response = await this.request(
       {
-        path: `/api/people/{name}`.replace(
-          `{${"name"}}`,
-          encodeURIComponent(String(requestParameters.name))
+        path: `/api/people/{id}`.replace(
+          `{${"id"}}`,
+          encodeURIComponent(String(requestParameters.id))
         ),
         method: "GET",
         headers: headerParameters,

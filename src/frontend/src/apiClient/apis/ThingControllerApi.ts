@@ -25,12 +25,12 @@ import {
 } from "../models";
 
 export interface Create1Request {
-  listName: string;
+  listId: string;
   createThingDto: CreateThingDto;
 }
 
 export interface GetAllRequest {
-  listName: string;
+  listId: string;
 }
 
 /**
@@ -45,12 +45,12 @@ export class ThingControllerApi extends runtime.BaseAPI {
     initOverrides?: RequestInit
   ): Promise<runtime.ApiResponse<ThingDto>> {
     if (
-      requestParameters.listName === null ||
-      requestParameters.listName === undefined
+      requestParameters.listId === null ||
+      requestParameters.listId === undefined
     ) {
       throw new runtime.RequiredError(
-        "listName",
-        "Required parameter requestParameters.listName was null or undefined when calling create1."
+        "listId",
+        "Required parameter requestParameters.listId was null or undefined when calling create1."
       );
     }
 
@@ -77,9 +77,9 @@ export class ThingControllerApi extends runtime.BaseAPI {
 
     const response = await this.request(
       {
-        path: `/api/lists/{listName}/things/`.replace(
-          `{${"listName"}}`,
-          encodeURIComponent(String(requestParameters.listName))
+        path: `/api/lists/{listId}/things/`.replace(
+          `{${"listId"}}`,
+          encodeURIComponent(String(requestParameters.listId))
         ),
         method: "POST",
         headers: headerParameters,
@@ -113,12 +113,12 @@ export class ThingControllerApi extends runtime.BaseAPI {
     initOverrides?: RequestInit
   ): Promise<runtime.ApiResponse<Array<ThingDto>>> {
     if (
-      requestParameters.listName === null ||
-      requestParameters.listName === undefined
+      requestParameters.listId === null ||
+      requestParameters.listId === undefined
     ) {
       throw new runtime.RequiredError(
-        "listName",
-        "Required parameter requestParameters.listName was null or undefined when calling getAll."
+        "listId",
+        "Required parameter requestParameters.listId was null or undefined when calling getAll."
       );
     }
 
@@ -133,9 +133,9 @@ export class ThingControllerApi extends runtime.BaseAPI {
 
     const response = await this.request(
       {
-        path: `/api/lists/{listName}/things/`.replace(
-          `{${"listName"}}`,
-          encodeURIComponent(String(requestParameters.listName))
+        path: `/api/lists/{listId}/things/`.replace(
+          `{${"listId"}}`,
+          encodeURIComponent(String(requestParameters.listId))
         ),
         method: "GET",
         headers: headerParameters,

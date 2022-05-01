@@ -36,7 +36,7 @@ export interface CreateThingDto {
    * @type {string}
    * @memberof CreateThingDto
    */
-  personName: string;
+  personId: string;
 }
 
 export function CreateThingDtoFromJSON(json: any): CreateThingDto {
@@ -53,7 +53,7 @@ export function CreateThingDtoFromJSONTyped(
   return {
     name: json["name"],
     description: !exists(json, "description") ? undefined : json["description"],
-    personName: json["personName"],
+    personId: json["personId"],
   };
 }
 
@@ -67,6 +67,6 @@ export function CreateThingDtoToJSON(value?: CreateThingDto | null): any {
   return {
     name: value.name,
     description: value.description,
-    personName: value.personName,
+    personId: value.personId,
   };
 }

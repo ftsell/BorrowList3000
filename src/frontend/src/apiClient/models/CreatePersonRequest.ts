@@ -16,41 +16,36 @@ import { exists, mapValues } from "../runtime";
 /**
  *
  * @export
- * @interface ThingListDto
+ * @interface CreatePersonRequest
  */
-export interface ThingListDto {
+export interface CreatePersonRequest {
   /**
    *
    * @type {string}
-   * @memberof ThingListDto
-   */
-  id: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ThingListDto
+   * @memberof CreatePersonRequest
    */
   name: string;
 }
 
-export function ThingListDtoFromJSON(json: any): ThingListDto {
-  return ThingListDtoFromJSONTyped(json, false);
+export function CreatePersonRequestFromJSON(json: any): CreatePersonRequest {
+  return CreatePersonRequestFromJSONTyped(json, false);
 }
 
-export function ThingListDtoFromJSONTyped(
+export function CreatePersonRequestFromJSONTyped(
   json: any,
   ignoreDiscriminator: boolean
-): ThingListDto {
+): CreatePersonRequest {
   if (json === undefined || json === null) {
     return json;
   }
   return {
-    id: json["id"],
     name: json["name"],
   };
 }
 
-export function ThingListDtoToJSON(value?: ThingListDto | null): any {
+export function CreatePersonRequestToJSON(
+  value?: CreatePersonRequest | null
+): any {
   if (value === undefined) {
     return undefined;
   }
@@ -58,7 +53,6 @@ export function ThingListDtoToJSON(value?: ThingListDto | null): any {
     return null;
   }
   return {
-    id: value.id,
     name: value.name,
   };
 }
