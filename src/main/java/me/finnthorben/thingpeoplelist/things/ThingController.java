@@ -4,9 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import me.finnthorben.thingpeoplelist.lists.ThingListService;
-import me.finnthorben.thingpeoplelist.lists.ThingList;
 import me.finnthorben.thingpeoplelist.people.PeopleService;
-import me.finnthorben.thingpeoplelist.people.Person;
 import me.finnthorben.thingpeoplelist.things.dto.CreateThingDto;
 import me.finnthorben.thingpeoplelist.things.dto.ThingDto;
 import me.finnthorben.thingpeoplelist.users.User;
@@ -19,10 +17,10 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
+import java.util.UUID;
 
 @RestController
-@RequestMapping(value = "/api/lists/{listName}/things", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/lists/{listId}/things", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @SecurityRequirement(name = "token")
 public class ThingController {
@@ -34,9 +32,9 @@ public class ThingController {
 
     @GetMapping("/")
     @Operation(summary = "List all things in this list")
-    Flux<ThingDto> getAll(@PathVariable String listName, Authentication auth) {
+    Flux<ThingDto> getAll(@PathVariable UUID listId, Authentication auth) {
         return listService
-                .getByNameForUser(listName, (User) auth.getPrincipal())
+                .getByIdForUser(listId, (User) auth.getPrincipal())
                 .flatMapMany(thingService::getAllForList)
                 .map(thing -> modelMapper.map(thing, ThingDto.class));
     }
@@ -44,10 +42,10 @@ public class ThingController {
     @PostMapping("/")
     @Operation(summary = "Create a new thing in this list that is associated with the given person")
     @ResponseStatus(HttpStatus.CREATED)
-    Mono<ThingDto> create(@PathVariable String listName,
+    Mono<ThingDto> create(@PathVariable UUID listId,
                           @RequestBody @Validated CreateThingDto createRequest,
                           Authentication auth) {
-        return Mono.zip(listService.getByNameForUser(listName, (User) auth.getPrincipal()),
+        return Mono.zip(listService.getByIdForUser(listId, (User) auth.getPrincipal()),
                         peopleService.getByNameForUser(createRequest.getPersonName(), (User) auth.getPrincipal()))
                 .flatMap(data -> thingService.create(createRequest.getName(), createRequest.getDescription(), data.getT1(), data.getT2()))
                 .map(thing -> modelMapper.map(thing, ThingDto.class));

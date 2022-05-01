@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/api/lists", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -39,19 +39,19 @@ public class ThingListController {
 
     @GetMapping("/{name}")
     @Operation(summary = "Retrieve information about a specific list")
-    Mono<ThingListDto> getByName(@PathVariable String name, Authentication auth) {
+    Mono<ThingListDto> getById(@PathVariable UUID id, Authentication auth) {
         return listService
-                .getByNameForUser(name, (User) auth.getPrincipal())
+                .getByIdForUser(id, (User) auth.getPrincipal())
                 .map(list -> modelMapper.map(list, ThingListDto.class));
     }
 
     @PatchMapping("/{name}")
     @Operation(summary = "Update the specified list with the given data")
-    Mono<ThingListDto> updateByName(@PathVariable String name,
+    Mono<ThingListDto> updateById(@PathVariable UUID id,
                                     @RequestBody @Validated PatchThingListRequest patchRequest,
                                     Authentication auth) {
         return listService
-                .getByNameForUser(name, (User) auth.getPrincipal())
+                .getByIdForUser(id, (User) auth.getPrincipal())
                 .flatMap(list -> {
                     modelMapper.map(patchRequest, list);
                     return listService.saveThingList(list);

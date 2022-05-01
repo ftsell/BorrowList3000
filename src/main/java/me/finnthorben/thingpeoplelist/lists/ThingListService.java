@@ -5,6 +5,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.NoSuchElementException;
+import java.util.UUID;
 
 public interface ThingListService {
     class ThingListAlreadyExistsException extends RuntimeException {
@@ -14,8 +15,8 @@ public interface ThingListService {
     }
 
     class NoSuchThingListException extends NoSuchElementException {
-        public NoSuchThingListException(String thingListName, User user) {
-            super("User " + user.getUsername() + " does not have a list named " + thingListName);
+        public NoSuchThingListException(UUID id, User user) {
+            super("User " + user.getUsername() + " does not have a list " + id);
         }
     }
 
@@ -30,9 +31,9 @@ public interface ThingListService {
     Flux<ThingList> getAllForUser(User user);
 
     /**
-     * Get a specific ThingList by name that the given user owns
+     * Get a specific ThingList by its id but only if it is owned by the given user
      */
-    Mono<ThingList> getByNameForUser(String name, User user);
+    Mono<ThingList> getByIdForUser(UUID id, User user);
 
     /**
      * Persist any changes made to the given list

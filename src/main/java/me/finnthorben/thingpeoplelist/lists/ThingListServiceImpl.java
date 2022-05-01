@@ -8,6 +8,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
+import java.util.UUID;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -20,7 +22,7 @@ public class ThingListServiceImpl implements ThingListService {
     @Override
     public Mono<ThingList> create(String name, User user) {
         return Mono.fromCallable(() -> {
-            if (thingListRepository.findByNameIgnoreCaseAndUser(name, user).isPresent()) {
+            if (thingListRepository.existsByNameIgnoreCaseAndUser(name, user)) {
                 throw new ThingListAlreadyExistsException(name, user);
             }
 
@@ -36,9 +38,9 @@ public class ThingListServiceImpl implements ThingListService {
     }
 
     @Override
-    public Mono<ThingList> getByNameForUser(String name, User user) {
-        return Mono.fromCallable(() -> thingListRepository.findByNameIgnoreCaseAndUser(name, user)
-                .orElseThrow(() -> new NoSuchThingListException(name, user)))
+    public Mono<ThingList> getByIdForUser(UUID id, User user) {
+        return Mono.fromCallable(() -> thingListRepository.findByIdAndUser(id, user)
+                .orElseThrow(() -> new NoSuchThingListException(id, user)))
                 .subscribeOn(jdbcScheduler);
     }
 

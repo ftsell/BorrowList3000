@@ -7,10 +7,13 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @Repository
-public interface ThingListRepository extends JpaRepository<ThingList, String> {
-    Optional<ThingList> findByNameIgnoreCaseAndUser(@NonNull String name, @NonNull User user);
+public interface ThingListRepository extends JpaRepository<ThingList, UUID> {
+    Optional<ThingList> findByIdAndUser(@NonNull UUID id, @NonNull User user);
 
     Set<ThingList> findByUser(@NonNull User user);
+
+    boolean existsByNameIgnoreCaseAndUser(@NonNull String name, @NonNull User user);
 }
