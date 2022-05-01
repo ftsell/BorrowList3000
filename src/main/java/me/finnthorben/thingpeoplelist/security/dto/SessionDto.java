@@ -17,5 +17,5 @@ public class SessionDto {
     @NotBlank String userAgent;
     @NotNull ZonedDateTime creationTime;
     @NotNull ZonedDateTime lastAccessTime;
-    boolean isCurrent;
+    @NotNull boolean isCurrent;
 }
