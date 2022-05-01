@@ -9,9 +9,16 @@ defineProps<{
   errorMessage?: string;
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
   (e: "update:modelValue", value: string): void;
 }>();
+
+function onInput(event: Event) {
+  emit(
+    "update:modelValue",
+    ((event as InputEvent).target as HTMLInputElement).value
+  );
+}
 </script>
 
 <template>
@@ -23,7 +30,7 @@ defineEmits<{
       :placeholder="placeholder"
       :tabindex="tabIndex"
       :value="modelValue"
-      @input="$emit('update:modelValue', $event.target.value)"
+      @input="onInput"
     />
     <Transition name="fade">
       <p v-if="errorMessage" class="error">

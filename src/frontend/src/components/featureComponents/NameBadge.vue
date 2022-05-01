@@ -1,9 +1,15 @@
 <script setup lang="ts">
 import Avatar from "vue-boring-avatars";
+import { withDefaults } from "vue";
 
-defineProps<{
-  name: string;
-}>();
+withDefaults(
+  defineProps<{
+    name?: string;
+  }>(),
+  {
+    name: "",
+  }
+);
 </script>
 
 <template>

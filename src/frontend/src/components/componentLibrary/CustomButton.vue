@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-const props = defineProps<{
-  text: string;
-  type?: string;
-  outlined?: boolean;
-}>();
+const props = withDefaults(
+  defineProps<{
+    text: string;
+    type?: "button" | "submit" | "reset";
+    outlined?: boolean;
+  }>(),
+  {
+    type: "button",
+    outlined: false,
+  }
+);
 
 defineEmits<{
   (e: "click"): void;
