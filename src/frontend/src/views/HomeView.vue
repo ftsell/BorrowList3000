@@ -12,11 +12,7 @@ const listStore = useListStore();
   </header>
   <div class="main-container">
     <main class="list-container">
-      <ThingList
-        v-for="list of listStore.lists"
-        :key="list.name"
-        :list="list"
-      />
+      <ThingList v-for="list of listStore.lists" :key="list.id" :list="list" />
     </main>
   </div>
 </template>
