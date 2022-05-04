@@ -1,13 +1,14 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import type { ThingListDto } from "@/apiClient";
 import Card from "@/components/componentLibrary/Card.vue";
 import Thing from "@/components/featureComponents/Thing.vue";
 import { useThingStore } from "@/stores/thingStore";
 import Icon from "@/components/componentLibrary/Icon.vue";
-import editIcon from "@/assets/icons/feather_adjust.svg";
 import Popup from "@/components/componentLibrary/Popup.vue";
-import { ref } from "vue";
 import EditThingList from "@/components/featureComponents/EditThingList.vue";
+import editIcon from "mono-icons/svg/edit.svg?raw";
+import addIcon from "mono-icons/svg/add.svg?raw";
 
 defineProps<{
   list: ThingListDto;
@@ -24,10 +25,10 @@ const isEditing = ref(false);
       <div class="list-action-container">
         <Icon
           class="action-icon"
-          :url="editIcon"
-          alt="Edit List Name"
+          :raw-svg="editIcon"
           @click="isEditing = !isEditing"
         />
+        <Icon class="action-icon" :raw-svg="addIcon" />
       </div>
     </template>
     <template v-slot:default>

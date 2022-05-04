@@ -1,12 +1,11 @@
 <script setup lang="ts">
 defineProps<{
-  url: string;
-  alt: string;
+  rawSvg: string;
 }>();
 </script>
 
 <template>
-  <img :src="url" :alt="alt" />
+  <svg v-html="rawSvg" />
 </template>
 
 <style scoped></style>
