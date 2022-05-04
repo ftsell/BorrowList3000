@@ -17,3 +17,9 @@ repos:
       pass_filenames: false
       language: system
       entry: "pnpm run -C src/frontend typecheck"
+    - id: lint-frontend
+      name: check frontend for linting errors
+      files: "^src/frontend/src/.*$"
+      pass_filenames: false
+      language: system
+      entry: "pnpm run -C src/frontend lint"
