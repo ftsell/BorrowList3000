@@ -63,6 +63,13 @@ export function useAutomaticThingFetching(): void {
             )
             .map((list) => thingStore.fetchFromApiForList(list.id));
           await Promise.all(promises);
+
+          // remove things of now-unknown lists from store
+          for (const listId of Object.keys(thingStore.things)) {
+            if (listStore.getListById(listId) == null) {
+              delete thingStore.things[listId];
+            }
+          }
         }
       }
     },
