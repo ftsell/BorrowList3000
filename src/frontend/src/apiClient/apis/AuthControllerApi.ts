@@ -14,18 +14,18 @@
 
 import * as runtime from "../runtime";
 import type {
-  LoginRequest,
-  LoginResponse,
+  LoginPerformRequest,
+  PendingSessionDto,
   Problem,
   RegisterRequest,
   SessionDto,
 } from "../models";
 
 import {
-  LoginRequestFromJSON,
-  LoginRequestToJSON,
-  LoginResponseFromJSON,
-  LoginResponseToJSON,
+  LoginPerformRequestFromJSON,
+  LoginPerformRequestToJSON,
+  PendingSessionDtoFromJSON,
+  PendingSessionDtoToJSON,
   ProblemFromJSON,
   ProblemToJSON,
   RegisterRequestFromJSON,
@@ -34,16 +34,12 @@ import {
   SessionDtoToJSON,
 } from "../models";
 
-export interface LoginOperationRequest {
-  loginRequest: LoginRequest;
-}
-
-export interface LogoutAllSessionRequest {
-  includingCurrent?: boolean;
-}
-
 export interface LogoutSessionRequest {
   sessionId: string;
+}
+
+export interface PerformLoginRequest {
+  loginPerformRequest: LoginPerformRequest;
 }
 
 export interface RegisterOperationRequest {
@@ -93,67 +89,12 @@ export class AuthControllerApi extends runtime.BaseAPI {
   }
 
   /**
-   * Login to an existing user account
-   */
-  async loginRaw(
-    requestParameters: LoginOperationRequest,
-    initOverrides?: RequestInit
-  ): Promise<runtime.ApiResponse<LoginResponse>> {
-    if (
-      requestParameters.loginRequest === null ||
-      requestParameters.loginRequest === undefined
-    ) {
-      throw new runtime.RequiredError(
-        "loginRequest",
-        "Required parameter requestParameters.loginRequest was null or undefined when calling login."
-      );
-    }
-
-    const queryParameters: any = {};
-
-    const headerParameters: runtime.HTTPHeaders = {};
-
-    headerParameters["Content-Type"] = "application/json";
-
-    const response = await this.request(
-      {
-        path: `/api/auth/login`,
-        method: "POST",
-        headers: headerParameters,
-        query: queryParameters,
-        body: LoginRequestToJSON(requestParameters.loginRequest),
-      },
-      initOverrides
-    );
-
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      LoginResponseFromJSON(jsonValue)
-    );
-  }
-
-  /**
-   * Login to an existing user account
-   */
-  async login(
-    requestParameters: LoginOperationRequest,
-    initOverrides?: RequestInit
-  ): Promise<LoginResponse> {
-    const response = await this.loginRaw(requestParameters, initOverrides);
-    return await response.value();
-  }
-
-  /**
    * Logout from all active sessions
    */
   async logoutAllSessionRaw(
-    requestParameters: LogoutAllSessionRequest,
     initOverrides?: RequestInit
   ): Promise<runtime.ApiResponse<void>> {
     const queryParameters: any = {};
-
-    if (requestParameters.includingCurrent !== undefined) {
-      queryParameters["includingCurrent"] = requestParameters.includingCurrent;
-    }
 
     const headerParameters: runtime.HTTPHeaders = {};
 
@@ -178,11 +119,8 @@ export class AuthControllerApi extends runtime.BaseAPI {
   /**
    * Logout from all active sessions
    */
-  async logoutAllSession(
-    requestParameters: LogoutAllSessionRequest = {},
-    initOverrides?: RequestInit
-  ): Promise<void> {
-    await this.logoutAllSessionRaw(requestParameters, initOverrides);
+  async logoutAllSession(initOverrides?: RequestInit): Promise<void> {
+    await this.logoutAllSessionRaw(initOverrides);
   }
 
   /**
@@ -238,12 +176,98 @@ export class AuthControllerApi extends runtime.BaseAPI {
   }
 
   /**
+   * Perform the login that was previously prepared
+   */
+  async performLoginRaw(
+    requestParameters: PerformLoginRequest,
+    initOverrides?: RequestInit
+  ): Promise<runtime.ApiResponse<SessionDto>> {
+    if (
+      requestParameters.loginPerformRequest === null ||
+      requestParameters.loginPerformRequest === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "loginPerformRequest",
+        "Required parameter requestParameters.loginPerformRequest was null or undefined when calling performLogin."
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    headerParameters["Content-Type"] = "application/json";
+
+    const response = await this.request(
+      {
+        path: `/api/auth/login/perform`,
+        method: "POST",
+        headers: headerParameters,
+        query: queryParameters,
+        body: LoginPerformRequestToJSON(requestParameters.loginPerformRequest),
+      },
+      initOverrides
+    );
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      SessionDtoFromJSON(jsonValue)
+    );
+  }
+
+  /**
+   * Perform the login that was previously prepared
+   */
+  async performLogin(
+    requestParameters: PerformLoginRequest,
+    initOverrides?: RequestInit
+  ): Promise<SessionDto> {
+    const response = await this.performLoginRaw(
+      requestParameters,
+      initOverrides
+    );
+    return await response.value();
+  }
+
+  /**
+   * Prepare login to a new device
+   */
+  async prepareLoginRaw(
+    initOverrides?: RequestInit
+  ): Promise<runtime.ApiResponse<PendingSessionDto>> {
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    const response = await this.request(
+      {
+        path: `/api/auth/login/prepare`,
+        method: "POST",
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides
+    );
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      PendingSessionDtoFromJSON(jsonValue)
+    );
+  }
+
+  /**
+   * Prepare login to a new device
+   */
+  async prepareLogin(initOverrides?: RequestInit): Promise<PendingSessionDto> {
+    const response = await this.prepareLoginRaw(initOverrides);
+    return await response.value();
+  }
+
+  /**
    * Register a new user account
    */
   async registerRaw(
     requestParameters: RegisterOperationRequest,
     initOverrides?: RequestInit
-  ): Promise<runtime.ApiResponse<void>> {
+  ): Promise<runtime.ApiResponse<SessionDto>> {
     if (
       requestParameters.registerRequest === null ||
       requestParameters.registerRequest === undefined
@@ -271,7 +295,9 @@ export class AuthControllerApi extends runtime.BaseAPI {
       initOverrides
     );
 
-    return new runtime.VoidApiResponse(response);
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      SessionDtoFromJSON(jsonValue)
+    );
   }
 
   /**
@@ -280,7 +306,8 @@ export class AuthControllerApi extends runtime.BaseAPI {
   async register(
     requestParameters: RegisterOperationRequest,
     initOverrides?: RequestInit
-  ): Promise<void> {
-    await this.registerRaw(requestParameters, initOverrides);
+  ): Promise<SessionDto> {
+    const response = await this.registerRaw(requestParameters, initOverrides);
+    return await response.value();
   }
 }

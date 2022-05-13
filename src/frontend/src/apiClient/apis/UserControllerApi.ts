@@ -13,11 +13,9 @@
  */
 
 import * as runtime from "../runtime";
-import type { ChangeUserDto, Problem, UserDto } from "../models";
+import type { Problem, UserDto } from "../models";
 
 import {
-  ChangeUserDtoFromJSON,
-  ChangeUserDtoToJSON,
   ProblemFromJSON,
   ProblemToJSON,
   UserDtoFromJSON,
@@ -25,7 +23,7 @@ import {
 } from "../models";
 
 export interface PatchMeRequest {
-  changeUserDto: ChangeUserDto;
+  body: object;
 }
 
 /**
@@ -78,12 +76,12 @@ export class UserControllerApi extends runtime.BaseAPI {
     initOverrides?: RequestInit
   ): Promise<runtime.ApiResponse<UserDto>> {
     if (
-      requestParameters.changeUserDto === null ||
-      requestParameters.changeUserDto === undefined
+      requestParameters.body === null ||
+      requestParameters.body === undefined
     ) {
       throw new runtime.RequiredError(
-        "changeUserDto",
-        "Required parameter requestParameters.changeUserDto was null or undefined when calling patchMe."
+        "body",
+        "Required parameter requestParameters.body was null or undefined when calling patchMe."
       );
     }
 
@@ -104,7 +102,7 @@ export class UserControllerApi extends runtime.BaseAPI {
         method: "PATCH",
         headers: headerParameters,
         query: queryParameters,
-        body: ChangeUserDtoToJSON(requestParameters.changeUserDto),
+        body: requestParameters.body as any,
       },
       initOverrides
     );

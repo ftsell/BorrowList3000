@@ -1,12 +1,11 @@
 /* tslint:disable */
 /* eslint-disable */
-export * from "./ChangeUserDto";
 export * from "./CreatePersonRequest";
 export * from "./CreateThingDto";
 export * from "./CreateThingListRequest";
-export * from "./LoginRequest";
-export * from "./LoginResponse";
+export * from "./LoginPerformRequest";
 export * from "./PatchThingListRequest";
+export * from "./PendingSessionDto";
 export * from "./PersonDto";
 export * from "./Problem";
 export * from "./RegisterRequest";

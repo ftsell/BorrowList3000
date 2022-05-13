@@ -16,41 +16,41 @@ import { exists, mapValues } from "../runtime";
 /**
  *
  * @export
- * @interface UserDto
+ * @interface PendingSessionDto
  */
-export interface UserDto {
+export interface PendingSessionDto {
   /**
    *
    * @type {string}
-   * @memberof UserDto
+   * @memberof PendingSessionDto
    */
-  username: string;
+  token: string;
   /**
    *
-   * @type {string}
-   * @memberof UserDto
+   * @type {Date}
+   * @memberof PendingSessionDto
    */
-  email: string;
+  expirationDate: Date;
 }
 
-export function UserDtoFromJSON(json: any): UserDto {
-  return UserDtoFromJSONTyped(json, false);
+export function PendingSessionDtoFromJSON(json: any): PendingSessionDto {
+  return PendingSessionDtoFromJSONTyped(json, false);
 }
 
-export function UserDtoFromJSONTyped(
+export function PendingSessionDtoFromJSONTyped(
   json: any,
   ignoreDiscriminator: boolean
-): UserDto {
+): PendingSessionDto {
   if (json === undefined || json === null) {
     return json;
   }
   return {
-    username: json["username"],
-    email: json["email"],
+    token: json["token"],
+    expirationDate: new Date(json["expirationDate"]),
   };
 }
 
-export function UserDtoToJSON(value?: UserDto | null): any {
+export function PendingSessionDtoToJSON(value?: PendingSessionDto | null): any {
   if (value === undefined) {
     return undefined;
   }
@@ -58,7 +58,7 @@ export function UserDtoToJSON(value?: UserDto | null): any {
     return null;
   }
   return {
-    username: value.username,
-    email: value.email,
+    token: value.token,
+    expirationDate: value.expirationDate.toISOString(),
   };
 }

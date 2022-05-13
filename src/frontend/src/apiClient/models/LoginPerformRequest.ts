@@ -16,41 +16,36 @@ import { exists, mapValues } from "../runtime";
 /**
  *
  * @export
- * @interface UserDto
+ * @interface LoginPerformRequest
  */
-export interface UserDto {
+export interface LoginPerformRequest {
   /**
    *
    * @type {string}
-   * @memberof UserDto
+   * @memberof LoginPerformRequest
    */
-  username: string;
-  /**
-   *
-   * @type {string}
-   * @memberof UserDto
-   */
-  email: string;
+  token: string;
 }
 
-export function UserDtoFromJSON(json: any): UserDto {
-  return UserDtoFromJSONTyped(json, false);
+export function LoginPerformRequestFromJSON(json: any): LoginPerformRequest {
+  return LoginPerformRequestFromJSONTyped(json, false);
 }
 
-export function UserDtoFromJSONTyped(
+export function LoginPerformRequestFromJSONTyped(
   json: any,
   ignoreDiscriminator: boolean
-): UserDto {
+): LoginPerformRequest {
   if (json === undefined || json === null) {
     return json;
   }
   return {
-    username: json["username"],
-    email: json["email"],
+    token: json["token"],
   };
 }
 
-export function UserDtoToJSON(value?: UserDto | null): any {
+export function LoginPerformRequestToJSON(
+  value?: LoginPerformRequest | null
+): any {
   if (value === undefined) {
     return undefined;
   }
@@ -58,7 +53,6 @@ export function UserDtoToJSON(value?: UserDto | null): any {
     return null;
   }
   return {
-    username: value.username,
-    email: value.email,
+    token: value.token,
   };
 }

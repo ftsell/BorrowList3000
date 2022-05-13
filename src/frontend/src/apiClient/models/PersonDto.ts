@@ -24,13 +24,13 @@ export interface PersonDto {
    * @type {string}
    * @memberof PersonDto
    */
-  id?: string;
+  id: string;
   /**
    *
    * @type {string}
    * @memberof PersonDto
    */
-  name?: string;
+  name: string;
 }
 
 export function PersonDtoFromJSON(json: any): PersonDto {
@@ -45,8 +45,8 @@ export function PersonDtoFromJSONTyped(
     return json;
   }
   return {
-    id: !exists(json, "id") ? undefined : json["id"],
-    name: !exists(json, "name") ? undefined : json["name"],
+    id: json["id"],
+    name: json["name"],
   };
 }
 

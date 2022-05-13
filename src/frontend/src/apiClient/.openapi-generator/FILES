@@ -4,13 +4,12 @@ apis/ThingControllerApi.ts
 apis/ThingListControllerApi.ts
 apis/UserControllerApi.ts
 apis/index.ts
-models/ChangeUserDto.ts
 models/CreatePersonRequest.ts
 models/CreateThingDto.ts
 models/CreateThingListRequest.ts
-models/LoginRequest.ts
-models/LoginResponse.ts
+models/LoginPerformRequest.ts
 models/PatchThingListRequest.ts
+models/PendingSessionDto.ts
 models/PersonDto.ts
 models/Problem.ts
 models/RegisterRequest.ts

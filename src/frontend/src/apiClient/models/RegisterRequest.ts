@@ -24,18 +24,6 @@ export interface RegisterRequest {
    * @type {string}
    * @memberof RegisterRequest
    */
-  username: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RegisterRequest
-   */
-  password: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RegisterRequest
-   */
   email?: string;
 }
 
@@ -51,8 +39,6 @@ export function RegisterRequestFromJSONTyped(
     return json;
   }
   return {
-    username: json["username"],
-    password: json["password"],
     email: !exists(json, "email") ? undefined : json["email"],
   };
 }
@@ -65,8 +51,6 @@ export function RegisterRequestToJSON(value?: RegisterRequest | null): any {
     return null;
   }
   return {
-    username: value.username,
-    password: value.password,
     email: value.email,
   };
 }
