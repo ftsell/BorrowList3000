@@ -53,7 +53,7 @@ public class AuthTests {
                 .bodyValue(new RegisterRequest(null))
                 .exchange()
                 .expectStatus().is2xxSuccessful()
-                .expectBody(SessionDto.class);
+                .expectBody(SessionWithTokenDto.class);
         assertThat(userRepository.count()).isEqualTo(1);
         assertThat(sessionRepository.count()).isEqualTo(1);
     }
@@ -190,6 +190,6 @@ public class AuthTests {
                 .bodyValue(new LoginPerformRequest(prepareResponse.getToken()))
                 .exchange()
                 .expectStatus().is2xxSuccessful()
-                .expectBody(SessionDto.class);
+                .expectBody(SessionWithTokenDto.class);
     }
 }

@@ -6,10 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.finnthorben.thingpeoplelist.security.auth.AuthService;
 import me.finnthorben.thingpeoplelist.security.auth.SessionTokenAuthentication;
-import me.finnthorben.thingpeoplelist.security.dto.LoginPerformRequest;
-import me.finnthorben.thingpeoplelist.security.dto.PendingSessionDto;
-import me.finnthorben.thingpeoplelist.security.dto.RegisterRequest;
-import me.finnthorben.thingpeoplelist.security.dto.SessionDto;
+import me.finnthorben.thingpeoplelist.security.dto.*;
 import me.finnthorben.thingpeoplelist.security.sessions.SessionService;
 import me.finnthorben.thingpeoplelist.users.User;
 import me.finnthorben.thingpeoplelist.users.UserService;
@@ -47,10 +44,10 @@ public class AuthController {
 
     @PostMapping("/register")
     @Operation(summary = "Register a new user account")
-    public Mono<SessionDto> register(@RequestBody @Validated RegisterRequest request) {
+    public Mono<SessionWithTokenDto> register(@RequestBody @Validated RegisterRequest request) {
         return userService.createUser(request.getEmail())
                 .flatMap(user -> sessionService.createSession(user, null, null))
-                .map(session -> modelMapper.map(session, SessionDto.class));
+                .map(session -> modelMapper.map(session, SessionWithTokenDto.class));
     }
 
     @PostMapping("/login/prepare")
@@ -63,7 +60,7 @@ public class AuthController {
 
     @PostMapping("/login/perform")
     @Operation(summary = "Perform the login that was previously prepared")
-    public Mono<SessionDto> performLogin(@RequestBody @Validated LoginPerformRequest request, ServerWebExchange http) {
+    public Mono<SessionWithTokenDto> performLogin(@RequestBody @Validated LoginPerformRequest request, ServerWebExchange http) {
         return authService
                 .login(
                         request.getToken(),
@@ -71,7 +68,7 @@ public class AuthController {
                         Optional.ofNullable(http.getRequest().getRemoteAddress()).map(InetSocketAddress::toString).orElse(""),
                         Optional.ofNullable(http.getRequest().getHeaders().get(HttpHeaders.USER_AGENT)).flatMap(l -> l.stream().findFirst()).orElse("")
                 )
-                .map(session -> modelMapper.map(session, SessionDto.class));
+                .map(session -> modelMapper.map(session, SessionWithTokenDto.class));
     }
 
     @GetMapping("/sessions")
