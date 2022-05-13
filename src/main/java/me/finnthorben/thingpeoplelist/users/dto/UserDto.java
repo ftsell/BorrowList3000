@@ -1,13 +1,18 @@
 package me.finnthorben.thingpeoplelist.users.dto;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
-import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 @Data
+@NoArgsConstructor
 public class UserDto {
-    @NotNull
-    String username;
-    @NotNull
+    @NonNull
+    UUID id;
+
+    @Nullable
     String email;
 }

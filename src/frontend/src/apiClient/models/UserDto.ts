@@ -24,13 +24,13 @@ export interface UserDto {
    * @type {string}
    * @memberof UserDto
    */
-  username: string;
+  id: string;
   /**
    *
    * @type {string}
    * @memberof UserDto
    */
-  email: string;
+  email?: string;
 }
 
 export function UserDtoFromJSON(json: any): UserDto {
@@ -45,8 +45,8 @@ export function UserDtoFromJSONTyped(
     return json;
   }
   return {
-    username: json["username"],
-    email: json["email"],
+    id: json["id"],
+    email: !exists(json, "email") ? undefined : json["email"],
   };
 }
 
@@ -58,7 +58,7 @@ export function UserDtoToJSON(value?: UserDto | null): any {
     return null;
   }
   return {
-    username: value.username,
+    id: value.id,
     email: value.email,
   };
 }
