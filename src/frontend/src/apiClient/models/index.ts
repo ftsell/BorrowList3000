@@ -10,6 +10,7 @@ export * from "./PersonDto";
 export * from "./Problem";
 export * from "./RegisterRequest";
 export * from "./SessionDto";
+export * from "./SessionWithTokenDto";
 export * from "./ThingDto";
 export * from "./ThingListDto";
 export * from "./UserDto";

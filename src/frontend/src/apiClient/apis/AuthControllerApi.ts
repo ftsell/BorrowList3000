@@ -19,6 +19,7 @@ import type {
   Problem,
   RegisterRequest,
   SessionDto,
+  SessionWithTokenDto,
 } from "../models";
 
 import {
@@ -32,6 +33,8 @@ import {
   RegisterRequestToJSON,
   SessionDtoFromJSON,
   SessionDtoToJSON,
+  SessionWithTokenDtoFromJSON,
+  SessionWithTokenDtoToJSON,
 } from "../models";
 
 export interface LogoutSessionRequest {
@@ -181,7 +184,7 @@ export class AuthControllerApi extends runtime.BaseAPI {
   async performLoginRaw(
     requestParameters: PerformLoginRequest,
     initOverrides?: RequestInit
-  ): Promise<runtime.ApiResponse<SessionDto>> {
+  ): Promise<runtime.ApiResponse<SessionWithTokenDto>> {
     if (
       requestParameters.loginPerformRequest === null ||
       requestParameters.loginPerformRequest === undefined
@@ -210,7 +213,7 @@ export class AuthControllerApi extends runtime.BaseAPI {
     );
 
     return new runtime.JSONApiResponse(response, (jsonValue) =>
-      SessionDtoFromJSON(jsonValue)
+      SessionWithTokenDtoFromJSON(jsonValue)
     );
   }
 
@@ -220,7 +223,7 @@ export class AuthControllerApi extends runtime.BaseAPI {
   async performLogin(
     requestParameters: PerformLoginRequest,
     initOverrides?: RequestInit
-  ): Promise<SessionDto> {
+  ): Promise<SessionWithTokenDto> {
     const response = await this.performLoginRaw(
       requestParameters,
       initOverrides
@@ -267,7 +270,7 @@ export class AuthControllerApi extends runtime.BaseAPI {
   async registerRaw(
     requestParameters: RegisterOperationRequest,
     initOverrides?: RequestInit
-  ): Promise<runtime.ApiResponse<SessionDto>> {
+  ): Promise<runtime.ApiResponse<SessionWithTokenDto>> {
     if (
       requestParameters.registerRequest === null ||
       requestParameters.registerRequest === undefined
@@ -296,7 +299,7 @@ export class AuthControllerApi extends runtime.BaseAPI {
     );
 
     return new runtime.JSONApiResponse(response, (jsonValue) =>
-      SessionDtoFromJSON(jsonValue)
+      SessionWithTokenDtoFromJSON(jsonValue)
     );
   }
 
@@ -306,7 +309,7 @@ export class AuthControllerApi extends runtime.BaseAPI {
   async register(
     requestParameters: RegisterOperationRequest,
     initOverrides?: RequestInit
-  ): Promise<SessionDto> {
+  ): Promise<SessionWithTokenDto> {
     const response = await this.registerRaw(requestParameters, initOverrides);
     return await response.value();
   }

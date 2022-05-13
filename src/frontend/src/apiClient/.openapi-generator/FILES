@@ -14,6 +14,7 @@ models/PersonDto.ts
 models/Problem.ts
 models/RegisterRequest.ts
 models/SessionDto.ts
+models/SessionWithTokenDto.ts
 models/ThingDto.ts
 models/ThingListDto.ts
 models/UserDto.ts
