@@ -16,6 +16,12 @@ const router = createRouter({
       name: "auth",
       component: () => import("@/views/AuthView.vue"),
     },
+    {
+      path: "/app/preferences",
+      name: "preferences",
+      component: () => import("@/views/Preferences.vue"),
+      beforeEnter: [requireLogin],
+    },
     /*
     {
       path: "/about",

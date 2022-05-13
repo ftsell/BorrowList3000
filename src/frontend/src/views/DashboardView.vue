@@ -2,7 +2,9 @@
 import HeaderBar from "@/components/featureComponents/HeaderBar.vue";
 import { useListStore } from "@/stores/listStore";
 import ThingList from "@/components/featureComponents/ThingList.vue";
+import { useTitle } from "@vueuse/core";
 
+useTitle("Thing-People-List");
 const listStore = useListStore();
 </script>
 
