@@ -1,11 +1,10 @@
 package me.finnthorben.thingpeoplelist.api;
 
 import me.finnthorben.thingpeoplelist.security.auth.AuthService;
-import me.finnthorben.thingpeoplelist.security.dto.SessionDto;
+import me.finnthorben.thingpeoplelist.security.dto.*;
+import me.finnthorben.thingpeoplelist.security.sessions.SessionRepository;
 import me.finnthorben.thingpeoplelist.security.sessions.SessionService;
 import me.finnthorben.thingpeoplelist.security.sessions.Session;
-import me.finnthorben.thingpeoplelist.security.dto.LoginRequest;
-import me.finnthorben.thingpeoplelist.security.dto.RegisterRequest;
 import me.finnthorben.thingpeoplelist.users.UserService;
 import me.finnthorben.thingpeoplelist.users.User;
 import me.finnthorben.thingpeoplelist.users.UserRepository;
@@ -13,9 +12,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.reactive.server.WebTestClient;
+
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,6 +28,9 @@ public class AuthTests {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private SessionRepository sessionRepository;
 
     @Autowired
     private AuthService authService;
@@ -45,34 +50,19 @@ public class AuthTests {
                 .post()
                 .uri("/api/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new RegisterRequest("test", "test", null))
-                .exchange()
-                .expectStatus().is2xxSuccessful();
-        assert userRepository.existsByUsernameIgnoreCase("test");
-    }
-
-    @Test
-    void testLogin() {
-        // preparation
-        userService.createUser("test", "test", null).block();
-
-        // execution
-        client
-                .post()
-                .uri("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new LoginRequest("test", "test"))
+                .bodyValue(new RegisterRequest(null))
                 .exchange()
                 .expectStatus().is2xxSuccessful()
-                .expectBody().jsonPath("authToken").exists();
+                .expectBody(SessionDto.class);
+        assertThat(userRepository.count()).isEqualTo(1);
+        assertThat(sessionRepository.count()).isEqualTo(1);
     }
 
     @Test
     void testResourceProtection() {
         // preparation
-        userService.createUser("test", "test", null).block();
-        Session session = authService.login("test", "test", null, null).block();
-        assertThat(session).isNotNull();
+        User user = Objects.requireNonNull(userService.createUser(null).block());
+        Session session = Objects.requireNonNull(sessionService.createSession(user, null, null).block());
 
         // execution (no auth)
         client
@@ -93,9 +83,8 @@ public class AuthTests {
     @Test
     void testListSessions() {
         // preparation
-        userService.createUser("test", "test", null).block();
-        Session session = authService.login("test", "test", "::1", "test-agent").block();
-        assertThat(session).isNotNull();
+        User user = Objects.requireNonNull(userService.createUser(null).block());
+        Session session = Objects.requireNonNull(sessionService.createSession(user, null, null).block());
 
         // execution
         client
@@ -119,43 +108,88 @@ public class AuthTests {
     @Test
     void testLogoutAllSessionsExceptCurrent() {
         // preparation
-        userService.createUser("test", "test", null).block();
-        Session session = authService.login("test", "test", null, null).block();
-        authService.login("test", "test", null, null).block();
-        assertThat(session).isNotNull();
-    }
-
-    @Test
-    void testLogoutAllSessionsIncludingCurrent() {
-        // preparation
-        User user = userService.createUser("test", "test", null).block();
-        Session session = authService.login("test", "test", null, null).block();
-        authService.login("test", "test", null, null).block();
-        assertThat(session).isNotNull();
+        User user = Objects.requireNonNull(userService.createUser(null).block());
+        Session session = Objects.requireNonNull(sessionService.createSession(user, null, null).block());
+        sessionService.createSession(user, null, null).block();
 
         // execution
         client
                 .delete()
-                .uri("/api/auth/sessions?includingCurrent=true")
+                .uri("/api/auth/sessions")
                 .header("Authorization", session.getToken())
                 .exchange()
                 .expectStatus().is2xxSuccessful();
-        assertThat(sessionService.listAllSessionsOfUser(user).collectList().block()).isEmpty();
+
+        assertThat(sessionRepository.count()).isEqualTo(1);
     }
 
     @Test
     void testLogoutSpecificSession() {
         // preparation
-        User user = userService.createUser("test", "test", null).block();
-        Session session = authService.login("test", "test", null, null).block();
+        User user = Objects.requireNonNull(userService.createUser(null).block());
+        Session session1 = Objects.requireNonNull(sessionService.createSession(user, null, null).block());
+        Session session2 = Objects.requireNonNull(sessionService.createSession(user, null, null).block());
 
         // execution
         client
                 .delete()
-                .uri("/api/auth/sessions/" + session.getId().toString())
-                .header("Authorization", session.getToken())
+                .uri("/api/auth/sessions/" + session2.getId().toString())
+                .header("Authorization", session1.getToken())
                 .exchange()
                 .expectStatus().is2xxSuccessful();
-        assertThat(sessionService.listAllSessionsOfUser(user).collectList().block()).isEmpty();
+
+        assertThat(sessionRepository.count()).isEqualTo(1);
+    }
+
+    @Test
+    void testNotLogoutCurrentSpecificSessionIfLastSession() {
+        // preparation
+        User user = Objects.requireNonNull(userService.createUser(null).block());
+        Session session1 = Objects.requireNonNull(sessionService.createSession(user, null, null).block());
+        Session session2 = Objects.requireNonNull(sessionService.createSession(user, null, null).block());
+
+        // execution (logout current session that is not the last one)
+        client
+                .delete()
+                .uri("/api/auth/sessions/" + session2.getId().toString())
+                .header("Authorization", session2.getToken())
+                .exchange()
+                .expectStatus().is2xxSuccessful();
+        assertThat(sessionRepository.count()).isEqualTo(1);
+
+        // execution (try and fail to log out current session that is the last one)
+        client
+                .delete()
+                .uri("/api/auth/sessions/" + session1.getId().toString())
+                .header("Authorization", session1.getToken())
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void testLoginToNewDevice() {
+        // preparation
+        User user = Objects.requireNonNull(userService.createUser(null).block());
+        Session session1 = Objects.requireNonNull(sessionService.createSession(user, null, null).block());
+
+        // execution
+        PendingSessionDto prepareResponse = client
+                .post()
+                .uri("/api/auth/login/prepare")
+                .header("Authorization", session1.getToken())
+                .exchange()
+                .expectStatus().is2xxSuccessful()
+                .expectBody(PendingSessionDto.class)
+                .returnResult()
+                .getResponseBody();
+        assertThat(prepareResponse).isNotNull();
+
+        client
+                .post()
+                .uri("/api/auth/login/perform")
+                .bodyValue(new LoginPerformRequest(prepareResponse.getToken()))
+                .exchange()
+                .expectStatus().is2xxSuccessful()
+                .expectBody(SessionDto.class);
     }
 }

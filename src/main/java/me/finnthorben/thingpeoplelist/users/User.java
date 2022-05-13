@@ -5,6 +5,7 @@ import me.finnthorben.thingpeoplelist.lists.ThingList;
 import me.finnthorben.thingpeoplelist.people.Person;
 import me.finnthorben.thingpeoplelist.security.sessions.Session;
 import org.hibernate.Hibernate;
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -15,28 +16,21 @@ import java.util.*;
 
 @Entity
 @Table(name = "User", uniqueConstraints = {
-        @UniqueConstraint(name = "uc_username", columnNames = {"username"})
+        @UniqueConstraint(name = "uc_email", columnNames = {"email"})
 })
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
-public class User implements UserDetails {
+public class User {
     @Id
     @GeneratedValue
     @Setter(AccessLevel.NONE)
-    private UUID id;
+    UUID id;
 
-    @NotBlank
-    @Setter(AccessLevel.NONE)
-    private String username;
-
-    @NotBlank
-    @ToString.Exclude
-    private String password;
-
+    @Nullable
     @Email
-    private String email;
+    String email;
 
     @OneToMany(mappedBy = "user")
     @ToString.Exclude
@@ -50,9 +44,7 @@ public class User implements UserDetails {
     @ToString.Exclude
     Set<Session> sessions;
 
-    public User(String username, String password, String email) {
-        this.username = username;
-        this.password = password;
+    public User(@Nullable String email) {
         this.email = email;
     }
 
@@ -67,30 +59,5 @@ public class User implements UserDetails {
     @Override
     public int hashCode() {
         return getClass().hashCode();
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return new ArrayList<>();
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
     }
 }

@@ -27,7 +27,7 @@ public class WebSecurityConfig {
             @Qualifier("sessionTokenAuthenticationFilter") AuthenticationWebFilter sessionTokenFilter) {
         return http
                 .authorizeExchange()
-                .pathMatchers("/api/auth/login", "/api/auth/register").permitAll()
+                .pathMatchers("/api/auth/login/perform", "/api/auth/register").permitAll()
                 .pathMatchers("/api/schema/**", "/api/swagger-ui/**", "/api/webjars/swagger-ui/**").permitAll()
                 .pathMatchers("/api/**").authenticated()
                 .anyExchange().permitAll()
@@ -40,17 +40,9 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public ReactiveAuthenticationManager authenticationManager(
-            ReactiveUserDetailsService userDetailsService,
-            SessionService sessionService) {
+    public ReactiveAuthenticationManager authenticationManager(SessionService sessionService) {
         return new DelegatingReactiveAuthenticationManager(
-                new SessionTokenAuthenticationManager(sessionService),
-                new UserDetailsRepositoryReactiveAuthenticationManager(userDetailsService)
+                new SessionTokenAuthenticationManager(sessionService)
         );
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 }

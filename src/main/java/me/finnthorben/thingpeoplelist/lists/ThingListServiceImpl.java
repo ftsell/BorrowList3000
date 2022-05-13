@@ -23,7 +23,7 @@ public class ThingListServiceImpl implements ThingListService {
     public Mono<ThingList> create(String name, User user) {
         return Mono.fromCallable(() -> {
             if (thingListRepository.existsByNameIgnoreCaseAndUser(name, user)) {
-                throw new ThingListAlreadyExistsException(name, user);
+                throw new ThingListAlreadyExistsException(name);
             }
 
             return thingListRepository.save(new ThingList(name, user));
@@ -40,7 +40,7 @@ public class ThingListServiceImpl implements ThingListService {
     @Override
     public Mono<ThingList> getByIdForUser(UUID id, User user) {
         return Mono.fromCallable(() -> thingListRepository.findByIdAndUser(id, user)
-                .orElseThrow(() -> new NoSuchThingListException(id, user)))
+                .orElseThrow(() -> new NoSuchThingListException(id)))
                 .subscribeOn(jdbcScheduler);
     }
 

@@ -9,15 +9,10 @@ import java.util.UUID;
 
 
 public interface PeopleService {
-    class PersonAlreadyExistsException extends RuntimeException {
-        public PersonAlreadyExistsException(String personName, User user) {
-            super("Person with name " + personName + " already exists for user " + user.getUsername());
-        }
-    }
 
     class NoSuchPersonException extends NoSuchElementException {
-        public NoSuchPersonException(UUID personId, User user) {
-            super("Person " + personId + " does not exist for user " + user.getUsername());
+        public NoSuchPersonException(UUID personId) {
+            super("Person " + personId + " does not exist for current user");
         }
     }
 

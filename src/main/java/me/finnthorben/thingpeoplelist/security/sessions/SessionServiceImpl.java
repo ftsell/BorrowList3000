@@ -42,4 +42,13 @@ public class SessionServiceImpl implements SessionService {
                 .flatMapMany(Flux::fromIterable)
                 .subscribeOn(jdbcScheduler);
     }
+
+    @Override
+    public Mono<Session> createSession(User user, String ipAddress, String userAgent) {
+        return Mono.fromCallable(() -> {
+                    Session session = new Session(user, ipAddress, userAgent);
+                    return sessionRepository.save(session);
+                })
+                .subscribeOn(jdbcScheduler);
+    }
 }

@@ -21,12 +21,8 @@ public class PeopleServiceImpl implements PeopleService {
 
     @Override
     public Mono<Person> create(String name, User user) {
-        return Mono.fromCallable(() -> {
-            if (peopleRepository.existsByNameIgnoreCaseAndUser(name, user))
-                throw new PersonAlreadyExistsException(name, user);
-
-            return peopleRepository.save(new Person(name, user));
-        }).subscribeOn(jdbcScheduler);
+        return Mono.fromCallable(() -> peopleRepository.save(new Person(name, user)))
+                .subscribeOn(jdbcScheduler);
     }
 
     @Override
@@ -39,7 +35,7 @@ public class PeopleServiceImpl implements PeopleService {
     @Override
     public Mono<Person> getByIdForUser(UUID id, User user) {
         return Mono.fromCallable(() -> peopleRepository.findByIdAndUser(id, user)
-                .orElseThrow(() -> new NoSuchPersonException(id, user)))
+                .orElseThrow(() -> new NoSuchPersonException(id)))
                 .subscribeOn(jdbcScheduler);
     }
 }

@@ -10,5 +10,4 @@ import javax.validation.constraints.Size;
 @Data
 @Setter(AccessLevel.NONE)
 public class ChangeUserDto {
-    @NotBlank @Size(min = 1) String password;
 }

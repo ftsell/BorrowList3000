@@ -32,7 +32,6 @@ public class UserController {
     @PatchMapping(value = "/me", consumes = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Update information of the currently logged in user")
     Mono<UserDto> patchMe(@RequestBody @Validated ChangeUserDto changeRequest, Authentication authentication) {
-        return userService.updatePassword((UserDetails) authentication.getPrincipal(), changeRequest.getPassword())
-                .thenReturn(modelMapper.map(authentication.getPrincipal(), UserDto.class));
+        return Mono.just(modelMapper.map(authentication.getPrincipal(), UserDto.class));
     }
 }

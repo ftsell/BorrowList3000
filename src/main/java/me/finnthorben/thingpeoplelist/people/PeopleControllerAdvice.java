@@ -15,10 +15,4 @@ public class PeopleControllerAdvice {
     Problem noSuchPersonHandler(PeopleService.NoSuchPersonException exc) {
         return new Problem("No such person", exc.getLocalizedMessage());
     }
-
-    @ExceptionHandler(PeopleService.PersonAlreadyExistsException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    Problem personAlreadyExistsHandler(PeopleService.PersonAlreadyExistsException exc) {
-        return new Problem("Person already exists", exc.getLocalizedMessage());
-    }
 }

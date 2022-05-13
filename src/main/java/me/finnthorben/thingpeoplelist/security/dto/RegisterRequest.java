@@ -1,12 +1,17 @@
 package me.finnthorben.thingpeoplelist.security.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-public record RegisterRequest (
-        @NotBlank @Size(min = 1) String username,
-        @NotBlank @Size(min = 1) String password,
-        @Email String email
-){
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class RegisterRequest {
+        @Nullable @Email String email;
 }

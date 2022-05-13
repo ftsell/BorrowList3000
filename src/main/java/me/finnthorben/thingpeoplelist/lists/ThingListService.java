@@ -9,14 +9,14 @@ import java.util.UUID;
 
 public interface ThingListService {
     class ThingListAlreadyExistsException extends RuntimeException {
-        public ThingListAlreadyExistsException(String thingListName, User user) {
-            super("User " + user.getUsername() + " already has a '" + thingListName + "' list");
+        public ThingListAlreadyExistsException(String thingListName) {
+            super("Current user already has a '" + thingListName + "' list");
         }
     }
 
     class NoSuchThingListException extends NoSuchElementException {
-        public NoSuchThingListException(UUID id, User user) {
-            super("User " + user.getUsername() + " does not have a list " + id);
+        public NoSuchThingListException(UUID id) {
+            super("Current user does not have a list " + id);
         }
     }
 

@@ -1,6 +1,7 @@
 package me.finnthorben.thingpeoplelist.security;
 
 import me.finnthorben.thingpeoplelist.genericapi.Problem;
+import me.finnthorben.thingpeoplelist.security.auth.AuthService;
 import me.finnthorben.thingpeoplelist.users.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -12,33 +13,23 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
 public class AuthControllerAdvice {
-    @ExceptionHandler(UserService.UserAlreadyExistsException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(AuthService.CantLogoutLastSessionException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    Problem userAlreadyExistsHandler() {
+    Problem cantLogoutLastSessionHandler(AuthService.CantLogoutLastSessionException exception) {
         return new Problem(
-                "User already exists",
-                "You tried to register a new user although a user with the given username already exists"
+                "Cannot logout the last session",
+                exception.getMessage()
         );
     }
 
-    @ExceptionHandler(UsernameNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(AuthService.InvalidPendingSessionException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     @ResponseBody
-    Problem userNotFoundHandler() {
+    Problem invalidPendingSessionHandler(AuthService.InvalidPendingSessionException exception) {
         return new Problem(
-                "Such a user does not exist",
-                "You tried to query for a user that does not exist or could not be found"
-        );
-    }
-
-    @ExceptionHandler(BadCredentialsException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ResponseBody
-    Problem invalidCredentialsHandler() {
-        return new Problem(
-                "Invalid Credentials",
-                "The provided credentials were invalid and you could not not be logged in"
+                "Cannot perform login",
+                exception.getMessage()
         );
     }
 }
