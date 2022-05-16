@@ -81,6 +81,16 @@ public class AuthTests {
     }
 
     @Test
+    void testInvalidSessionToken() {
+        client
+                .get()
+                .uri("/api/users/me")
+                .header("Authorization", "SessionToken 00000000")
+                .exchange()
+                .expectStatus().isUnauthorized();
+    }
+
+    @Test
     void testListSessions() {
         // preparation
         User user = Objects.requireNonNull(userService.createUser(null).block());

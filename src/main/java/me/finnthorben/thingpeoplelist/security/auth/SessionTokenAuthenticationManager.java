@@ -28,12 +28,13 @@ public class SessionTokenAuthenticationManager implements ReactiveAuthentication
             return Mono.empty();
         }
 
-        log.debug("Authentication " + auth.toString() + " will be processed by SessionTokenAuthenticationManager");
+        log.debug("Authentication " + auth + " will be processed by SessionTokenAuthenticationManager");
         return Mono.just(auth);
     }
 
     private Mono<Authentication> validateToken(String token) {
         return sessionService.getValidSession(token)
+                .switchIfEmpty(Mono.error(new InvalidSessionException()))
                 .map(session -> {
                     SessionTokenAuthentication newAuth = new SessionTokenAuthentication(token, session, null);
                     newAuth.setAuthenticated(true);
