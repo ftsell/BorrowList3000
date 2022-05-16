@@ -1,13 +1,18 @@
 <script setup lang="ts">
-defineProps<{
-  id: string;
-  type: string;
-  label?: string;
-  placeholder?: string;
-  tabIndex?: number | string;
-  modelValue?: string;
-  errorMessage?: string;
-}>();
+withDefaults(
+  defineProps<{
+    id: string;
+    type: string;
+    label?: string;
+    placeholder?: string;
+    tabIndex?: number | string;
+    modelValue?: string;
+    errorMessage?: string;
+  }>(),
+  {
+    type: "text",
+  }
+);
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: string): void;
