@@ -124,7 +124,7 @@ public class ThingListsApiTests {
     void delete() {
         // preparation
         Pair<User, Session> userSessionPair = userFixture.createUserWithSession();
-        ThingList thingList = thingListFixture.createEmptyThingList(userSessionPair.getFirst());
+        ThingList thingList = thingListFixture.createThingListWithThing(userSessionPair.getFirst()).getFirst();
 
         // execution
         client

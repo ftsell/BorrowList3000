@@ -33,7 +33,7 @@ public class ThingList {
     @ToString.Exclude
     User user;
 
-    @OneToMany(mappedBy = "list")
+    @OneToMany(mappedBy = "list", orphanRemoval = true)
     @ToString.Exclude
     Set<Thing> things;
 
