@@ -37,7 +37,7 @@ export const useThingStore = defineStore({
       });
 
       // append thing to store
-      if (this.things) {
+      if (this.things && this.things[listId]) {
         this.things[listId].push(response);
       }
 
@@ -57,33 +57,39 @@ export function useAutomaticThingFetching(): void {
   const listStore = useListStore();
   const thingStore = useThingStore();
 
-  watch([() => authStore.isAuthenticated, () => listStore.lists], async () => {
-    // clear complete store if we are not authenticated
-    if (authStore.authToken == null) {
-      thingStore.things = null;
-    } else {
-      // otherwise, if the store is uninitialized, initialize it
-      if (thingStore.things == null) {
-        thingStore.things = {};
-      }
+  watch(
+    [() => authStore.isAuthenticated, () => listStore.lists],
+    async () => {
+      // clear complete store if we are not authenticated
+      if (authStore.authToken == null) {
+        thingStore.things = null;
+      } else {
+        // otherwise, if the store is uninitialized, initialize it
+        if (thingStore.things == null) {
+          thingStore.things = {};
+        }
 
-      if (listStore.lists != null) {
-        // construct promises for the things of all lists that have not yet
-        // been fetched and then fetch them
-        const promises = listStore.lists
-          .filter(
-            (list) => !Object.keys(thingStore.things ?? {}).includes(list.id)
-          )
-          .map((list) => thingStore.fetchFromApiForList(list.id));
-        await Promise.all(promises);
+        if (listStore.lists != null) {
+          // construct promises for the things of all lists that have not yet
+          // been fetched and then fetch them
+          const promises = listStore.lists
+            .filter(
+              (list) => !Object.keys(thingStore.things ?? {}).includes(list.id)
+            )
+            .map((list) => thingStore.fetchFromApiForList(list.id));
+          await Promise.all(promises);
 
-        // remove things of now-unknown lists from store
-        for (const listId of Object.keys(thingStore.things)) {
-          if (listStore.getListById(listId) == null) {
-            delete thingStore.things[listId];
+          // remove things of now-unknown lists from store
+          for (const listId of Object.keys(thingStore.things)) {
+            if (listStore.getListById(listId) == null) {
+              delete thingStore.things[listId];
+            }
           }
         }
       }
+    },
+    {
+      deep: true,
     }
-  });
+  );
 }
