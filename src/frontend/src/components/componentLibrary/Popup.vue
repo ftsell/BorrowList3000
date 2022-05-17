@@ -49,6 +49,6 @@ function onBackgroundClick(e: Event): void {
 }
 
 .popup {
-  max-width: 512px;
+  width: min(1024px, 90vw);
 }
 </style>
