@@ -13,7 +13,7 @@ import deleteIcon from "mono-icons/svg/delete.svg?raw";
 import { useListStore } from "@/stores/listStore";
 import CreateThing from "@/components/featureComponents/CreateThing.vue";
 
-defineProps<{
+const props = defineProps<{
   list: ThingListDto;
 }>();
 
@@ -22,6 +22,16 @@ const listStore = useListStore();
 
 const isEditing = ref(false);
 const isCreatingThing = ref(false);
+
+async function onDelete() {
+  if (
+    confirm(
+      `Are you sure you want to delete ${props.list.name} and all its things?`
+    )
+  ) {
+    await listStore.deleteList(props.list.id);
+  }
+}
 </script>
 
 <template>
@@ -29,11 +39,7 @@ const isCreatingThing = ref(false);
     <template v-slot:title-bar>
       <div class="list-action-container">
         <!-- Delete -->
-        <Icon
-          class="action-icon"
-          :raw-svg="deleteIcon"
-          @click="listStore.deleteList(list.id)"
-        />
+        <Icon class="action-icon" :raw-svg="deleteIcon" @click="onDelete" />
 
         <!-- Edit -->
         <Icon
