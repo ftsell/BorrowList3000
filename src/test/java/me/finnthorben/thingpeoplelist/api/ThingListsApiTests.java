@@ -21,6 +21,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 
@@ -117,5 +118,22 @@ public class ThingListsApiTests {
                 .expectStatus().is2xxSuccessful()
                 .expectBody(ThingListDto.class)
                 .isEqualTo(modelMapper.map(updatedThingList, ThingListDto.class));
+    }
+
+    @Test
+    void delete() {
+        // preparation
+        Pair<User, Session> userSessionPair = userFixture.createUserWithSession();
+        ThingList thingList = thingListFixture.createEmptyThingList(userSessionPair.getFirst());
+
+        // execution
+        client
+                .delete()
+                .uri("/api/lists/" + thingList.getId())
+                .header("Authorization", userSessionPair.getSecond().getToken())
+                .exchange()
+                .expectStatus().is2xxSuccessful();
+        assertThatThrownBy(() -> thingListService.getByIdForUser(thingList.getId(), userSessionPair.getFirst()).block())
+                .isInstanceOf(ThingListService.NoSuchThingListException.class);
     }
 }

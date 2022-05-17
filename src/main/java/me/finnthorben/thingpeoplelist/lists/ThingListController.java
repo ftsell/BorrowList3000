@@ -67,4 +67,10 @@ public class ThingListController {
                 .create(request.getName(), (User) auth.getPrincipal())
                 .map(list -> modelMapper.map(list, ThingListDto.class));
     }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete the specified list")
+    Mono<Void> delete(@PathVariable UUID id, Authentication auth) {
+        return listService.delete(id);
+    }
 }

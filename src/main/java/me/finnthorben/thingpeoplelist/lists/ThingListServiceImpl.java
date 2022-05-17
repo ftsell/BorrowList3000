@@ -49,4 +49,18 @@ public class ThingListServiceImpl implements ThingListService {
         return Mono.fromCallable(() -> thingListRepository.save(list))
                 .subscribeOn(jdbcScheduler);
     }
+
+    @Override
+    public Mono<Void> delete(ThingList list) {
+        return Mono.fromRunnable(() -> thingListRepository.delete(list))
+                .subscribeOn(jdbcScheduler)
+                .cast(Void.class);
+    }
+
+    @Override
+    public Mono<Void> delete(UUID id) {
+        return Mono.fromRunnable(() -> thingListRepository.deleteById(id))
+                .subscribeOn(jdbcScheduler)
+                .cast(Void.class);
+    }
 }

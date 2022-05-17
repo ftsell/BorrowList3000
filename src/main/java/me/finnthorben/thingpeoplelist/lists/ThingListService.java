@@ -39,4 +39,14 @@ public interface ThingListService {
      * Persist any changes made to the given list
      */
     Mono<ThingList> saveThingList(ThingList list);
+
+    /**
+     * Delete the given list
+     */
+    Mono<Void> delete(ThingList list);
+
+    /**
+     * Delete the list that is identified by the given id
+     */
+    Mono<Void> delete(UUID id);
 }
