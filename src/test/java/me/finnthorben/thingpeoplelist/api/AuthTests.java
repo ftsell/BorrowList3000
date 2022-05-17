@@ -33,9 +33,6 @@ public class AuthTests {
     private SessionRepository sessionRepository;
 
     @Autowired
-    private AuthService authService;
-
-    @Autowired
     private UserService userService;
 
     @Autowired
