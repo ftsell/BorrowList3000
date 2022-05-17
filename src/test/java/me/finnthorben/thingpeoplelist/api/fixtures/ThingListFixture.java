@@ -1,6 +1,8 @@
 package me.finnthorben.thingpeoplelist.api.fixtures;
 
 import lombok.RequiredArgsConstructor;
+import me.finnthorben.thingpeoplelist.lists.ThingList;
+import me.finnthorben.thingpeoplelist.lists.ThingListService;
 import me.finnthorben.thingpeoplelist.security.sessions.Session;
 import me.finnthorben.thingpeoplelist.security.sessions.SessionService;
 import me.finnthorben.thingpeoplelist.users.User;
@@ -12,14 +14,13 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
-public class UserFixture {
-    private final UserService userService;
+public class ThingListFixture {
 
-    private final SessionService sessionService;
+    private final ThingListService thingListService;
 
-    public Pair<User, Session> createUserWithSession() {
-        User user = Objects.requireNonNull(userService.createUser(null).block());
-        Session session = Objects.requireNonNull(sessionService.createSession(user, "127.0.0.1", "test").block());
-        return Pair.of(user, session);
+    public ThingList createEmptyThingList(User user) {
+        return Objects.requireNonNull(
+                thingListService.create("TestList", user).block()
+        );
     }
 }
