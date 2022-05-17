@@ -11,6 +11,7 @@ import editIcon from "mono-icons/svg/edit.svg?raw";
 import addIcon from "mono-icons/svg/add.svg?raw";
 import deleteIcon from "mono-icons/svg/delete.svg?raw";
 import { useListStore } from "@/stores/listStore";
+import CreateThing from "@/components/featureComponents/CreateThing.vue";
 
 defineProps<{
   list: ThingListDto;
@@ -20,25 +21,36 @@ const thingStore = useThingStore();
 const listStore = useListStore();
 
 const isEditing = ref(false);
+const isCreatingThing = ref(false);
 </script>
 
 <template>
   <Card :title="list.name">
     <template v-slot:title-bar>
       <div class="list-action-container">
+        <!-- Delete -->
         <Icon
           class="action-icon"
           :raw-svg="deleteIcon"
           @click="listStore.deleteList(list.id)"
         />
+
+        <!-- Edit -->
         <Icon
           class="action-icon"
           :raw-svg="editIcon"
           @click="isEditing = !isEditing"
         />
-        <Icon class="action-icon" :raw-svg="addIcon" />
+
+        <!-- Add Thing -->
+        <Icon
+          class="action-icon"
+          :raw-svg="addIcon"
+          @click="isCreatingThing = !isCreatingThing"
+        />
       </div>
     </template>
+
     <template v-slot:default>
       <div class="things-container">
         <Thing
@@ -55,6 +67,14 @@ const isEditing = ref(false);
       :list="list"
       @finishEdit="isEditing = false"
       @cancelEdit="isEditing = false"
+    />
+  </Popup>
+
+  <Popup title="Create new Thing" v-model:open="isCreatingThing">
+    <CreateThing
+      :list="list"
+      @thingCreated="isCreatingThing = false"
+      @canceled="isCreatingThing = false"
     />
   </Popup>
 </template>

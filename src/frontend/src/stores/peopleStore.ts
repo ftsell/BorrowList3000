@@ -25,6 +25,24 @@ export const usePeopleStore = defineStore({
       const api = useRestApi();
       this.people = await api.value.people.listAllPeople();
     },
+    async create(name: string): Promise<PersonDto> {
+      // create new list in api
+      const api = useRestApi();
+      const response = await api.value.people.create({
+        createPersonRequest: {
+          name,
+        },
+      });
+
+      // append list to store
+      if (this.people) {
+        this.people.push(response);
+      } else {
+        this.people = [response];
+      }
+
+      return response;
+    },
   },
 });
 

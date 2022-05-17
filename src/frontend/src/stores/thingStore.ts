@@ -1,4 +1,4 @@
-import type { ThingDto } from "@/apiClient";
+import type { CreateThingRequest, ThingDto, ThingListDto } from "@/apiClient";
 import { defineStore } from "pinia";
 import { useRestApi } from "@/apiClient";
 import { useAuthStore } from "@/stores/authStore";
@@ -27,6 +27,21 @@ export const useThingStore = defineStore({
         this.things = {};
       }
       this.things[listId] = await api.value.things.getAll({ listId });
+    },
+    async create(listId: string, data: CreateThingRequest): Promise<ThingDto> {
+      // create new thing in api
+      const api = useRestApi();
+      const response = await api.value.things.create1({
+        listId,
+        createThingRequest: data,
+      });
+
+      // append thing to store
+      if (this.things) {
+        this.things[listId].push(response);
+      }
+
+      return response;
     },
   },
 });
