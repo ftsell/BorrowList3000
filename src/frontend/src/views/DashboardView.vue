@@ -3,6 +3,8 @@ import HeaderBar from "@/components/featureComponents/HeaderBar.vue";
 import { useListStore } from "@/stores/listStore";
 import ThingList from "@/components/featureComponents/ThingList.vue";
 import { useTitle } from "@vueuse/core";
+import VerticalDivider from "@/components/componentLibrary/VerticalDivider.vue";
+import CreateListForm from "@/components/featureComponents/CreateListForm.vue";
 
 useTitle("Thing-People-List");
 const listStore = useListStore();
@@ -13,8 +15,20 @@ const listStore = useListStore();
     <HeaderBar />
   </header>
   <div class="main-container">
-    <main class="list-container">
-      <ThingList v-for="list of listStore.lists" :key="list.id" :list="list" />
+    <main>
+      <div class="action-bar">
+        <CreateListForm />
+      </div>
+
+      <VerticalDivider class="space-around" />
+
+      <div class="list-container">
+        <ThingList
+          v-for="list of listStore.lists"
+          :key="list.id"
+          :list="list"
+        />
+      </div>
     </main>
   </div>
 </template>
@@ -38,5 +52,10 @@ const listStore = useListStore();
   align-items: stretch;
   justify-content: center;
   gap: 32px;
+}
+
+.space-around {
+  margin-top: 24px;
+  margin-bottom: 24px;
 }
 </style>

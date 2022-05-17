@@ -2,7 +2,7 @@
 withDefaults(
   defineProps<{
     id: string;
-    type: string;
+    type?: string;
     label?: string;
     placeholder?: string;
     tabIndex?: number | string;

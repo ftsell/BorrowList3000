@@ -25,6 +25,24 @@ export const useListStore = defineStore({
       const api = useRestApi();
       this.lists = await api.value.lists.getAll1();
     },
+    async createList(listName: string): Promise<ThingListDto> {
+      // create new list in api
+      const api = useRestApi();
+      const response = await api.value.lists.create2({
+        createThingListRequest: {
+          name: listName,
+        },
+      });
+
+      // append list to store
+      if (this.lists) {
+        this.lists.push(response);
+      } else {
+        this.lists = [response];
+      }
+
+      return response;
+    },
   },
 });
 
