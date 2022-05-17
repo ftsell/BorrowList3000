@@ -13,11 +13,11 @@
  */
 
 import * as runtime from "../runtime";
-import type { CreateThingDto, Problem, ThingDto } from "../models";
+import type { CreateThingRequest, Problem, ThingDto } from "../models";
 
 import {
-  CreateThingDtoFromJSON,
-  CreateThingDtoToJSON,
+  CreateThingRequestFromJSON,
+  CreateThingRequestToJSON,
   ProblemFromJSON,
   ProblemToJSON,
   ThingDtoFromJSON,
@@ -26,7 +26,7 @@ import {
 
 export interface Create1Request {
   listId: string;
-  createThingDto: CreateThingDto;
+  createThingRequest: CreateThingRequest;
 }
 
 export interface GetAllRequest {
@@ -55,12 +55,12 @@ export class ThingControllerApi extends runtime.BaseAPI {
     }
 
     if (
-      requestParameters.createThingDto === null ||
-      requestParameters.createThingDto === undefined
+      requestParameters.createThingRequest === null ||
+      requestParameters.createThingRequest === undefined
     ) {
       throw new runtime.RequiredError(
-        "createThingDto",
-        "Required parameter requestParameters.createThingDto was null or undefined when calling create1."
+        "createThingRequest",
+        "Required parameter requestParameters.createThingRequest was null or undefined when calling create1."
       );
     }
 
@@ -84,7 +84,7 @@ export class ThingControllerApi extends runtime.BaseAPI {
         method: "POST",
         headers: headerParameters,
         query: queryParameters,
-        body: CreateThingDtoToJSON(requestParameters.createThingDto),
+        body: CreateThingRequestToJSON(requestParameters.createThingRequest),
       },
       initOverrides
     );

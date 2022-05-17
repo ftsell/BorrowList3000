@@ -43,6 +43,18 @@ export const useListStore = defineStore({
 
       return response;
     },
+    async deleteList(listId: string) {
+      // delete the list from the api
+      const api = useRestApi();
+      await api.value.lists._delete({
+        id: listId,
+      });
+
+      // remove the list from store
+      if (this.lists) {
+        this.lists = this.lists.filter((l) => l.id !== listId);
+      }
+    },
   },
 });
 

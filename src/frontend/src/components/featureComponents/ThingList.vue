@@ -9,12 +9,15 @@ import Popup from "@/components/componentLibrary/Popup.vue";
 import EditThingList from "@/components/featureComponents/EditThingList.vue";
 import editIcon from "mono-icons/svg/edit.svg?raw";
 import addIcon from "mono-icons/svg/add.svg?raw";
+import deleteIcon from "mono-icons/svg/delete.svg?raw";
+import { useListStore } from "@/stores/listStore";
 
 defineProps<{
   list: ThingListDto;
 }>();
 
 const thingStore = useThingStore();
+const listStore = useListStore();
 
 const isEditing = ref(false);
 </script>
@@ -23,6 +26,11 @@ const isEditing = ref(false);
   <Card :title="list.name">
     <template v-slot:title-bar>
       <div class="list-action-container">
+        <Icon
+          class="action-icon"
+          :raw-svg="deleteIcon"
+          @click="listStore.deleteList(list.id)"
+        />
         <Icon
           class="action-icon"
           :raw-svg="editIcon"

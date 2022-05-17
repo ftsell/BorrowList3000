@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 export * from "./CreatePersonRequest";
-export * from "./CreateThingDto";
 export * from "./CreateThingListRequest";
+export * from "./CreateThingRequest";
 export * from "./LoginPerformRequest";
 export * from "./PatchThingListRequest";
 export * from "./PendingSessionDto";

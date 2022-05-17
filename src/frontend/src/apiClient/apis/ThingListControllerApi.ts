@@ -31,6 +31,10 @@ import {
   ThingListDtoToJSON,
 } from "../models";
 
+export interface DeleteRequest {
+  id: string;
+}
+
 export interface Create2Request {
   createThingListRequest: CreateThingListRequest;
 }
@@ -48,6 +52,55 @@ export interface UpdateByIdRequest {
  *
  */
 export class ThingListControllerApi extends runtime.BaseAPI {
+  /**
+   * Delete the specified list
+   */
+  async _deleteRaw(
+    requestParameters: DeleteRequest,
+    initOverrides?: RequestInit
+  ): Promise<runtime.ApiResponse<void>> {
+    if (requestParameters.id === null || requestParameters.id === undefined) {
+      throw new runtime.RequiredError(
+        "id",
+        "Required parameter requestParameters.id was null or undefined when calling _delete."
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    if (this.configuration && this.configuration.apiKey) {
+      headerParameters["Authorization"] =
+        this.configuration.apiKey("Authorization"); // token authentication
+    }
+
+    const response = await this.request(
+      {
+        path: `/api/lists/{id}`.replace(
+          `{${"id"}}`,
+          encodeURIComponent(String(requestParameters.id))
+        ),
+        method: "DELETE",
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides
+    );
+
+    return new runtime.VoidApiResponse(response);
+  }
+
+  /**
+   * Delete the specified list
+   */
+  async _delete(
+    requestParameters: DeleteRequest,
+    initOverrides?: RequestInit
+  ): Promise<void> {
+    await this._deleteRaw(requestParameters, initOverrides);
+  }
+
   /**
    * Create a new list
    */

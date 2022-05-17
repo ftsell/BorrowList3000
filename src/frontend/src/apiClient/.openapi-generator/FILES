@@ -5,8 +5,8 @@ apis/ThingListControllerApi.ts
 apis/UserControllerApi.ts
 apis/index.ts
 models/CreatePersonRequest.ts
-models/CreateThingDto.ts
 models/CreateThingListRequest.ts
+models/CreateThingRequest.ts
 models/LoginPerformRequest.ts
 models/PatchThingListRequest.ts
 models/PendingSessionDto.ts
