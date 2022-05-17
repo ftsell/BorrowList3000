@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import me.finnthorben.thingpeoplelist.lists.ThingListService;
 import me.finnthorben.thingpeoplelist.people.PeopleService;
-import me.finnthorben.thingpeoplelist.things.dto.CreateThingDto;
+import me.finnthorben.thingpeoplelist.things.dto.CreateThingRequest;
 import me.finnthorben.thingpeoplelist.things.dto.ThingDto;
 import me.finnthorben.thingpeoplelist.users.User;
 import org.modelmapper.ModelMapper;
@@ -43,7 +43,7 @@ public class ThingController {
     @Operation(summary = "Create a new thing in this list that is associated with the given person")
     @ResponseStatus(HttpStatus.CREATED)
     Mono<ThingDto> create(@PathVariable UUID listId,
-                          @RequestBody @Validated CreateThingDto createRequest,
+                          @RequestBody @Validated CreateThingRequest createRequest,
                           Authentication auth) {
         return Mono.zip(listService.getByIdForUser(listId, (User) auth.getPrincipal()),
                         peopleService.getByIdForUser(createRequest.getPersonId(), (User) auth.getPrincipal()))

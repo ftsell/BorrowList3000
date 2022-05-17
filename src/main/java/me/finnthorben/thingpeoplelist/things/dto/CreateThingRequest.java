@@ -1,6 +1,8 @@
 package me.finnthorben.thingpeoplelist.things.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotBlank;
@@ -8,7 +10,9 @@ import javax.validation.constraints.Size;
 import java.util.UUID;
 
 @Data
-public class CreateThingDto {
+@AllArgsConstructor
+@NoArgsConstructor
+public class CreateThingRequest {
     @NotBlank
     @Size(min = 1)
     String name;
