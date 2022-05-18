@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Card from "@/components/componentLibrary/Card.vue";
+import { onKeyDown } from "@vueuse/core";
 
 defineProps<{
   title: string;
@@ -17,6 +18,10 @@ function onBackgroundClick(e: Event): void {
     emit("update:open", false);
   }
 }
+
+onKeyDown("Escape", () => {
+  emit("update:open", false);
+});
 </script>
 
 <template>
