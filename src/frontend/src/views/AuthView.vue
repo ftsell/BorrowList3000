@@ -15,7 +15,20 @@ async function createAccount(): Promise<void> {
   });
   authStore.authToken = response.token;
   authStore.persistAuth();
-  await router.push({ name: "home" });
+  await doPostAuthRedirect();
+}
+
+async function doPostAuthRedirect(): Promise<void> {
+  let next = router.currentRoute.value.query["next"];
+  if (next instanceof Array) {
+    next = next[next.length - 1];
+  }
+
+  if (next != null) {
+    await router.push({ path: next });
+  } else {
+    await router.push({ name: "home" });
+  }
 }
 </script>
 
