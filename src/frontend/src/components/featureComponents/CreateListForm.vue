@@ -22,6 +22,7 @@ const listStore = useListStore();
 const onSubmit = form.handleSubmit(async (values) => {
   try {
     const list = await listStore.createList(values.listName);
+    form.resetForm();
     emit("listCreated", list);
   } catch (e) {
     // only handle response exceptions that indicate a conflict

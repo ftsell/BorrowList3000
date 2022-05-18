@@ -35,6 +35,7 @@ const onSubmit = form.handleSubmit(async (values) => {
     },
   });
   await listStore.fetchFromApi();
+  form.resetForm();
   emit("finishEdit");
 });
 </script>

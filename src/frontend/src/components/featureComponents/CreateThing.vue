@@ -29,7 +29,6 @@ const nameField = useField<string>("thingName", string().required());
 const descriptionField = useField<string>("thingDescription", string());
 const personField = useField<string>("personName", string().required());
 
-const api = useRestApi();
 const thingStore = useThingStore();
 const peopleStore = usePeopleStore();
 
@@ -47,6 +46,7 @@ const onSubmit = form.handleSubmit(async (values) => {
     personId: person.id,
   });
 
+  form.resetForm();
   emit("thingCreated", thing);
 });
 </script>
