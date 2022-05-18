@@ -6,12 +6,12 @@ import Thing from "@/components/featureComponents/Thing.vue";
 import { useThingStore } from "@/stores/thingStore";
 import Icon from "@/components/componentLibrary/Icon.vue";
 import Popup from "@/components/componentLibrary/Popup.vue";
-import EditThingList from "@/components/featureComponents/EditThingList.vue";
+import EditThingListForm from "@/components/featureComponents/EditThingListForm.vue";
 import editIcon from "mono-icons/svg/edit.svg?raw";
 import addIcon from "mono-icons/svg/add.svg?raw";
 import deleteIcon from "mono-icons/svg/delete.svg?raw";
 import { useListStore } from "@/stores/listStore";
-import CreateThing from "@/components/featureComponents/CreateThing.vue";
+import CreateThingForm from "@/components/featureComponents/CreateThingForm.vue";
 
 const props = defineProps<{
   list: ThingListDto;
@@ -69,7 +69,7 @@ async function onDelete() {
   </Card>
 
   <Popup :title="`Edit ${list.name}`" v-model:open="isEditing">
-    <EditThingList
+    <EditThingListForm
       :list="list"
       @finishEdit="isEditing = false"
       @cancelEdit="isEditing = false"
@@ -77,7 +77,7 @@ async function onDelete() {
   </Popup>
 
   <Popup title="Create new Thing" v-model:open="isCreatingThing">
-    <CreateThing
+    <CreateThingForm
       :list="list"
       @thingCreated="isCreatingThing = false"
       @canceled="isCreatingThing = false"
