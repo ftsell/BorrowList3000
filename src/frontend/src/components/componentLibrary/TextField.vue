@@ -1,5 +1,7 @@
 <script setup lang="ts">
-withDefaults(
+import { onMounted, ref } from "vue";
+
+const props = withDefaults(
   defineProps<{
     id: string;
     type?: string;
@@ -8,9 +10,11 @@ withDefaults(
     tabIndex?: number | string;
     modelValue?: string;
     errorMessage?: string;
+    autofocus?: boolean;
   }>(),
   {
     type: "text",
+    autofocus: false,
   }
 );
 
@@ -24,6 +28,14 @@ function onInput(event: Event) {
     ((event as InputEvent).target as HTMLInputElement).value
   );
 }
+
+// automatically focus the input element on component mount
+const inputElement = ref<HTMLInputElement>();
+if (props.autofocus) {
+  onMounted(() => {
+    inputElement.value?.focus();
+  });
+}
 </script>
 
 <template>
@@ -36,6 +48,7 @@ function onInput(event: Event) {
       :tabindex="tabIndex"
       :value="modelValue"
       @input="onInput"
+      ref="inputElement"
     />
     <Transition name="fade">
       <p v-if="errorMessage" class="error">

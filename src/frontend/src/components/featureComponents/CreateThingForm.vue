@@ -58,6 +58,7 @@ const onSubmit = form.handleSubmit(async (values) => {
       :error-message="nameField.errorMessage.value"
       label="Name"
       placeholder="e.g. Book"
+      autofocus
     />
     <TextField
       id="create-thing--description"

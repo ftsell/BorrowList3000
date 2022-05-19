@@ -49,6 +49,7 @@ const onSubmit = form.handleSubmit(async (values) => {
       type="text"
       label="Name"
       :placeholder="`originally ${list.name}`"
+      autofocus
     />
 
     <div class="form-bottom">
