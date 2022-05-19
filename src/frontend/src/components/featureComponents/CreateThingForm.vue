@@ -2,10 +2,9 @@
 import type { ThingDto, ThingListDto } from "@/apiClient";
 import { useField, useForm } from "vee-validate";
 import { string } from "yup";
-import { useRestApi } from "@/apiClient";
 import { useThingStore } from "@/stores/thingStore";
 import TextField from "@/components/componentLibrary/TextField.vue";
-import CustomButton from "@/components/componentLibrary/CustomButton.vue";
+import RegularButton from "@/components/componentLibrary/RegularButton.vue";
 import CircularProgress from "@/components/componentLibrary/CircularProgress.vue";
 import { usePeopleStore } from "@/stores/peopleStore";
 
@@ -76,13 +75,13 @@ const onSubmit = form.handleSubmit(async (values) => {
     />
 
     <div class="form-bottom">
-      <CustomButton
+      <RegularButton
         text="Cancel"
         type="button"
         :outlined="true"
         @click="emit('canceled')"
       />
-      <CustomButton text="Save" type="submit" />
+      <RegularButton text="Save" type="submit" />
       <CircularProgress
         v-show="form.isSubmitting.value"
         :indeterminate="true"

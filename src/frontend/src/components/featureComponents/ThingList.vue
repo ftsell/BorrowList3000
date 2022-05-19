@@ -100,6 +100,7 @@ async function onDelete() {
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  gap: 8px;
 }
 
 .list-action-container .action-icon {

@@ -5,7 +5,7 @@ import { string } from "yup";
 import { useRestApi } from "@/apiClient";
 import { useListStore } from "@/stores/listStore";
 import TextField from "@/components/componentLibrary/TextField.vue";
-import CustomButton from "@/components/componentLibrary/CustomButton.vue";
+import RegularButton from "@/components/componentLibrary/RegularButton.vue";
 import CircularProgress from "@/components/componentLibrary/CircularProgress.vue";
 
 const props = defineProps<{
@@ -52,13 +52,13 @@ const onSubmit = form.handleSubmit(async (values) => {
     />
 
     <div class="form-bottom">
-      <CustomButton
+      <RegularButton
         text="Cancel"
         type="button"
         :outlined="true"
         @click="emit('cancelEdit')"
       />
-      <CustomButton text="Save" type="submit" />
+      <RegularButton text="Save" type="submit" />
       <CircularProgress
         v-show="form.isSubmitting.value"
         :indeterminate="true"

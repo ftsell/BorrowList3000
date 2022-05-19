@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import CustomButton from "@/components/componentLibrary/CustomButton.vue";
+import RegularButton from "@/components/componentLibrary/RegularButton.vue";
 import VerticalDivider from "@/components/componentLibrary/VerticalDivider.vue";
 import { useRestApi } from "@/apiClient";
 import { useAuthStore } from "@/stores/authStore";
@@ -44,9 +44,9 @@ async function doPostAuthRedirect(): Promise<void> {
       </p>
 
       <div class="vertical-container">
-        <CustomButton text="Create Account" @click="createAccount" />
+        <RegularButton text="Create Account" @click="createAccount" />
         <span>or</span>
-        <CustomButton text="Login" />
+        <RegularButton text="Login" />
       </div>
     </main>
   </div>

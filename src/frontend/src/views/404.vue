@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Card from "@/components/componentLibrary/Card.vue";
 import VerticalDivider from "@/components/componentLibrary/VerticalDivider.vue";
-import CustomButton from "@/components/componentLibrary/CustomButton.vue";
+import RegularButton from "@/components/componentLibrary/RegularButton.vue";
 </script>
 
 <template>
@@ -15,7 +15,7 @@ import CustomButton from "@/components/componentLibrary/CustomButton.vue";
         <VerticalDivider />
         <div class="action-container">
           <RouterLink :to="{ name: 'home' }">
-            <CustomButton :outlined="true" text="Go back to Dashboard" />
+            <RegularButton :outlined="true" text="Go back to Dashboard" />
           </RouterLink>
         </div>
       </main>

@@ -4,7 +4,7 @@ import type { Problem, ThingListDto } from "@/apiClient";
 import { string } from "yup";
 import { useListStore } from "@/stores/listStore";
 import TextField from "@/components/componentLibrary/TextField.vue";
-import CustomButton from "@/components/componentLibrary/CustomButton.vue";
+import RegularButton from "@/components/componentLibrary/RegularButton.vue";
 
 const emit = defineEmits<{
   (e: "listCreated", list: ThingListDto): void;
@@ -49,7 +49,7 @@ const onSubmit = form.handleSubmit(async (values) => {
       class="no-space-below flex-grow-large"
     />
 
-    <CustomButton text="Create" type="submit" class="flex-grow-medium" />
+    <RegularButton text="Create" type="submit" class="flex-grow-medium" />
   </form>
 </template>
 
