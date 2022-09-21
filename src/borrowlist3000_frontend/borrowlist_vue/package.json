@@ -18,7 +18,7 @@
     "vue-property-decorator": "^9.1.2",
     "vue-router": "^3.2.0",
     "vue2-boring-avatars": "^0.3.2",
-    "vuetify": "^2.5.8"
+    "vuetify": "^2.6.10"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.18.0",
