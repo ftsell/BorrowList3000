@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django = "~=3.2"
+django = "~=5.1"
 django-configurations = "~=2.2"
 graphene-django = "~=2.15"
 python-paseto = "~=0.5"
