@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 django = "~=3.2"
 django-configurations = "~=2.2"
-graphene-django = "~=2.15"
+graphene-django = "~=3.2"
 python-paseto = "~=0.5"
 cbor2 = "~=5.4"
 whitenoise = "~=5.3"
